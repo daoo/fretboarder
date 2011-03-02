@@ -28,6 +28,11 @@ toneToChar G = 'G'
 toneToChar A = 'A'
 toneToChar B = 'B'
 
+charToAccidental :: Char -> Accidental
+charToAccidental '#' = Sharp
+charToAccidental 'b' = Flat
+charToAccidental _   = Natural
+
 charToTone :: Char -> Maybe Tone
 charToTone 'C' = Just C
 charToTone 'D' = Just D

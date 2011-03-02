@@ -32,7 +32,7 @@ noteFreq n = 2 ^ ( (halfStepDistance n a4) `div` 12 ) * 440
 
 -- TODO: This could been done without recursion
 interval :: Interval -> Note -> Note
-interval 1 n = semiUp n
-interval 2 n = toneUp n
+interval 1 n         = semiUp n
+interval 2 n         = toneUp n
 interval i n | i > 2 = interval (i - 2) $ toneUp n
 

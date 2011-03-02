@@ -42,9 +42,8 @@ markAt c i gs@(nut, s:ss)           = (nut, ns)
   where
     (_, ns) = markAt c (i - 1) gs
 
-
 takeFrets :: Int -> Fretboard -> Fretboard
 takeFrets i = map (mapSnd $ take i)
-
-mapSnd :: (a -> b) -> (c, a) -> (c, b)
-mapSnd f (a, b) = (a, f b)
+  where
+    mapSnd :: (a -> b) -> (c, a) -> (c, b)
+    mapSnd f (a, b) = (a, f b)

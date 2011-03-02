@@ -17,6 +17,12 @@ data Note = Note Octave Tone Accidental
 instance Show Note where
   show (Note o t a) = toneToChar t : show o ++ showAccidental a
 
+a4 = Note 4 A Natural
+b4 = Note 4 B Natural
+c4 = Note 4 C Natural
+a5 = Note 5 A Natural
+b5 = Note 5 B Natural
+
 -- To/From Strings --
 
 toneToChar :: Tone -> Char
@@ -60,13 +66,8 @@ noteFromString [t, o] = f (digitToInt o) (charToTone t) Natural
     f o (Just t) a = Just $ Note o t a
 noteFromString _ = Nothing
 
-a4 = Note 4 A Natural
-b4 = Note 4 B Natural
-c4 = Note 4 C Natural
-a5 = Note 5 A Natural
-b5 = Note 5 B Natural
-
 -- Math --
+
 fixNote :: Note -> Note
 fixNote (Note o B Sharp) = Note (o + 1) C Natural
 fixNote (Note o C Flat)  = Note (o - 1) B Natural

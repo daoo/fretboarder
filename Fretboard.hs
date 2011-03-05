@@ -27,23 +27,22 @@ createGuitarString n = (n, zipWith Fret notes $ repeat [])
     notes = iterate semiUp n
 
 markScale :: Color -> Scale -> Fretboard -> Fretboard
-markScale _ [] b     = b
-markScale c (s:ss) b = markScale c ss $ map (markNote c s) b
+markScale _ [] fb     = fb
+markScale c (s:ss) fb = markScale c ss $ markNote c s fb
 
-markNote :: Color -> Note -> GuitarString -> GuitarString
-markNote c n s@(nutNote, frets) | d >= 0    = markAt c d s
-                                | otherwise = s
-  where
-    d = n `halfStepDistance` nutNote
+markNote :: Color -> Note -> Fretboard -> Fretboard
+markNote c n = map (markString c n)
 
-markAt :: Color -> Integer -> GuitarString -> GuitarString
-markAt c 0 gs@(nut, (Fret n cs):ss) = (nut, (Fret n (c:cs):ss))
-markAt c i gs@(nut, s:ss)           = (nut, ns)
+markString :: Color -> Note -> GuitarString -> GuitarString
+markString _ _ (nut, [])                            = (nut, [])
+markString c e gs@(nut, (Fret n cs:ss)) | e == n    = (nut, (Fret n (c:cs)):ss)
+                                        | otherwise = (nut, ns)
   where
-    (_, ns) = markAt c (i - 1) gs
+    (_, ns) = markString c e (nut, ss)
 
 takeFrets :: Int -> Fretboard -> Fretboard
 takeFrets i = map (mapSnd $ take i)
   where
     mapSnd :: (a -> b) -> (c, a) -> (c, b)
     mapSnd f (a, b) = (a, f b)
+

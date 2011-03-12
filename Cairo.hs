@@ -51,7 +51,7 @@ drawFretboard (w, h) fb = do
     (boardw, boardh) = (w - padding * 2.0, h - padding * 2.0)
     (fretw, freth)   = (boardw / realToFrac fretcount, boardh / realToFrac (stringcount - 1))
 
-    fretcount   = length $ snd $ head fb
+    fretcount   = length $ head fb
     stringcount = length fb
 
     inlays :: [(Int, Int)] -> [Point]
@@ -72,16 +72,16 @@ drawFretboard (w, h) fb = do
     drawCircle r (x, y) = moveTo x y >> arc x y r 0 (2.0 * pi)
 
     draw :: Fretboard -> Render ()
-    draw fb = helper (0, 0) fb
+    draw fb = helper (-fretw / 2.0, 0) fb
       where
         helper :: Point -> Fretboard -> Render ()
-        helper _ []            = return ()
-        helper p@(_, y) (a:as) = drawString y a >> helper (p +++ delta) as
+        helper _ []     = return ()
+        helper p (a:as) = drawString p a >> helper (p +++ delta) as
 
         delta = (0, freth)
 
-    drawString :: Double -> GuitarString -> Render ()
-    drawString y gs = helper (0, y) (snd gs)
+    drawString :: Point -> GuitarString -> Render ()
+    drawString p gs = helper p gs
       where
         helper :: Point -> [Fret] -> Render ()
         helper _ []     = return ()

@@ -3,9 +3,11 @@ module Note where
 import Data.Char
 import Data.Maybe
 
+import INote
+
 type Octave = Int
 
-data Tone = C | D | E | F | G | A | B
+data Tone = A | B | C | D | E | F | G
   deriving (Eq, Ord, Enum, Read, Show, Bounded)
 
 data Accidental = Natural | Flat | Sharp
@@ -68,24 +70,44 @@ noteFromString _ = Nothing
 
 -- Math --
 
+toINote :: Note -> INote
+toINote (Note t o a) = 12 * o' + t' + a'
+  where
+    t' = case t of
+      A -> 0
+      B -> 2
+      C -> 3
+      D -> 5
+      E -> 7
+      F -> 8
+      G -> 10
+    o' = fromIntegral $ fromEnum o
+    a' = case a of
+      Flat    -> -1
+      Natural -> 0
+      Sharp   -> 1
+
+fromINote :: INote -> Note
+fromINote i = Note t o a
+  where
+    o      = fromIntegral $ i `div` 12
+    (t, a) = case i `mod` 12 of
+      0 -> (A, Natural)
+      1 -> (A, Sharp)
+      2 -> (B, Natural)
+      3 -> (C, Natural)
+      4 -> (C, Sharp)
+      5 -> (D, Natural)
+      6 -> (D, Sharp)
+      7 -> (E, Natural)
+      8 -> (F, Natural)
+      9 -> (F, Sharp)
+      10 -> (G, Natural)
+      11 -> (G, Sharp)
+
 fixNote :: Note -> Note
 fixNote (Note B o Sharp) = Note C (o + 1) Natural
 fixNote (Note C o Flat)  = Note B (o - 1) Natural
 fixNote (Note E o Sharp) = Note F o Natural
 fixNote (Note F o Flat)  = Note E o Natural
 fixNote n                = n
-
-semiUp :: Note -> Note
-semiUp (Note o t Natural) = Note o t Sharp
-semiUp (Note o t Flat)    = Note o t Natural
-semiUp (Note o t Sharp)   = toneUp $ Note o t Natural
-
-toneUp :: Note -> Note
-toneUp (Note C o a) = Note D o a
-toneUp (Note D o a) = Note E o a
-toneUp (Note E o a) = semiUp $ Note F o a
-toneUp (Note F o a) = Note G o a
-toneUp (Note G o a) = Note A o a
-toneUp (Note A o a) = Note B o a
-toneUp (Note B o a) = semiUp $ Note C (o + 1) a
-

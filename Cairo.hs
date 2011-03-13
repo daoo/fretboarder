@@ -1,5 +1,6 @@
 module Cairo where
 
+import Data.List
 import Data.Ratio
 import Graphics.Rendering.Cairo
 
@@ -88,27 +89,46 @@ drawFretboard (w, h) fb = do
         helper p (a:as) = drawFret p a >> helper (p +++ (fretw, 0)) as
 
     drawFret :: Point -> Fret -> Render ()
-    drawFret (x, y) (Fret n cs) = helper 0 cs
+    drawFret (x, y) (Fret n colors) = helper 0 colors
       where
         helper :: Double -> [Color] -> Render ()
         helper _ []             = return ()
-        helper a ((r, g, b):cs) = withRGBPattern r g b (\ _ -> arc x y defRadius a (a + delta) >> fill )
+        helper a ((r, g, b):cs) = setSourceRGB r g b >> arc x y defRadius a a' >> lineTo x y >> fill >> helper a' cs
+          where
+            a' = a + delta
 
         delta :: Double
-        delta = (2.0 * pi) / ( realToFrac $ length cs )
+        delta = (2.0 * pi) / ( realToFrac $ length colors )
 
     -- TODO: Make these configurable
     defInlays    = zip [ 3, 5, 7, 9, 15, 17, 19 ] (repeat 1) ++ zip [ 12 ] (repeat 2)
-    defRadius    = 7
+    defRadius    = 5
     defLineWidth = 0.5
 
 test :: IO ()
 test = do
-  withSVGSurface "test.svg" 2000 200 (\ s -> renderWith s $ drawFretboard (1280.0, 200.0) fb)
+  withSVGSurface "test.svg" 2000 200 (\ s -> renderWith s $ drawFretboard (1280.0, 200.0) exfb)
 
+exfb = asdf markables $ takeFrets 20 ebgdae
+
+asdf :: [(Color, Scale)] -> Fretboard -> Fretboard
+asdf [] fb           = fb
+asdf ((c, is):ls) fb = markScale c is fb'
   where
-    fb = markScale (1, 0, 0) s $ takeFrets 20 ebgdae
-    s = makeScale (Note A 3 Natural) pentatonicIntervals
+    fb' = asdf ls fb
+
+colors = [ (0.988235294117647, 0.917647058823529, 0.309803921568627)
+         , (0.988235294117647, 0.686274509803922, 0.243137254901961)
+         , (0.913725490196078, 0.725490196078431, 0.431372549019608)
+         , (0.541176470588235, 0.886274509803922, 0.203921568627451)
+         , (0.447058823529412, 0.623529411764706, 0.811764705882353)
+         , (0.67843137254902, 0.498039215686275, 0.658823529411765)
+         , (0.937254901960784, 0.16078431372549, 0.16078431372549)
+         , (0.533333333333333, 0.541176470588235, 0.52156862745098) ]
+
+scales    = [ionianMode, dorianMode, phrygianMode, lydianMode, mixolydianMode, aeolianMode, locrianMode]
+intvs     = [ nub $ makeScale 12 $ concat $ take 30 $ repeat s | s <- scales ]
+markables = zip colors intvs
 
 mapBoth :: (a -> b) -> (a, a) -> (b, b)
 mapBoth f (a, b) = (f a, f b)

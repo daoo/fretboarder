@@ -16,59 +16,11 @@ data Accidental = Natural | Flat | Sharp
 data Note = Note Tone Octave Accidental
   deriving (Eq)
 
-instance Show Note where
-  show (Note t o a) = toneToChar t : show o ++ showAccidental a
-
 a4 = Note A 4 Natural
 b4 = Note B 4 Natural
 c4 = Note C 4 Natural
 a5 = Note A 5 Natural
 b5 = Note B 5 Natural
-
--- To/From Strings --
-
-toneToChar :: Tone -> Char
-toneToChar C = 'C'
-toneToChar D = 'D'
-toneToChar E = 'E'
-toneToChar F = 'F'
-toneToChar G = 'G'
-toneToChar A = 'A'
-toneToChar B = 'B'
-
-charToAccidental :: Char -> Accidental
-charToAccidental '#' = Sharp
-charToAccidental 'b' = Flat
-charToAccidental _   = Natural
-
-charToTone :: Char -> Maybe Tone
-charToTone 'C' = Just C
-charToTone 'D' = Just D
-charToTone 'E' = Just E
-charToTone 'F' = Just F
-charToTone 'G' = Just G
-charToTone 'A' = Just A
-charToTone 'B' = Just B
-charToTone  _  = Nothing
-
-showAccidental :: Accidental -> String
-showAccidental Natural = []
-showAccidental Flat    = "b"
-showAccidental Sharp   = "#"
-
-showNote :: Note -> String
-showNote (Note t o a) = (toneToChar t : show o) ++ showAccidental a
-
--- FIXME: instance Read
-noteFromString :: String -> Maybe Note
-noteFromString [t, o] = f (charToTone t) (digitToInt o) Natural
-  where 
-    f :: Maybe Tone -> Octave -> Accidental -> Maybe Note
-    f Nothing _ _  = Nothing
-    f (Just t) o a = Just $ Note t o a
-noteFromString _ = Nothing
-
--- Math --
 
 toINote :: Note -> INote
 toINote (Note t o a) = 12 * o' + t' + a'

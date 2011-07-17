@@ -1,20 +1,14 @@
 module Cairo where
 
-import Data.List
+import Data.List (nub)
 import Data.Ratio
 import Graphics.Rendering.Cairo
+import CairoExt
 
 import Note
 import Intervals
 import Scale
 import Fretboard
-
-type Point = (Double, Double)
-type Size  = (Double, Double)
-type Line  = (Point, Point)
-
-(+++) :: Point -> Point -> Point
-(x1, y1) +++ (x2, y2) = (x1 + x2, y1 + y2)
 
 drawFretboard :: Size -> Fretboard -> Render ()
 drawFretboard (w, h) fb = do
@@ -26,18 +20,18 @@ drawFretboard (w, h) fb = do
   moveTo 0 0
   lineTo 0 boardh
   stroke
-
   setLineWidth defLineWidth
+
   newPath
 
   -- Draw frets and strings
-  drawLines fretcount (fretw, 0) ((fretw, 0), (fretw, boardh))
-  drawLines stringcount (0, freth) ((0, 0), (boardw, 0))
+  deltaLines fretcount (fretw, 0) ((fretw, 0), (fretw, boardh))
+  deltaLines stringcount (0, freth) ((0, 0), (boardw, 0))
 
   stroke
 
   -- Draw inlays
-  mapM (drawCircle defRadius) $ inlays defInlays 
+  mapM (circle defRadius) $ inlays defInlays 
   fill
 
   -- Draw fretboard
@@ -52,7 +46,7 @@ drawFretboard (w, h) fb = do
     (boardw, boardh) = (w - padding * 2.0, h - padding * 2.0)
     (fretw, freth)   = (boardw / realToFrac fretcount, boardh / realToFrac (stringcount - 1))
 
-    fretcount   = length $ head fb
+    fretcount   = (length $ head fb) - 1
     stringcount = length fb
 
     inlays :: [(Int, Int)] -> [Point]
@@ -62,15 +56,6 @@ drawFretboard (w, h) fb = do
 
     fretx :: Int -> Double
     fretx i = fretw * (realToFrac i) - (fretw / 2.0)
-
-    drawLine :: Line -> Render ()
-    drawLine ((x1, y1), (x2, y2)) = moveTo x1 y1 >> lineTo x2 y2
-
-    drawLines :: Int -> Point -> Line -> Render [()]
-    drawLines count delta first = mapM drawLine $ take count $ iterate (mapBoth (+++ delta)) first
-
-    drawCircle :: Double -> Point -> Render ()
-    drawCircle r (x, y) = moveTo x y >> arc x y r 0 (2.0 * pi)
 
     draw :: Fretboard -> Render ()
     draw fb = helper (-fretw / 2.0, 0) fb
@@ -82,53 +67,51 @@ drawFretboard (w, h) fb = do
         delta = (0, freth)
 
     drawString :: Point -> GuitarString -> Render ()
-    drawString p gs = helper p gs
+    drawString _ []             = return ()
+    drawString pt@(x, y) (f:fs) = drawFret pt f >> drawString (pt +++ delta) fs
       where
-        helper :: Point -> [Fret] -> Render ()
-        helper _ []     = return ()
-        helper p (a:as) = drawFret p a >> helper (p +++ (fretw, 0)) as
+        delta = (fretw, 0)
 
     drawFret :: Point -> Fret -> Render ()
-    drawFret (x, y) (Fret n colors) = helper 0 colors
-      where
-        helper :: Double -> [Color] -> Render ()
-        helper _ []             = return ()
-        helper a ((r, g, b):cs) = setSourceRGB r g b >> arc x y defRadius a a' >> lineTo x y >> fill >> helper a' cs
-          where
-            a' = a + delta
-
-        delta :: Double
-        delta = (2.0 * pi) / ( realToFrac $ length colors )
+    drawFret pt (Fret n colors) = evenPie pt defRadius colors
 
     -- TODO: Make these configurable
-    defInlays    = zip [ 3, 5, 7, 9, 15, 17, 19 ] (repeat 1) ++ zip [ 12 ] (repeat 2)
-    defRadius    = 5
+    defInlays    = zip [ 3, 5, 7, 9, 15, 17, 19, 21 ] (repeat 1) ++ zip [ 12 ] (repeat 2)
+    defRadius    = 7
     defLineWidth = 0.5
 
-test :: IO ()
-test = do
-  withSVGSurface "test.svg" 2000 200 (\ s -> renderWith s $ drawFretboard (1280.0, 200.0) exfb)
+main :: IO ()
+main = do
+  withSVGSurface "test.svg" w h (\ s -> renderWith s $ drawFretboard (w, h) exfb)
 
-exfb = asdf markables $ takeFrets 20 ebgdae
-
-asdf :: [(Color, Scale)] -> Fretboard -> Fretboard
-asdf [] fb           = fb
-asdf ((c, is):ls) fb = markScale c is fb'
   where
-    fb' = asdf ls fb
+    w = 1280
+    h = 300
+
+exfb = (map . map) (\ (Fret n c) -> (Fret n (f c))) $ markFretboard markables $ takeFrets 23 ebgdae
+  where
+    f []     = []
+    f (x:xs) = [x]
+
+markFretboard :: [(Fretboard.Color, Scale)] -> Fretboard -> Fretboard
+markFretboard [] fb           = fb
+markFretboard ((c, is):ls) fb = markScale c is fb'
+  where
+    fb' = markFretboard ls fb
 
 colors = [ (0.988235294117647, 0.917647058823529, 0.309803921568627)
-         , (0.988235294117647, 0.686274509803922, 0.243137254901961)
-         , (0.913725490196078, 0.725490196078431, 0.431372549019608)
-         , (0.541176470588235, 0.886274509803922, 0.203921568627451)
-         , (0.447058823529412, 0.623529411764706, 0.811764705882353)
-         , (0.67843137254902, 0.498039215686275, 0.658823529411765)
          , (0.937254901960784, 0.16078431372549, 0.16078431372549)
+         , (0.988235294117647, 0.686274509803922, 0.243137254901961)
+         , (0.67843137254902, 0.498039215686275, 0.658823529411765)
+         , (0.447058823529412, 0.623529411764706, 0.811764705882353)
+         , (0.541176470588235, 0.886274509803922, 0.203921568627451)
+         , (0.913725490196078, 0.725490196078431, 0.431372549019608)
          , (0.533333333333333, 0.541176470588235, 0.52156862745098) ]
 
-scales    = [ionianMode, dorianMode, phrygianMode, lydianMode, mixolydianMode, aeolianMode, locrianMode]
-intvs     = [ nub $ makeScale 12 $ concat $ take 30 $ repeat s | s <- scales ]
-markables = zip colors intvs
+scales = [ (toINote (Note A 1 Natural), harmonicMinor) ]
 
-mapBoth :: (a -> b) -> (a, a) -> (b, b)
-mapBoth f (a, b) = (f a, f b)
+intvs []          = []
+intvs ((b, i):ss) = (nub $ makeScale b $ concat $ take 30 $ repeat i) : intvs ss
+    
+markables = zip colors (intvs scales)
+

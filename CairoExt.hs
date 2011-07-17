@@ -1,5 +1,6 @@
 module CairoExt where
 
+import HsExt
 import Graphics.Rendering.Cairo
 
 type Color = (Double, Double, Double)
@@ -29,9 +30,6 @@ line ((x1, y1), (x2, y2)) = moveTo x1 y1 >> lineTo x2 y2
 
 deltaLines :: Int -> Point -> Line -> Render [()]
 deltaLines count delta first = mapM line $ take count $ iterate (mapBoth (+++ delta)) first
-
-mapBoth :: (a -> b) -> (a, a) -> (b, b)
-mapBoth f (a, b) = (f a, f b)
 
 (+++) :: Point -> Point -> Point
 (x1, y1) +++ (x2, y2) = (x1 + x2, y1 + y2)

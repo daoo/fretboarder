@@ -1,9 +1,9 @@
 module CairoExt where
 
-import HsExt
+import Color
 import Graphics.Rendering.Cairo
+import HsExt
 
-type Color = (Double, Double, Double)
 type Point = (Double, Double)
 type Size  = (Double, Double)
 type Line  = (Point, Point)

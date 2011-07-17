@@ -1,12 +1,13 @@
 module Cairo where
 
 import CairoExt
-import Colors
+import Color
 import Data.List (nub)
 import Data.Ratio
 import Graphics.Rendering.Cairo
 
 import Note
+import INote
 import Intervals
 import Scale
 import Fretboard
@@ -84,7 +85,6 @@ drawFretboard (w, h) fb = do
 main :: IO ()
 main = do
   withSVGSurface "test.svg" w h (\ s -> renderWith s $ drawFretboard (w, h) exfb)
-
   where
     w = 1280
     h = 300
@@ -94,16 +94,14 @@ exfb = (map . map) (\ (Fret n c) -> (Fret n (f c))) $ markFretboard markables $ 
     f []     = []
     f (x:xs) = [x]
 
-markFretboard :: [(Fretboard.Color, Scale)] -> Fretboard -> Fretboard
-markFretboard [] fb           = fb
-markFretboard ((c, is):ls) fb = markScale c is fb'
-  where
-    fb' = markFretboard ls fb
-
+-- List of start notes and intervals for scales
+scales :: [(INote, Scale)]
 scales = [ (toINote (Note A 1 Natural), harmonicMinor) ]
 
-intvs []          = []
-intvs ((b, i):ss) = (nub $ makeScale b $ concat $ take 30 $ repeat i) : intvs ss
-    
-markables = zip colors (intvs scales)
+-- Makes lists that can be used for marking a fretboard
+makeMarkables :: [(INote, Scale)] -> [[INote]]
+makeMarkables []          = []
+makeMarkables ((b, i):ss) = (nub $ makeScale b $ concat $ take 30 $ repeat i) : makeMarkables ss
+ 
+markables = zip colors (makeMarkables scales)
 

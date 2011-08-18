@@ -1,1 +1,2 @@
-*.hs
+Lexer.hs
+Parser.hs

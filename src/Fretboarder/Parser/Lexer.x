@@ -1,5 +1,5 @@
 {
-module Lexer where
+module Fretboarder.Parser.Lexer where
 }
 
 %wrapper "basic"

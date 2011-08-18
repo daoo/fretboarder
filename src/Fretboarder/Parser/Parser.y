@@ -1,8 +1,12 @@
 {
-module Parser where
+module Fretboarder.Parser.Parser where
 
 import Data.Char
-import Lexer
+
+import Fretboarder.Guitar.Note
+
+import Fretboarder.Parser.String
+import Fretboarder.Parser.Lexer
 }
 
 %name guitar
@@ -17,28 +21,11 @@ import Lexer
 Note : Tone            { Note $1 Natural }
      | Tone Accidental { Note $1 $2      }
 
-Tone : tone { Tone $1 }
+Tone : tone { fromTone $1 }
 
 Accidental : accidental { accidentalFromChar $1 }
 
 {
 parseError :: [Token] -> a
 parseError _ = error "Parse error"
-
-data Scale = Scale 
-  deriving Show
-
-data Note = Note Tone Accidental
-  deriving Show
-
-data Tone = Tone Char
-  deriving Show
-
-data Accidental = Natural | Flat | Sharp
-  deriving Show
-
-accidentalFromChar :: Char -> Accidental
-accidentalFromChar '#' = Sharp
-accidentalFromChar 'b' = Flat
-accidentalFromChar _   = Natural
 }

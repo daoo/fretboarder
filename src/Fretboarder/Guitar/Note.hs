@@ -1,9 +1,9 @@
-module Note where
+module Fretboarder.Guitar.Note where
 
 import Data.Char
 import Data.Maybe
 
-import INote
+import Fretboarder.Guitar.INote
 
 type Octave = Int
 

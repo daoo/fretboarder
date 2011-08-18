@@ -3,13 +3,13 @@ module Main where
 import Data.List (nub)
 import Graphics.Rendering.Cairo
 
-import Cairo
-import Color
+import Fretboarder.Drawing.Cairo
+import Fretboarder.Drawing.Color
 
-import Fretboard
-import INote
-import Scale
-import Note
+import Fretboarder.Guitar.Fretboard
+import Fretboarder.Guitar.INote
+import Fretboarder.Guitar.Scale
+import Fretboarder.Guitar.Note
 
 map2 :: (a -> b) -> [[a]] -> [[b]]
 map2 = map . map
@@ -28,7 +28,7 @@ main :: IO ()
 main = do
   withSVGSurface "test.svg" w h $ renderFretboard size fbFinal
   where
-    scale      = harmonicMinor
+    scale      = dorianMode
     tone       = E
     accidental = Natural
 

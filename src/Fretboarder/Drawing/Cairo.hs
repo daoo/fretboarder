@@ -1,17 +1,17 @@
-module Cairo (renderFretboard) where
+module Fretboarder.Drawing.Cairo (renderFretboard) where
 
 import Data.List (nub)
 import Data.Ratio
 import Graphics.Rendering.Cairo
 
-import CairoExt
-import Color
+import Fretboarder.Drawing.CairoExt
+import Fretboarder.Drawing.Color
 
-import Fretboard
-import INote
-import Intervals
-import Note
-import Scale
+import Fretboarder.Guitar.Fretboard
+import Fretboarder.Guitar.INote
+import Fretboarder.Guitar.Intervals
+import Fretboarder.Guitar.Note
+import Fretboarder.Guitar.Scale
 
 renderFretboard :: Size -> Fretboard -> Surface -> IO ()
 renderFretboard size fb s = renderWith s $ drawFretboard size fb

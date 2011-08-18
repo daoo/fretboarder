@@ -1,7 +1,7 @@
-module Scale where
+module Fretboarder.Guitar.Scale where
 
-import INote
-import Intervals
+import Fretboarder.Guitar.INote
+import Fretboarder.Guitar.Intervals
 
 type Scale = [INote]
 

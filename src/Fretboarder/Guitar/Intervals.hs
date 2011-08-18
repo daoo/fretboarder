@@ -1,6 +1,6 @@
-module Intervals where
+module Fretboarder.Guitar.Intervals where
 
-import INote
+import Fretboarder.Guitar.INote
 
 -- 1 = Semitone
 -- 2 = Tone

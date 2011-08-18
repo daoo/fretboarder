@@ -2,3 +2,4 @@ Main
 *.svg
 *.hi
 *.o
+build/

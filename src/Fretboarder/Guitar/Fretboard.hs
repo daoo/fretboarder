@@ -1,12 +1,13 @@
-module Fretboard where
-
-import Color
+module Fretboarder.Guitar.Fretboard where
 
 import Data.List
-import Note
-import INote
-import Scale 
-import Intervals
+
+import Fretboarder.Drawing.Color
+
+import Fretboarder.Guitar.Note
+import Fretboarder.Guitar.INote
+import Fretboarder.Guitar.Scale 
+import Fretboarder.Guitar.Intervals
 
 data Fret         = Fret INote [Color]
   deriving (Show)

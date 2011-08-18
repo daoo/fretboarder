@@ -1,8 +1,10 @@
-module CairoExt where
+module Fretboarder.Drawing.CairoExt where
 
-import Color
+import Fretboarder.Extensions.HsExt
+
 import Graphics.Rendering.Cairo
-import HsExt
+
+import Fretboarder.Drawing.Color
 
 type Point = (Double, Double)
 type Size  = (Double, Double)

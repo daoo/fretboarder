@@ -1,9 +1,15 @@
 module Main where
 
+import System
+import System.FilePath.Posix
+
+import Data.Char
 import Data.List (nub)
+
 import Graphics.Rendering.Cairo
 
 import Fretboarder.Drawing.Cairo
+import Fretboarder.Drawing.CairoExt
 import Fretboarder.Drawing.Color
 
 import Fretboarder.Extensions.List
@@ -12,6 +18,14 @@ import Fretboarder.Guitar.Fretboard
 import Fretboarder.Guitar.INote
 import Fretboarder.Guitar.Scale
 import Fretboarder.Guitar.Note
+
+import Fretboarder.Parser.Parser
+
+data Type = SVG | PNG
+
+withSurface :: Type -> FilePath -> Size -> (Surface -> IO a) -> IO a
+withSurface SVG file (w, h) r = withSVGSurface file w h r
+withSurface PNG file _ r      = withImageSurfaceFromPNG file r
 
 -- List of start notes and intervals for scales
 makeScales :: Scale -> Tone -> Accidental -> [(INote, Scale)]
@@ -25,21 +39,29 @@ makeMarkables ((b, i):ss) = (nub $ makeScale b $ concat $ take 30 $ repeat i) : 
 
 main :: IO ()
 main = do
-  withSVGSurface "test.svg" w h $ renderFretboard size fbFinal
+  -- Args
+  args <- getArgs
+  let (w:h:file:_) = args
+  let scale      = concat $ drop 3 args
+  let size       = (read w, read h)
+  let t          = case map toLower $ takeExtension file of
+                     ".png" -> PNG
+                     ".svg" -> SVG
+                     _      -> error "Unknown file type."
+
+  let (Parse (PNote tone accidental)) = parse scale
+
+  let scale = dorianMode
+
+  let scales = makeScales scale tone accidental
+  let marks  = zip colors $ makeMarkables scales
+
+  let fb       = takeFrets 23 ebgdae
+  let fbMarked = markFretboard marks fb
+  let fbFinal  = map2 (\ (Fret n c) -> (Fret n (first c))) fbMarked
+
+  withSurface t file size $ renderFretboard size fbFinal
+
   where
-    scale      = dorianMode
-    tone       = E
-    accidental = Natural
-
-    scales = makeScales scale tone accidental
-    marks  = zip colors $ makeMarkables scales
-
-    fb       = takeFrets 23 ebgdae
-    fbMarked = markFretboard marks fb
-    fbFinal  = map2 (\ (Fret n c) -> (Fret n (first c))) fbMarked
-      where
-        first []     = []
-        first (x:xs) = [x]
-
-    size@(w, h) = (1280, 300)
-
+    first []     = []
+    first (x:xs) = [x]

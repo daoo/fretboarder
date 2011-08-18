@@ -1,6 +1,6 @@
 module Fretboarder.Drawing.CairoExt where
 
-import Fretboarder.Extensions.HsExt
+import Fretboarder.Extensions.Tuple
 
 import Graphics.Rendering.Cairo
 

@@ -6,13 +6,12 @@ import Graphics.Rendering.Cairo
 import Fretboarder.Drawing.Cairo
 import Fretboarder.Drawing.Color
 
+import Fretboarder.Extensions.List
+
 import Fretboarder.Guitar.Fretboard
 import Fretboarder.Guitar.INote
 import Fretboarder.Guitar.Scale
 import Fretboarder.Guitar.Note
-
-map2 :: (a -> b) -> [[a]] -> [[b]]
-map2 = map . map
 
 -- List of start notes and intervals for scales
 makeScales :: Scale -> Tone -> Accidental -> [(INote, Scale)]

@@ -18,14 +18,24 @@ import Fretboarder.Parser.Lexer
   accidental { TAccidental $$ }
 %%
 
-Note : Tone            { Note $1 Natural }
-     | Tone Accidental { Note $1 $2      }
+Parse : Note { Parse $1 }
 
-Tone : tone { fromTone $1 }
+Note : Tone            { PNote $1 Natural }
+     | Tone Accidental { PNote $1 $2      }
 
-Accidental : accidental { accidentalFromChar $1 }
+Tone : tone { readTone $1 }
+
+Accidental : accidental { readAccidental $1 }
 
 {
+
+data Parse = Parse PNote
+
+data PNote = PNote Tone Accidental
+
 parseError :: [Token] -> a
 parseError _ = error "Parse error"
+
+parse :: String -> Parse
+parse = guitar . lexer
 }

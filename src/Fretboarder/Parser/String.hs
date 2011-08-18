@@ -10,6 +10,7 @@ readTone 'D' = D
 readTone 'E' = E
 readTone 'F' = F
 readTone 'G' = G
+readTone _   = error "No such tone."
 
 readAccidental :: Char -> Accidental
 readAccidental '#' = Sharp

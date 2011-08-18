@@ -13,6 +13,7 @@ data Tone = A | B | C | D | E | F | G
 data Accidental = Natural | Flat | Sharp
   deriving (Eq, Ord, Enum, Read, Show, Bounded)
 
+-- TODO: How is Octave defined in this context? (Switch between B and C)
 data Note = Note Tone Octave Accidental
   deriving (Eq)
 
@@ -57,6 +58,8 @@ fromINote i = Note t o a
       10 -> (G, Natural)
       11 -> (G, Sharp)
 
+-- For some reason I can't understand, B# == C, B == Cb, E# == F and E == Fb
+-- This method normalizes those sharps and flats to naturals
 fixNote :: Note -> Note
 fixNote (Note B o Sharp) = Note C (o + 1) Natural
 fixNote (Note C o Flat)  = Note B (o - 1) Natural

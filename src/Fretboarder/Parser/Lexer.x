@@ -13,7 +13,7 @@ tokens :-
   $white+     ;
   $tone       { \s -> TTone (head s)       }
   $accidental { \s -> TAccidental (last s) }
-  $alpha{3,}  { \s -> TScale s             }
+  $alpha{2,}  { \s -> TScale s             }
 
 {
 data Token = TTone Char

@@ -1,6 +1,8 @@
 module Fretboarder.Parser.String where
 
 import Fretboarder.Guitar.Note
+import Fretboarder.Guitar.Scale
+import Fretboarder.Guitar.Intervals
 
 readTone :: Char -> Tone
 readTone 'A' = A
@@ -16,3 +18,6 @@ readAccidental :: Char -> Accidental
 readAccidental '#' = Sharp
 readAccidental 'b' = Flat
 readAccidental _   = Natural
+
+readIntervals :: String -> Intervals
+readIntervals "dorian" = dorianMode

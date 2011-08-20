@@ -16,9 +16,12 @@ import Fretboarder.Parser.Lexer
 %token
   tone       { TTone $$       }
   accidental { TAccidental $$ }
+  scale      { TScale $$      }
 %%
 
-Parse : Note { Parse $1 }
+Parse : Note Scale { Parse $1 $2 }
+
+Scale : scale { PScale $1 }
 
 Note : Tone            { PNote $1 Natural }
      | Tone Accidental { PNote $1 $2      }
@@ -29,9 +32,11 @@ Accidental : accidental { readAccidental $1 }
 
 {
 
-data Parse = Parse PNote
+data Parse = Parse PNote PScale
 
 data PNote = PNote Tone Accidental
+
+data PScale = PScale String
 
 parseError :: [Token] -> a
 parseError _ = error "Parse error"

@@ -7,7 +7,7 @@ import Graphics.Rendering.Cairo
 import Fretboarder.Drawing.Color
 
 type Point = (Double, Double)
-type Size  = (Double, Double)
+type Size  = (Int, Int)
 type Line  = (Point, Point)
 
 pi2 = pi * 2.0

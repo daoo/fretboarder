@@ -13,10 +13,10 @@ import Fretboarder.Guitar.Intervals
 import Fretboarder.Guitar.Note
 import Fretboarder.Guitar.Scale
 
-renderFretboard :: Size -> Fretboard -> Surface -> IO ()
+renderFretboard :: Point -> Fretboard -> Surface -> IO ()
 renderFretboard size fb s = renderWith s $ drawFretboard size fb
 
-drawFretboard :: Size -> Fretboard -> Render ()
+drawFretboard :: Point -> Fretboard -> Render ()
 drawFretboard (w, h) fb = do
   save
   translate px py

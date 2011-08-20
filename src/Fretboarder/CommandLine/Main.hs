@@ -20,12 +20,16 @@ import Fretboarder.Guitar.Scale
 import Fretboarder.Guitar.Note
 
 import Fretboarder.Parser.Parser
+import Fretboarder.Parser.String
 
 data Type = SVG | PNG
 
-withSurface :: Type -> FilePath -> Size -> (Surface -> IO a) -> IO a
-withSurface SVG file (w, h) r = withSVGSurface file w h r
-withSurface PNG file _ r      = withImageSurfaceFromPNG file r
+withSurface :: Type -> FilePath -> Size -> (Surface -> IO ()) -> IO ()
+withSurface SVG file (w, h) r = withSVGSurface file (realToFrac w) (realToFrac h) r
+withSurface PNG file (w, h) r = do
+  s <- createImageSurface FormatARGB32 w h
+  r s
+  surfaceWriteToPNG s file
 
 -- List of start notes and intervals for scales
 makeScales :: Scale -> Tone -> Accidental -> [(INote, Scale)]
@@ -42,25 +46,24 @@ main = do
   -- Args
   args <- getArgs
   let (w:h:file:_) = args
-  let scale      = concat $ drop 3 args
-  let size       = (read w, read h)
-  let t          = case map toLower $ takeExtension file of
-                     ".png" -> PNG
-                     ".svg" -> SVG
-                     _      -> error "Unknown file type."
+  let rest         = concat $ drop 3 args
+  let size         = (read w, read h)
+  let t            = case map toLower $ takeExtension file of
+                       ".png" -> PNG
+                       ".svg" -> SVG
+                       _      -> error "Unknown file type."
 
-  let (Parse (PNote tone accidental)) = parse scale
+  let (Parse (PNote tone accidental) (PScale scale)) = parse rest
 
-  let scale = dorianMode
-
-  let scales = makeScales scale tone accidental
-  let marks  = zip colors $ makeMarkables scales
+  let intervals = readIntervals scale
+  let scales    = makeScales intervals tone accidental
+  let marks     = zip colors $ makeMarkables scales
 
   let fb       = takeFrets 23 ebgdae
   let fbMarked = markFretboard marks fb
   let fbFinal  = map2 (\ (Fret n c) -> (Fret n (first c))) fbMarked
 
-  withSurface t file size $ renderFretboard size fbFinal
+  withSurface t file size $ renderFretboard (realToFrac $ fst size, realToFrac $ snd size) fbFinal
 
   where
     first []     = []

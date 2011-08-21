@@ -1,3 +1,7 @@
+--
+-- Copyright (c) 2011 Daniel Oom, see license.txt for more info.
+--
+
 module Fretboarder.Extensions.List where
 
 mapBoth :: (a -> b) -> (a, a) -> (b, b)

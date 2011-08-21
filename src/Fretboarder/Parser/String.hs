@@ -1,3 +1,7 @@
+--
+-- Copyright (c) 2011 Daniel Oom, see license.txt for more info.
+--
+
 module Fretboarder.Parser.String where
 
 import Fretboarder.Guitar.Note

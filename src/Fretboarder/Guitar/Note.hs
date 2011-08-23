@@ -17,7 +17,9 @@ data Tone = A | B | C | D | E | F | G
 data Accidental = Natural | Flat | Sharp
   deriving (Eq, Ord, Enum, Read, Show, Bounded)
 
--- TODO: How is Octave defined in this context? (Switch between B and C)
+-- We use Scientific Pitch Notation to specify a Note.
+-- C4 is middle C and the octave increase one step between B and C.
+-- E.g: A3, A#3/Bb3, B3/C4b, B3#/C4, C4#/D4b, etc...
 data Note = Note Tone Octave Accidental
   deriving (Eq)
 

@@ -10,7 +10,7 @@ import System.FilePath.Posix
 import Data.Char
 import Data.List (nub)
 
-import Graphics.Rendering.Cairo
+import Graphics.Rendering.Cairo hiding (scale)
 
 import Fretboarder.Drawing.Cairo
 import Fretboarder.Drawing.CairoExt
@@ -19,7 +19,6 @@ import Fretboarder.Drawing.Color
 import Fretboarder.Extensions.List
 
 import Fretboarder.Guitar.Fretboard
-import Fretboarder.Guitar.INote
 import Fretboarder.Guitar.Scale
 import Fretboarder.Guitar.Note
 
@@ -61,7 +60,7 @@ main = do
 
   let intervals = readIntervals scale
   let scales    = makeScales intervals tone accidental
-  let marks     = zip colors $ makeMarkables scales
+  let marks     = zip tangoColors $ makeMarkables scales
 
   let fb       = takeFrets 23 ebgdae
   let fbMarked = markFretboard marks fb
@@ -70,5 +69,5 @@ main = do
   withSurface t file size $ renderFretboard (realToFrac $ fst size, realToFrac $ snd size) fbFinal
 
   where
-    first []     = []
-    first (x:xs) = [x]
+    first []    = []
+    first (x:_) = [x]

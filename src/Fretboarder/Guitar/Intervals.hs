@@ -4,8 +4,6 @@
 
 module Fretboarder.Guitar.Intervals where
 
-import Fretboarder.Guitar.INote
-
 -- 1 = Semitone
 -- 2 = Tone
 -- 3 = Tone + Semitone
@@ -24,10 +22,4 @@ diatonicToIntervals i (a:as) = b : diatonicToIntervals (i + b) as
   where
     b = d - i
     d = diatonicToSemitones a
-
-a4 :: INote
-a4 = 12 * 4
-
-noteFreq :: INote -> Float
-noteFreq n = 2 ^ ( (n - a4) `div` 12 ) * 440
 

@@ -1,17 +1,9 @@
---
--- Copyright (c) 2011 Daniel Oom, see license.txt for more info.
---
-
 module Fretboarder.Guitar.Fretboard where
-
-import Data.List
 
 import Fretboarder.Drawing.Color
 
 import Fretboarder.Guitar.Note
-import Fretboarder.Guitar.INote
 import Fretboarder.Guitar.Scale 
-import Fretboarder.Guitar.Intervals
 
 data Fret         = Fret INote [Color]
   deriving (Show)
@@ -20,12 +12,12 @@ type Fretboard    = [GuitarString]
 
 -- The fretboard for a standard EBGDAE tuning
 ebgdae :: Fretboard
-ebgdae = [ createGuitarString $ 4 * 12 + 7 -- E4
-         , createGuitarString $ 3 * 12 + 2 -- B3
-         , createGuitarString $ 3 * 12 + 10 -- G3
-         , createGuitarString $ 3 * 12 + 5 -- D3
-         , createGuitarString $ 2 * 12 + 0 -- A2
-         , createGuitarString $ 2 * 12 + 7 -- E2
+ebgdae = [ createGuitarString $ toINote $ Note E 4 Natural
+         , createGuitarString $ toINote $ Note B 3 Natural
+         , createGuitarString $ toINote $ Note G 3 Natural
+         , createGuitarString $ toINote $ Note D 3 Natural
+         , createGuitarString $ toINote $ Note A 2 Natural
+         , createGuitarString $ toINote $ Note E 2 Natural
   ]
 
 createGuitarString :: INote -> GuitarString

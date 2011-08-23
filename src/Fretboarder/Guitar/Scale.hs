@@ -4,7 +4,7 @@
 
 module Fretboarder.Guitar.Scale where
 
-import Fretboarder.Guitar.INote
+import Fretboarder.Guitar.Note
 import Fretboarder.Guitar.Intervals
 
 type Scale = [INote]

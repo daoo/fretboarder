@@ -1,7 +1,3 @@
---
--- Copyright (c) 2011 Daniel Oom, see license.txt for more info.
---
-
 module Fretboarder.Drawing.CairoExt where
 
 import Fretboarder.Extensions.Tuple
@@ -14,6 +10,7 @@ type Point = (Double, Double)
 type Size  = (Int, Int)
 type Line  = (Point, Point)
 
+pi2 :: Double
 pi2 = pi * 2.0
 
 evenPie :: Point -> Double -> [Color] -> Render ()

@@ -12,16 +12,14 @@ import Fretboarder.Guitar.INote
 type Octave = Integer
 
 data Tone = A | B | C | D | E | F | G
-  deriving (Eq, Ord, Enum, Show, Bounded)
+  deriving (Show)
 
 data Accidental = Natural | Flat | Sharp
-  deriving (Eq, Ord, Enum, Bounded)
 
 -- We use Scientific Pitch Notation to specify a Note.
 -- C4 is middle C and the octave increase one step between B and C.
 -- E.g: A3, A3#/B3b, B3/C4b, B3#/C4, C4#/D4b, etc...
 data Note = Note Tone Octave Accidental
-  deriving (Eq)
 
 a4 = Note A 4 Natural
 b4 = Note B 4 Natural

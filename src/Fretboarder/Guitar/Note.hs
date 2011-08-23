@@ -9,7 +9,7 @@ import Data.Maybe
 
 import Fretboarder.Guitar.INote
 
-type Octave = Int
+type Octave = Integer
 
 data Tone = A | B | C | D | E | F | G
   deriving (Eq, Ord, Enum, Read, Show, Bounded)
@@ -19,7 +19,7 @@ data Accidental = Natural | Flat | Sharp
 
 -- We use Scientific Pitch Notation to specify a Note.
 -- C4 is middle C and the octave increase one step between B and C.
--- E.g: A3, A#3/Bb3, B3/C4b, B3#/C4, C4#/D4b, etc...
+-- E.g: A3, A3#/B3b, B3/C4b, B3#/C4, C4#/D4b, etc...
 data Note = Note Tone Octave Accidental
   deriving (Eq)
 
@@ -30,17 +30,17 @@ a5 = Note A 5 Natural
 b5 = Note B 5 Natural
 
 toINote :: Note -> INote
-toINote (Note t o a) = 12 * o' + t' + a'
+toINote (Note t o a) = o' + t' + a'
   where
     t' = case t of
-      A -> 0
-      B -> 2
-      C -> 3
-      D -> 5
-      E -> 7
-      F -> 8
-      G -> 10
-    o' = fromIntegral $ fromEnum o
+      C -> 0
+      D -> 2
+      E -> 4
+      F -> 5
+      G -> 7
+      A -> 9
+      B -> 11
+    o' = o * 12 - 9
     a' = case a of
       Flat    -> -1
       Natural -> 0
@@ -49,20 +49,21 @@ toINote (Note t o a) = 12 * o' + t' + a'
 fromINote :: INote -> Note
 fromINote i = Note t o a
   where
-    o      = fromIntegral $ i `div` 12
-    (t, a) = case i `mod` 12 of
-      0 -> (A, Natural)
-      1 -> (A, Sharp)
-      2 -> (B, Natural)
-      3 -> (C, Natural)
-      4 -> (C, Sharp)
-      5 -> (D, Natural)
-      6 -> (D, Sharp)
-      7 -> (E, Natural)
-      8 -> (F, Natural)
-      9 -> (F, Sharp)
-      10 -> (G, Natural)
-      11 -> (G, Sharp)
+    i'     = i + 9
+    o      = truncate $ (realToFrac i') / 12.0
+    (t, a) = case i' `mod` 12 of
+      0 -> (C, Natural)
+      1 -> (C, Sharp)
+      2 -> (D, Natural)
+      3 -> (D, Sharp)
+      4 -> (E, Natural)
+      5 -> (F, Natural)
+      6 -> (F, Sharp)
+      7 -> (G, Natural)
+      8 -> (G, Sharp)
+      9 -> (A, Natural)
+      10 -> (A, Sharp)
+      11 -> (B, Natural)
 
 -- For some reason I can't understand, B# == C, B == Cb, E# == F and E == Fb
 -- This method normalizes those sharps and flats to naturals

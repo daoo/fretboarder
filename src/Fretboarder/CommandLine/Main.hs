@@ -44,7 +44,6 @@ makeMarkables ((b, i):ss) = (intervalsToINotes b $ concat $ repeat i) : makeMark
 
 main :: IO ()
 main = do
-  -- Args
   args <- getArgs
   let (w:h:file:_) = args
   let rest         = concat $ drop 3 args

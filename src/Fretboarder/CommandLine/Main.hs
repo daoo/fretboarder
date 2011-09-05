@@ -40,7 +40,7 @@ makeScales s t a = [(toINote (Note t 1 a), s)]
 
 -- Makes lists that can be used for marking a fretboard
 -- TODO: take 30 is a stupid hack, make use of some awesome laziness instead
-makeMarkables :: [(INote, Scale)] -> [[INote]]
+makeMarkables :: [(INote, Scale)] -> [Scale]
 makeMarkables []          = []
 makeMarkables ((b, i):ss) = (nub $ makeScale b $ concat $ take 30 $ repeat i) : makeMarkables ss
 

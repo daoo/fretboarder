@@ -7,10 +7,13 @@ module Fretboarder.Guitar.Fretboard where
 import Fretboarder.Drawing.Color
 
 import Fretboarder.Guitar.Note
-import Fretboarder.Guitar.Scale 
 
-data Fret         = Fret INote [Color]
+data Fret = Fret INote [Color]
   deriving (Show)
+
+addColor :: Color -> Fret -> Fret
+addColor c (Fret n cs) = Fret n (c:cs)
+
 type GuitarString = [Fret]
 type Fretboard    = [GuitarString]
 
@@ -27,21 +30,31 @@ ebgdae = [ createGuitarString $ toINote $ Note E 4 Natural
 createGuitarString :: INote -> GuitarString
 createGuitarString n = zipWith Fret (iterate (+1) n) $ repeat []
 
-markString :: Color -> INote -> GuitarString -> GuitarString
-markString _ _ []                             = []
-markString c e (f@(Fret n cs):fs) | e == n    = (Fret n (c:cs)) : fs
-                                  | otherwise = f : markString c e fs
-
-markScale :: Color -> Scale -> Fretboard -> Fretboard
-markScale _ [] fb     = fb
-markScale c (s:ss) fb = markScale c ss $ map (markString c s) fb
-
-markFretboard :: [(Color, Scale)] -> Fretboard -> Fretboard
-markFretboard [] fb           = fb
-markFretboard ((c, is):ls) fb = markScale c is fb'
-  where
-    fb' = markFretboard ls fb
-
 takeFrets :: Int -> Fretboard -> Fretboard
 takeFrets i = map (take i)
 
+-- [a] is an ascending list of sorted unique integers
+elem2 :: INote -> [INote] -> (Bool, [INote])
+elem2 _ []                       = (False, [])
+elem2 e notes@(x:xs) | e < x     = (False, notes)
+                     | e == x    = (True, xs)
+                     | otherwise = elem2 e xs
+
+markFret :: Color -> Fret -> [INote] -> (Fret, [INote])
+markFret c f@(Fret a _) notes = case elem2 a notes of
+                                  (True, xs)  -> (addColor c f, xs)
+                                  (False, xs) -> (f, xs)
+
+markString :: Color -> [INote] -> GuitarString -> GuitarString
+markString _ [] gs        = gs
+markString _ _ []         = []
+markString c notes (f:fs) = f' : markString c notes' fs
+  where
+    (f', notes') = markFret c f notes
+
+-- Note that the fretboard have to be finite while the list of INotes doesn't
+markFretboard :: Color -> [INote] -> Fretboard -> Fretboard
+markFretboard c notes = map (markString c notes)
+
+markList :: [(Color, [INote])] -> Fretboard -> Fretboard
+markList lst fb = foldr (uncurry markFretboard) fb lst

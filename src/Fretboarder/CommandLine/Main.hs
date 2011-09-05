@@ -8,7 +8,6 @@ import System
 import System.FilePath.Posix
 
 import Data.Char
-import Data.List (nub)
 
 import Graphics.Rendering.Cairo hiding (scale)
 
@@ -19,8 +18,8 @@ import Fretboarder.Drawing.Color
 import Fretboarder.Extensions.List
 
 import Fretboarder.Guitar.Fretboard
-import Fretboarder.Guitar.Scale
 import Fretboarder.Guitar.Note
+import Fretboarder.Guitar.Scale
 
 import Fretboarder.Parser.Parser
 import Fretboarder.Parser.String
@@ -35,14 +34,13 @@ withSurface PNG file (w, h) r = do
   surfaceWriteToPNG s file
 
 -- List of start notes and intervals for scales
-makeScales :: Scale -> Tone -> Accidental -> [(INote, Scale)]
+makeScales :: Intervals -> Tone -> Accidental -> [(INote, Intervals)]
 makeScales s t a = [(toINote (Note t 1 a), s)]
 
 -- Makes lists that can be used for marking a fretboard
--- TODO: take 30 is a stupid hack, make use of some awesome laziness instead
-makeMarkables :: [(INote, Scale)] -> [Scale]
+makeMarkables :: [(INote, Intervals)] -> [[INote]]
 makeMarkables []          = []
-makeMarkables ((b, i):ss) = (nub $ makeScale b $ concat $ take 30 $ repeat i) : makeMarkables ss
+makeMarkables ((b, i):ss) = (intervalsToINotes b $ concat $ repeat i) : makeMarkables ss
 
 main :: IO ()
 main = do
@@ -63,7 +61,7 @@ main = do
   let marks     = zip tangoColors $ makeMarkables scales
 
   let fb       = takeFrets 23 ebgdae
-  let fbMarked = markFretboard marks fb
+  let fbMarked = markList marks fb
   let fbFinal  = map2 (\ (Fret n c) -> (Fret n (first c))) fbMarked
 
   withSurface t file size $ renderFretboard (realToFrac $ fst size, realToFrac $ snd size) fbFinal

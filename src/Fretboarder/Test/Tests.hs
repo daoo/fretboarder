@@ -4,12 +4,18 @@
 
 module Tests where
 
+import Data.List
+
 import Test.QuickCheck
 
 import Fretboarder.Parser.String
 
-import Fretboarder.Guitar.INote
+import Fretboarder.Guitar.Fretboard
 import Fretboarder.Guitar.Note
+
+elem2Test :: INote -> [INote] -> Bool
+elem2Test i is = fst (elem2 i is') == elem i is'
+  where is' = sort is
 
 fromToINote :: INote -> Bool
 fromToINote i = i == (toINote $ fromINote i)

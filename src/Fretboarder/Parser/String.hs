@@ -5,8 +5,7 @@
 module Fretboarder.Parser.String where
 
 import Fretboarder.Guitar.Note
-import Fretboarder.Guitar.Scale
-import Fretboarder.Guitar.Intervals
+import Fretboarder.Guitar.Interval
 
 instance Show Accidental where
   show Flat    = "b"
@@ -31,5 +30,5 @@ readAccidental '#' = Sharp
 readAccidental 'b' = Flat
 readAccidental _   = Natural
 
-readIntervals :: String -> Intervals
+readIntervals :: String -> [Interval]
 readIntervals "dorian" = dorianMode

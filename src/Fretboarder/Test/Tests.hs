@@ -11,14 +11,38 @@ import Test.QuickCheck
 import Fretboarder.Parser.String
 
 import Fretboarder.Guitar.Fretboard
+import Fretboarder.Guitar.Interval
 import Fretboarder.Guitar.Note
+import Fretboarder.Guitar.Scale
 
-elem2Test :: INote -> [INote] -> Bool
-elem2Test i is = fst (elem2 i is') == elem i is'
+instance Arbitrary Note where
+  arbitrary = do
+    t <- oneof $ map return [A, B, C, D, E, F, G]
+    o <- oneof $ map return [-1, 0, 1, 2, 3, 4, 5]
+    a <- oneof $ map return [Flat, Natural, Sharp]
+    return $ Note t o a
+
+instance Arbitrary Scale where
+  arbitrary = do
+    scale <- oneof $ map return [ majorScale, minorScale, harmonicMinor
+                                , melodicMinor, minorPentatonic, majorPentatonic
+                                , bluesScale, ionianMode, dorianMode
+                                , phrygianMode, lydianMode, mixolydianMode
+                                , aeolianMode, locrianMode ]
+    note <- arbitrary
+    return $ Scale note scale
+
+propElem2 :: INote -> [INote] -> Bool
+propElem2 i is = fst (elem2 i is') == elem i is'
   where is' = sort is
 
-fromToINote :: INote -> Bool
-fromToINote i = i == (toINote $ fromINote i)
+propFromToINote :: INote -> Bool
+propFromToINote i = i == (toINote $ fromINote i)
+
+propHasNotes :: Scale -> Bool
+propHasNotes scale = all (\ n -> hasNote n scale) xs
+  where
+    xs = take 100 $ repeatScale scale
 
 equalINotes :: Bool
 equalINotes = all (\ (a, b) -> toINote a == toINote b) notes

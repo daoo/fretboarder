@@ -36,7 +36,7 @@ propFromToINote :: INote -> Bool
 propFromToINote i = i == (toINote $ fromINote i)
 
 propHasNotes :: Scale -> Bool
-propHasNotes scale = all (\ n -> hasNote n scale) xs
+propHasNotes scale = all (hasNote scale) xs
   where
     xs = take 100 $ repeatScale scale
 

@@ -32,10 +32,6 @@ instance Arbitrary Scale where
     note <- arbitrary
     return $ Scale note scale
 
-hasDups :: (Eq a) => [a] -> Bool
-hasDups []     = False
-hasDups (x:xs) = x `elem` xs || hasDups xs
-
 propHasDups :: (Eq a) => [a] -> Bool
 propHasDups xs = nubTest xs == hasDups xs
   where

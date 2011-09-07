@@ -10,8 +10,8 @@ import Fretboarder.Guitar.Note
 data Scale = Scale INote [Offset]
   deriving (Show)
 
-hasNote :: INote -> Scale -> Bool
-hasNote note (Scale base offsets) = note' `elem` (0 : offsets)
+hasNote :: Scale -> INote -> Bool
+hasNote (Scale base offsets) note = note' `elem` (0 : offsets)
   where
     note' = (note - base) `mod` 12
 

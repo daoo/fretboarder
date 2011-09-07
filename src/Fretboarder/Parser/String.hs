@@ -30,5 +30,5 @@ readAccidental '#' = Sharp
 readAccidental 'b' = Flat
 readAccidental _   = Natural
 
-readIntervals :: String -> [Interval]
-readIntervals "dorian" = dorianMode
+readOffsets :: String -> [Offset]
+readOffsets "dorian" = dorianMode

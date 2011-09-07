@@ -33,15 +33,6 @@ withSurface PNG file (w, h) r = do
   r s
   surfaceWriteToPNG s file
 
--- List of start notes and intervals for scales
-makeScales :: Intervals -> Tone -> Accidental -> [(INote, Intervals)]
-makeScales s t a = [(toINote (Note t 1 a), s)]
-
--- Makes lists that can be used for marking a fretboard
-makeMarkables :: [(INote, Intervals)] -> [[INote]]
-makeMarkables []          = []
-makeMarkables ((b, i):ss) = (intervalsToINotes b $ concat $ repeat i) : makeMarkables ss
-
 main :: IO ()
 main = do
   args <- getArgs
@@ -55,9 +46,9 @@ main = do
 
   let (Parse (PNote tone accidental) (PScale scale)) = parse rest
 
-  let intervals = readIntervals scale
-  let scales    = makeScales intervals tone accidental
-  let marks     = zip tangoColors $ makeMarkables scales
+  let offsets = readOffsets scale
+  let scale1  = (Scale (toINote (Note tone 1 accidental)) offsets)
+  let marks   = zip tangoColors $ [scale1]
 
   let fb       = takeFrets 23 ebgdae
   let fbMarked = markList marks fb
@@ -68,3 +59,4 @@ main = do
   where
     first []    = []
     first (x:_) = [x]
+

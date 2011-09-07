@@ -32,10 +32,6 @@ instance Arbitrary Scale where
     note <- arbitrary
     return $ Scale note scale
 
-propElem2 :: INote -> [INote] -> Bool
-propElem2 i is = fst (elem2 i is') == elem i is'
-  where is' = sort is
-
 propFromToINote :: INote -> Bool
 propFromToINote i = i == (toINote $ fromINote i)
 

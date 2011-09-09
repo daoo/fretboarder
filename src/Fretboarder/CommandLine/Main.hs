@@ -8,6 +8,7 @@ import System
 import System.FilePath.Posix
 
 import Data.Char
+import Data.List
 
 import Graphics.Rendering.Cairo hiding (scale)
 
@@ -37,7 +38,7 @@ main :: IO ()
 main = do
   args <- getArgs
   let (w:h:file:_) = args
-  let rest         = concat $ drop 3 args
+  let rest         = concat $ intersperse " " $ drop 3 args
   let size         = (read w, read h)
   let t            = case map toLower $ takeExtension file of
                        ".png" -> PNG

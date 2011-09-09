@@ -4,6 +4,8 @@
 
 module Fretboarder.Parser.String where
 
+import Data.List
+
 import Fretboarder.Guitar.Note
 import Fretboarder.Guitar.Interval
 

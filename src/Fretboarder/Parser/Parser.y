@@ -37,10 +37,13 @@ Accidental : accidental { readAccidental $1 }
 {
 
 data Parse = Parse PNote PScale
+  deriving Show
 
 data PNote = PNote Tone Accidental
+  deriving Show
 
 data PScale = PScale String
+  deriving Show
 
 parseError :: [Token] -> a
 parseError _ = error "Parse error"

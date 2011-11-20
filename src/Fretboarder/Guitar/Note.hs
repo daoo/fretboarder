@@ -50,7 +50,7 @@ fromINote :: INote -> Note
 fromINote i = Note t o a
   where
     i'     = i + 9
-    o      = floor $ (realToFrac i') / 12.0
+    o      = floor $ realToFrac i' / 12.0
     (t, a) = case i' `mod` 12 of
       0 -> (C, Natural)
       1 -> (C, Sharp)

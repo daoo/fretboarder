@@ -47,7 +47,7 @@ drawFretboard (w, h) fb = do
     (boardw, boardh) = (w - padding * 2.0, h - padding * 2.0)
     (fretw, freth)   = (boardw / realToFrac fretcount, boardh / realToFrac (stringcount - 1))
 
-    fretcount   = (length $ head fb) - 1
+    fretcount   = length (head fb) - 1
     stringcount = length fb
 
     -- TODO: Support inlays with more than two dots per fret
@@ -57,7 +57,7 @@ drawFretboard (w, h) fb = do
     inlays _           = []
 
     fretx :: Int -> Double
-    fretx i = fretw * (realToFrac i) - (fretw / 2.0)
+    fretx i = fretw * realToFrac i - (fretw / 2.0)
 
     draw :: Fretboard -> Render ()
     draw = helper (-fretw / 2.0, 0)

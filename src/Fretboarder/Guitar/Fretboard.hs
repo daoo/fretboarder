@@ -38,9 +38,9 @@ markString :: Color -> Scale -> GuitarString -> GuitarString
 markString _ _ []                    = []
 markString c scale (f@(Fret n _):fs) = f' : markString c scale fs
   where
-    f' = case scale `hasNote` n of
-           True  -> addColor c f
-           False -> f
+    f' = if scale `hasNote` n
+           then addColor c f
+           else f
 
 -- Note that the fretboard have to be finite
 markFretboard :: Color -> Scale -> Fretboard -> Fretboard

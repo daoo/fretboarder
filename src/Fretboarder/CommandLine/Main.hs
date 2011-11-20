@@ -7,8 +7,9 @@ module Main where
 import System
 import System.FilePath.Posix
 
+import Control.Arrow
+
 import Data.Char
-import Data.List
 
 import Graphics.Rendering.Cairo hiding (scale)
 
@@ -37,27 +38,29 @@ withSurface PNG file (w, h) r = do
 main :: IO ()
 main = do
   args <- getArgs
-  let (w:h:file:_) = args
-  let rest         = concat $ intersperse " " $ drop 3 args
-  let size         = (read w, read h)
-  let t            = case map toLower $ takeExtension file of
-                       ".png" -> PNG
-                       ".svg" -> SVG
-                       _      -> error "Unknown file type."
+  run args
 
-  let (Parse (PNote tone accidental) (PScale scale)) = parse rest
-
-  let offsets = readOffsets scale
-  let scale1  = (Scale (toINote (Note tone 1 accidental)) offsets)
-  let marks   = zip tangoColors $ [scale1]
-
-  let fb       = takeFrets 23 ebgdae
-  let fbMarked = markList marks fb
-  let fbFinal  = map2 (\ (Fret n c) -> (Fret n (first c))) fbMarked
-
-  withSurface t file size $ renderFretboard (realToFrac $ fst size, realToFrac $ snd size) fbFinal
-
+run :: [String] -> IO ()
+run args = withSurface t file size $ renderFretboard ((realToFrac *** realToFrac) size) fbFinal
   where
+    (w:h:file:_) = args
+    rest         = unwords $ drop 3 args
+    size         = (read w, read h)
+    t            = case map toLower $ takeExtension file of
+                     ".png" -> PNG
+                     ".svg" -> SVG
+                     _      -> error "Unknown file type."
+
+    (Parse (PNote tone accidental) (PScale scale)) = parse rest
+
+    offsets = readOffsets scale
+    scale1  = Scale (toINote (Note tone 1 accidental)) offsets
+    marks   = zip tangoColors [scale1]
+
+    fb       = takeFrets 23 ebgdae
+    fbMarked = markList marks fb
+    fbFinal  = map2 (\ (Fret n c) -> (Fret n (first c))) fbMarked
+
     first []    = []
     first (x:_) = [x]
 

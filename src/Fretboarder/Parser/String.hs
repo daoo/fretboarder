@@ -33,7 +33,7 @@ readAccidental 'b' = Flat
 readAccidental _   = Natural
 
 levenshtein :: String -> String -> Int
-levenshtein s t = d !! (length s) !! (length t) 
+levenshtein s t = d !! length s !! length t 
   where 
     d = [[distance m n|n<-[0..length t]]|m<-[0..length s]]
 

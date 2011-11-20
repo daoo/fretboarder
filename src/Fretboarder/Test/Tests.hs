@@ -39,7 +39,7 @@ propHasDups xs = nubTest xs == hasDups xs
     nubTest xs = nub xs /= xs
 
 propFromToINote :: INote -> Bool
-propFromToINote i = i == (toINote $ fromINote i)
+propFromToINote i = i == toINote (fromINote i)
 
 propRepeat :: Scale -> Bool
 propRepeat s = not . hasDups $ take 100 $ repeatScale s

@@ -59,8 +59,8 @@ run args = withSurface t file size $ renderFretboard ((realToFrac *** realToFrac
 
     fb       = takeFrets 23 ebgdae
     fbMarked = markList marks fb
-    fbFinal  = map2 (\ (Fret n c) -> (Fret n (first c))) fbMarked
+    fbFinal  = map2 (\ (Fret n c) -> (Fret n (firstOrEmpty c))) fbMarked
 
-    first []    = []
-    first (x:_) = [x]
+    firstOrEmpty []    = []
+    firstOrEmpty (x:_) = [x]
 

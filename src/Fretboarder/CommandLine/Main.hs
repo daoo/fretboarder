@@ -4,7 +4,7 @@
 
 module Main where
 
-import System
+import System.Environment
 import System.FilePath.Posix
 
 import Control.Arrow
@@ -16,13 +16,10 @@ import Graphics.Rendering.Cairo hiding (scale)
 import Fretboarder.Drawing.Cairo
 import Fretboarder.Drawing.CairoExt
 import Fretboarder.Drawing.Color
-
 import Fretboarder.Extensions.List
-
 import Fretboarder.Guitar.Fretboard
 import Fretboarder.Guitar.Note
 import Fretboarder.Guitar.Scale
-
 import Fretboarder.Parser.Parser
 import Fretboarder.Parser.String
 

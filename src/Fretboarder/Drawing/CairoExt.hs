@@ -23,7 +23,7 @@ evenPie (x, y) rad colors = helper 0 colors
         a' = a + delta
 
     delta :: Double
-    delta = pi2 / ( realToFrac $ length colors )
+    delta = pi2 / realToFrac (length colors)
 
 circle :: Double -> Point -> Render ()
 circle r (x, y) = moveTo x y >> arc x y r 0 pi2

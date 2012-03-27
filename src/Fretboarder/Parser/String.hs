@@ -9,14 +9,6 @@ import Data.List
 import Fretboarder.Guitar.Note
 import Fretboarder.Guitar.Interval
 
-instance Show Accidental where
-  show Flat    = "b"
-  show Natural = ""
-  show Sharp   = "#"
-
-instance Show Note where
-  show (Note t o a) = concat [show t, show o, show a]
-
 readTone :: Char -> Tone
 readTone 'A' = A
 readTone 'B' = B
@@ -49,7 +41,7 @@ readOffsets str = snd $ head lst
     lst = sort $ map f offsets
 
     f :: (String, [Offset]) -> (Int, [Offset])
-    f (scale, offsets) = (levenshtein scale str, offsets)
+    f (s, o) = (levenshtein s str, o)
 
     offsets :: [(String, [Offset])]
     offsets = [ ("major", majorScale)

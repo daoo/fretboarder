@@ -33,7 +33,7 @@ drawFretboard (w, h) fb = do
   stroke
 
   -- Draw inlays
-  _ <- mapM (circle defRadius) $ inlays defInlays 
+  _ <- mapM (circle defRadius) $ inlays defInlays
   fill
 
   -- Draw fretboard
@@ -53,7 +53,7 @@ drawFretboard (w, h) fb = do
     -- TODO: Support inlays with more than two dots per fret
     inlays :: [(Int, Int)] -> [Point]
     inlays ((f, 1):as) = (fretx f, boardh / 2.0) : inlays as
-    inlays ((f, 2):as) = (fretx f, 3.0 * freth / 2.0) : ( fretx f, 7.0 * freth / 2.0 ) : inlays as
+    inlays ((f, 2):as) = (fretx f, 3.0 * freth / 2.0) : (fretx f, 7.0 * freth / 2.0) : inlays as
     inlays _           = []
 
     fretx :: Int -> Double

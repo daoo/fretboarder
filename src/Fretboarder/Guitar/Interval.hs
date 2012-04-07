@@ -8,7 +8,7 @@ module Fretboarder.Guitar.Interval where
 -- Okay, we have three ways to describe the intervals between notes in a scale:
 --   * Intervals,
 --     Simple integer intervals where 1 equals to one semitone and 2 equals to
---     a note, 3 is a tone and a semitone, and so on. Can also be zero or 
+--     a note, 3 is a tone and a semitone, and so on. Can also be zero or
 --     negative. Each integer in the list is relative to the integer just
 --     before.
 --   * Diatonic Intervals,
@@ -18,7 +18,7 @@ module Fretboarder.Guitar.Interval where
 --       * etc...
 --   * Offsets,
 --     Again integers but is instead relative to the first note of the scale.
--- 
+--
 -- Internally I prefer to use offsets.
 
 type Interval = Integer

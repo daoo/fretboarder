@@ -42,7 +42,8 @@ run args = withSurface t file size $ renderFretboard ((realToFrac *** realToFrac
       ".svg" -> SVG
       _      -> error "Unknown file type."
 
-    marks = zip tangoColors $ makeList $ makeScales $ parse rest
+    (Ok expr) = parse rest
+    marks = zip tangoColors $ makeList $ makeScales expr
 
     fb = map2 f $ markList marks $ takeFrets 23 ebgdae
       where

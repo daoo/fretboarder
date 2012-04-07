@@ -20,6 +20,7 @@ tokens :-
   $alpha{2,}  { \s -> TScale s             }
   "+"         { \_ -> TPlus                }
   "*"         { \_ -> TMult                }
+  .           ;
 {
 data Token = TTone Char
            | TAccidental Char

@@ -15,7 +15,7 @@ import Fretboarder.Parser.String
 
 %name guitar
 %tokentype { Token }
-%error { parseError }
+%monad { E } { thenE } { returnE }
 
 %token
   tone       { TTone $$       }
@@ -42,16 +42,34 @@ PNote ::                { PNote                                   }
       | tone accidental { PNote (readTone $1) (readAccidental $2) }
 
 {
+data E a = Ok a | Failed String
+
+thenE :: E a -> (a -> E b) -> E b
+thenE m k = case m of 
+  Ok a     -> k a
+  Failed e -> Failed e
+
+returnE :: a -> E a
+returnE = Ok
+
+failE :: String -> E a
+failE err = Failed err
+
+catchE :: E a -> (String -> E a) -> E a
+catchE m k = case m of
+  Ok a     -> Ok a
+  Failed e -> k e
+
 data PNote = PNote Tone Accidental
   deriving Show
 
 data PScale = PScale PNote String
   deriving Show
 
-parseError :: [Token] -> a
-parseError _ = error "Parse error"
+happyError :: [Token] -> E a
+happyError _ = failE "Parse error"
 
-parse :: String -> Expr PScale
+parse :: String -> E (Expr PScale)
 parse = guitar . lexer
 }
 

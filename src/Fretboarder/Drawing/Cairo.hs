@@ -2,7 +2,7 @@
 -- Copyright (c) 2011-2012 Daniel Oom, see license.txt for more info.
 --
 
-module Fretboarder.Drawing.Cairo (renderFretboard) where
+module Fretboarder.Drawing.Cairo where
 
 import Graphics.Rendering.Cairo
 
@@ -14,6 +14,11 @@ renderFretboard size fb s = renderWith s $ drawFretboard size fb
 
 drawFretboard :: Point -> Fretboard -> Render ()
 drawFretboard (w, h) fb = do
+  setSourceRGB 255 255 255
+  rectangle 0 0 w h
+  fill
+  setSourceRGB 0 0 0
+
   save
   translate px py
 

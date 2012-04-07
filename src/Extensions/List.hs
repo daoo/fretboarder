@@ -11,3 +11,5 @@ hasDups :: (Eq a) => [a] -> Bool
 hasDups []     = False
 hasDups (x:xs) = x `elem` xs || hasDups xs
 
+headOrEmpty :: [a] -> [a]
+headOrEmpty = take 1

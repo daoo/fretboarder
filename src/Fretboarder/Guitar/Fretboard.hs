@@ -47,5 +47,5 @@ markFretboard :: Color -> Scale -> Fretboard -> Fretboard
 markFretboard c scale = map (markString c scale)
 
 markList :: [(Color, Scale)] -> Fretboard -> Fretboard
-markList lst fb = foldr (uncurry markFretboard) fb lst
+markList = flip (foldr (uncurry markFretboard))
 

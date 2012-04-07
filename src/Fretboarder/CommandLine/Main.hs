@@ -26,10 +26,7 @@ data Type = SVG | PNG
 
 withSurface :: Type -> FilePath -> Size -> (Surface -> IO ()) -> IO ()
 withSurface SVG file (w, h) r = withSVGSurface file (realToFrac w) (realToFrac h) r
-withSurface PNG file (w, h) r = do
-  s <- createImageSurface FormatARGB32 w h
-  r s
-  surfaceWriteToPNG s file
+withSurface PNG file (w, h) r = createImageSurface FormatARGB32 w h >>= (\s -> r s >> surfaceWriteToPNG s file)
 
 main :: IO ()
 main = do
@@ -37,15 +34,17 @@ main = do
   run args
 
 run :: [String] -> IO ()
-run args = withSurface t file size $ renderFretboard ((realToFrac *** realToFrac) size) fbFinal
+run args = withSurface t file size $ renderFretboard ((realToFrac *** realToFrac) size) fb
   where
-    (w:h:file:_) = args
-    rest         = unwords $ drop 3 args
-    size         = (read w, read h)
-    t            = case map toLower $ takeExtension file of
-                     ".png" -> PNG
-                     ".svg" -> SVG
-                     _      -> error "Unknown file type."
+    (w : h : file : _) = args
+
+    rest = unwords $ drop 3 args
+    size = (read w, read h)
+
+    t = case map toLower $ takeExtension file of
+      ".png" -> PNG
+      ".svg" -> SVG
+      _      -> error "Unknown file type."
 
     ParseScale (PScale (PNote tone accidental) scale) = parse rest
 
@@ -53,10 +52,7 @@ run args = withSurface t file size $ renderFretboard ((realToFrac *** realToFrac
     scale1  = Scale (toINote (Note tone 1 accidental)) offsets
     marks   = zip tangoColors [scale1]
 
-    fb       = takeFrets 23 ebgdae
-    fbMarked = markList marks fb
-    fbFinal  = map2 (\ (Fret n c) -> (Fret n (firstOrEmpty c))) fbMarked
-
-    firstOrEmpty []    = []
-    firstOrEmpty (x:_) = [x]
+    fb = map2 f $ markList marks $ takeFrets 23 ebgdae
+      where
+        f (Fret n c) = Fret n $ headOrEmpty c
 

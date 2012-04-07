@@ -28,7 +28,8 @@ hasNote (Scale base offsets) note = note' `elem` (0 : offsets)
     note' = (note - base) `mod` 12
 
 repeatScale :: Scale -> [INote]
-repeatScale (Scale note offsets) = note : concatMap (\n -> map (+n) offsets) xs
+repeatScale (Scale note offsets) = note : concatMap f xs
   where
-    xs = iterate (+12) note
+    f n = map (+n) offsets
+    xs  = iterate (+12) note
 

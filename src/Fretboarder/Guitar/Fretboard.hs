@@ -20,13 +20,13 @@ type Fretboard    = [GuitarString]
 
 -- The fretboard for a standard EBGDAE tuning
 ebgdae :: Fretboard
-ebgdae = [ createGuitarString $ toINote $ Note E 4 Natural
-         , createGuitarString $ toINote $ Note B 3 Natural
-         , createGuitarString $ toINote $ Note G 3 Natural
-         , createGuitarString $ toINote $ Note D 3 Natural
-         , createGuitarString $ toINote $ Note A 2 Natural
-         , createGuitarString $ toINote $ Note E 2 Natural
-  ]
+ebgdae = map (createGuitarString . toINote)
+  [ Note E 4 Natural
+  , Note B 3 Natural
+  , Note G 3 Natural
+  , Note D 3 Natural
+  , Note A 2 Natural
+  , Note E 2 Natural ]
 
 createGuitarString :: INote -> GuitarString
 createGuitarString n = zipWith Fret (iterate (+1) n) $ repeat []
@@ -39,8 +39,8 @@ markString _ _ []                    = []
 markString c scale (f@(Fret n _):fs) = f' : markString c scale fs
   where
     f' = if scale `hasNote` n
-           then addColor c f
-           else f
+      then addColor c f
+      else f
 
 -- Note that the fretboard have to be finite
 markFretboard :: Color -> Scale -> Fretboard -> Fretboard

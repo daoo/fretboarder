@@ -2,24 +2,10 @@ outdir  = build
 exename = freboarder
 
 warnings = -Wall \
-	   -fno-warn-unused-do-bind \
-	   -fwarn-duplicate-exports \
-	   -fwarn-hi-shadowing \
-	   -fwarn-incomplete-patterns \
-	   -fwarn-lazy-unlifted-bindings \
-	   -fwarn-missing-fields \
-	   -fwarn-missing-methods \
-	   -fwarn-missing-signatures \
+	   -fwarn-incomplete-record-updates \
 	   -fwarn-monomorphism-restriction \
-	   -fwarn-name-shadowing \
-	   -fwarn-orphans \
-	   -fwarn-overlapping-patterns \
 	   -fwarn-tabs \
-	   -fwarn-type-defaults \
-	   -fwarn-unused-binds \
-	   -fwarn-unused-imports \
-	   -fwarn-unused-matches \
-	   -fwarn-wrong-do-bind \
+	   -fwarn-unused-do-bind \
 
 sources = $(shell find src/ -type f -name '*.hs')
 flags   = -isrc:$(outdir) -odir $(outdir) -hidir $(outdir)
@@ -42,7 +28,7 @@ clean:
 	rm -r $(outdir)/*
 	mkdir -p $(outdir)/Fretboarder/Parser/
 
-hlint:
+lint:
 	hlint src -c
 
-.PHONY: clean
+.PHONY: clean lint

@@ -43,7 +43,7 @@ minorPentatonic = [3, 5, 7, 10, 12]
 majorPentatonic = [2, 4, 7, 9, 12]
 
 bluesScale :: [Offset]
-bluesScale = [3, 5, 6, 7, 10, 12]
+bluesScale = [6]
 
 ionianMode, dorianMode, phrygianMode, lydianMode, mixolydianMode, aeolianMode, locrianMode :: [Interval]
 ionianMode     = [2, 4, 5, 7, 9, 11, 12] -- Identical to the major scale

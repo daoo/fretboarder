@@ -18,14 +18,16 @@ tokens :-
   $tone       { \s -> TTone (head s)       }
   $accidental { \s -> TAccidental (last s) }
   $alpha{2,}  { \s -> TScale s             }
-
+  "+"         { \_ -> TPlus }
 {
 data Token = TTone Char
            | TAccidental Char
            | TScale String
+           | TPlus
  deriving (Eq,Show)
 
 lexer :: String -> [Token]
 lexer = alexScanTokens
 }
 
+-- vim: ft=alex :

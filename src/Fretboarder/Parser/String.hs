@@ -31,9 +31,14 @@ levenshtein s t = d !! length s !! length t
 
     distance i 0 = i
     distance 0 j = j
-    distance i j = minimum [ d!!(i-1)!!j+1
-                           , d!!i!!(j-1)+1
-                           , d!!(i-1)!!(j-1) + (if s!!(i-1)==t!!(j-1) then 0 else 1)]
+    distance i j = minimum [a, b, c]
+      where
+        a = d !! (i - 1) !! j + 1
+        b = d !! i !! (j - 1) + 1
+        c = d !! (i - 1) !! (j - 1) + f (s !! (i - 1) == t !! (j - 1))
+          where
+            f True  = 0
+            f False = 1
 
 readOffsets :: String -> [Offset]
 readOffsets str = snd $ head lst

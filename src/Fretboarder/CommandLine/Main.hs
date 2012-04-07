@@ -48,7 +48,7 @@ run args = withSurface t file size $ renderFretboard ((realToFrac *** realToFrac
                      ".svg" -> SVG
                      _      -> error "Unknown file type."
 
-    (Parse (PNote tone accidental) (PScale scale)) = parse rest
+    ParseScale (PScale (PNote tone accidental) scale) = parse rest
 
     offsets = readOffsets scale
     scale1  = Scale (toINote (Note tone 1 accidental)) offsets

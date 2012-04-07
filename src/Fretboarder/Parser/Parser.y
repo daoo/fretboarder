@@ -21,28 +21,29 @@ import Fretboarder.Parser.Lexer
   tone       { TTone $$       }
   accidental { TAccidental $$ }
   scale      { TScale $$      }
+  '+'        { TPlus          }
 %%
 
-Parse : Note Scale { Parse $1 $2 }
+Parse ::                { Parse         }
+      : PScale          { ParseScale $1 }
+      | Parse '+' Parse { $1 `Plus` $3  }
 
-Scale : scale { PScale $1 }
+PScale :: { PScale }
+       : PNote scale { PScale $1 $2 }
 
-Note : Tone            { PNote $1 Natural }
-     | Tone Accidental { PNote $1 $2      }
-
-Tone : tone { readTone $1 }
-
-Accidental : accidental { readAccidental $1 }
+PNote ::                { PNote                                   }
+      : tone            { PNote (readTone $1) Natural             }
+      | tone accidental { PNote (readTone $1) (readAccidental $2) }
 
 {
-
-data Parse = Parse PNote PScale
+data Parse = ParseScale PScale
+           | Plus Parse Parse
   deriving Show
 
 data PNote = PNote Tone Accidental
   deriving Show
 
-data PScale = PScale String
+data PScale = PScale PNote String
   deriving Show
 
 parseError :: [Token] -> a
@@ -51,3 +52,5 @@ parseError _ = error "Parse error"
 parse :: String -> Parse
 parse = guitar . lexer
 }
+
+-- vim: ft=happy :

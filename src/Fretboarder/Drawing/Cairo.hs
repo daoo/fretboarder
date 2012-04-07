@@ -1,5 +1,5 @@
 --
--- Copyright (c) 2011 Daniel Oom, see license.txt for more info.
+-- Copyright (c) 2011-2012 Daniel Oom, see license.txt for more info.
 --
 
 module Fretboarder.Drawing.Cairo (renderFretboard) where

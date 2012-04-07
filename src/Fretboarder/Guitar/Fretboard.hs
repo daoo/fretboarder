@@ -5,15 +5,11 @@
 module Fretboarder.Guitar.Fretboard where
 
 import Fretboarder.Drawing.Color
-
 import Fretboarder.Guitar.Note
 import Fretboarder.Guitar.Scale
 
 data Fret = Fret INote [Color]
   deriving (Show)
-
-addColor :: Color -> Fret -> Fret
-addColor c (Fret n cs) = Fret n (c : cs)
 
 type GuitarString = [Fret]
 type Fretboard    = [GuitarString]
@@ -35,9 +31,10 @@ takeFrets :: Int -> Fretboard -> Fretboard
 takeFrets i = map (take i)
 
 markString :: Color -> Scale -> GuitarString -> GuitarString
-markString _ _ []                                          = []
-markString c scale (f@(Fret n _) : fs) | scale `hasNote` n = addColor c f : markString c scale fs
-                                       | otherwise         = f : markString c scale fs
+markString _ _ []                                           = []
+markString c scale (f@(Fret n cs) : fs) | scale `hasNote` n = f' : markString c scale fs
+                                        | otherwise         = f : markString c scale fs
+  where f' = Fret n (c : cs)
 
 -- Note that the fretboard have to be finite
 markFretboard :: Color -> Scale -> Fretboard -> Fretboard

@@ -9,9 +9,6 @@ import Graphics.Rendering.Cairo
 import Fretboarder.Drawing.CairoExt
 import Fretboarder.Guitar.Fretboard
 
-renderFretboard :: Point -> Fretboard -> Surface -> IO ()
-renderFretboard size fb s = renderWith s $ drawFretboard size fb
-
 drawFretboard :: Point -> Fretboard -> Render ()
 drawFretboard (w, h) fb = do
   setSourceRGB 255 255 255

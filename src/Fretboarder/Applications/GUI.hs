@@ -8,12 +8,7 @@ import Control.Arrow
 import Control.Monad.IO.Class
 import Graphics.UI.Gtk
 
-import Extensions.List
-
-import Fretboarder.Drawing.Cairo
-import Fretboarder.Drawing.Color
 import Fretboarder.Drawing.Helper
-import Fretboarder.Guitar.Fretboard
 import Fretboarder.Parser.Parser
 
 main :: IO ()
@@ -38,14 +33,13 @@ setupWindow = do
   return window
 
 editorNew :: (String -> IO ()) -> IO HBox
-editorNew render = do
-  hbox <- hBoxNew False 1
+editorNew f = do
+  hbox <- hBoxNew False 0
   entry <- entryNew
   boxPackStart hbox entry PackGrow 0
 
-  _ <- entry `on` keyReleaseEvent $ do
-    liftIO $ entryGetText entry >>= render
-    return False
+  _ <- entry `on` keyReleaseEvent $
+    liftIO $ entryGetText entry >>= f >> return False
 
   return hbox
 
@@ -55,14 +49,6 @@ draw canvas str = do
   size <- widgetGetSize canvas
 
   case parse str of
-    Ok expr -> renderWithDrawable win (render expr size)
+    Ok expr -> renderWithDrawable win $ render ((realToFrac *** realToFrac) size) expr
     _       -> return ()
-  where 
-    render expr size =
-      drawFretboard ((realToFrac *** realToFrac) size) $
-      map2 f $ markList marks $ takeFrets 23 ebgdae
-        where
-          marks = zip tangoColors $ makeList $ makeScales expr
-
-          f (Fret n c) = Fret n $ headOrEmpty c
 

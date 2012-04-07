@@ -11,13 +11,8 @@ import System.FilePath
 
 import Graphics.Rendering.Cairo hiding (scale)
 
-import Extensions.List
-
-import Fretboarder.Drawing.Cairo
 import Fretboarder.Drawing.CairoExt
-import Fretboarder.Drawing.Color
 import Fretboarder.Drawing.Helper
-import Fretboarder.Guitar.Fretboard
 import Fretboarder.Parser.Parser
 
 data Type = SVG | PNG
@@ -30,7 +25,9 @@ main :: IO ()
 main = getArgs >>= run
 
 run :: [String] -> IO ()
-run args = withSurface t file size $ renderFretboard ((realToFrac *** realToFrac) size) fb
+run args = case parse rest of
+  Ok expr    -> withSurface t file size $ (flip renderWith) $ render ((realToFrac *** realToFrac) size) expr
+  Failed err -> putStrLn err
   where
     (w : h : file : _) = args
 
@@ -41,11 +38,3 @@ run args = withSurface t file size $ renderFretboard ((realToFrac *** realToFrac
       ".png" -> PNG
       ".svg" -> SVG
       _      -> error "Unknown file type."
-
-    (Ok expr) = parse rest
-    marks = zip tangoColors $ makeList $ makeScales expr
-
-    fb = map2 f $ markList marks $ takeFrets 23 ebgdae
-      where
-        f (Fret n c) = Fret n $ headOrEmpty c
-

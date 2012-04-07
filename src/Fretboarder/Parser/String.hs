@@ -55,6 +55,9 @@ readOffsets str = snd $ head lst
               , ("harmonic minor", harmonicMinor)
               , ("melodic minor", melodicMinor)
 
+              , ("minor pentatonic", minorPentatonic)
+              , ("major pentatonic", majorPentatonic)
+
               , ("blues", bluesScale)
 
               , ("ionian", ionianMode)

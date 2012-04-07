@@ -13,7 +13,7 @@ data Fret = Fret INote [Color]
   deriving (Show)
 
 addColor :: Color -> Fret -> Fret
-addColor c (Fret n cs) = Fret n (c:cs)
+addColor c (Fret n cs) = Fret n (c : cs)
 
 type GuitarString = [Fret]
 type Fretboard    = [GuitarString]
@@ -35,12 +35,9 @@ takeFrets :: Int -> Fretboard -> Fretboard
 takeFrets i = map (take i)
 
 markString :: Color -> Scale -> GuitarString -> GuitarString
-markString _ _ []                    = []
-markString c scale (f@(Fret n _):fs) = f' : markString c scale fs
-  where
-    f' = if scale `hasNote` n
-      then addColor c f
-      else f
+markString _ _ []                                          = []
+markString c scale (f@(Fret n _) : fs) | scale `hasNote` n = addColor c f : markString c scale fs
+                                       | otherwise         = f : markString c scale fs
 
 -- Note that the fretboard have to be finite
 markFretboard :: Color -> Scale -> Fretboard -> Fretboard

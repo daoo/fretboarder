@@ -35,7 +35,7 @@ line :: Line -> Render ()
 line ((x1, y1), (x2, y2)) = moveTo x1 y1 >> lineTo x2 y2
 
 deltaLines :: Int -> Point -> Line -> Render [()]
-deltaLines count delta first = mapM line $ take count $ iterate (mapBoth (+++ delta)) first
+deltaLines count delta = mapM line . take count . iterate (mapBoth (+++ delta))
 
 (+++) :: Point -> Point -> Point
 (x1, y1) +++ (x2, y2) = (x1 + x2, y1 + y2)

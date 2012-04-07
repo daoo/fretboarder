@@ -7,7 +7,7 @@ module Main where
 import Control.Arrow
 import Data.Char
 import System.Environment
-import System.FilePath.Posix
+import System.FilePath
 
 import Graphics.Rendering.Cairo hiding (scale)
 
@@ -29,9 +29,7 @@ withSurface SVG file (w, h) r = withSVGSurface file (realToFrac w) (realToFrac h
 withSurface PNG file (w, h) r = createImageSurface FormatARGB32 w h >>= (\s -> r s >> surfaceWriteToPNG s file)
 
 main :: IO ()
-main = do
-  args <- getArgs
-  run args
+main = getArgs >>= run
 
 run :: [String] -> IO ()
 run args = withSurface t file size $ renderFretboard ((realToFrac *** realToFrac) size) fb

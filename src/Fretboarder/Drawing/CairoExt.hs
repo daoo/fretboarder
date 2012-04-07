@@ -4,8 +4,7 @@
 
 module Fretboarder.Drawing.CairoExt where
 
-import Fretboarder.Extensions.Tuple
-
+import Extensions.Tuple
 import Graphics.Rendering.Cairo
 
 import Fretboarder.Drawing.Color

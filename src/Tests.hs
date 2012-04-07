@@ -5,8 +5,8 @@
 module Tests where
 
 import Data.List
+import Extensions.List
 
-import Fretboarder.Extensions.List
 import Fretboarder.Guitar.Note
 import Fretboarder.Guitar.Scale
 

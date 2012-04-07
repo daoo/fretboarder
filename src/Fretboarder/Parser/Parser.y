@@ -8,9 +8,9 @@ module Fretboarder.Parser.Parser where
 import Data.Char
 
 import Fretboarder.Guitar.Note
-
-import Fretboarder.Parser.String
+import Fretboarder.Parser.Expr
 import Fretboarder.Parser.Lexer
+import Fretboarder.Parser.String
 }
 
 %name guitar
@@ -22,13 +22,19 @@ import Fretboarder.Parser.Lexer
   accidental { TAccidental $$ }
   scale      { TScale $$      }
   '+'        { TPlus          }
+  '*'        { TMult          }
+
+%left '+'
+%left '*'
+
 %%
 
-Parse ::                { Parse         }
-      : PScale          { ParseScale $1 }
-      | Parse '+' Parse { $1 `Plus` $3  }
+Parse ::                { Expr PScale       }
+      : PScale          { Set $1            }
+      | Parse '*' Parse { $1 `Join` $3      }
+      | Parse '+' Parse { $1 `Different` $3 }
 
-PScale :: { PScale }
+PScale ::            { PScale       }
        : PNote scale { PScale $1 $2 }
 
 PNote ::                { PNote                                   }
@@ -36,10 +42,6 @@ PNote ::                { PNote                                   }
       | tone accidental { PNote (readTone $1) (readAccidental $2) }
 
 {
-data Parse = ParseScale PScale
-           | Plus Parse Parse
-  deriving Show
-
 data PNote = PNote Tone Accidental
   deriving Show
 
@@ -49,7 +51,7 @@ data PScale = PScale PNote String
 parseError :: [Token] -> a
 parseError _ = error "Parse error"
 
-parse :: String -> Parse
+parse :: String -> Expr PScale
 parse = guitar . lexer
 }
 

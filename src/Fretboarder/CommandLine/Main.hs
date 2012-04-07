@@ -16,11 +16,9 @@ import Extensions.List
 import Fretboarder.Drawing.Cairo
 import Fretboarder.Drawing.CairoExt
 import Fretboarder.Drawing.Color
+import Fretboarder.Drawing.Helper
 import Fretboarder.Guitar.Fretboard
-import Fretboarder.Guitar.Note
-import Fretboarder.Guitar.Scale
 import Fretboarder.Parser.Parser
-import Fretboarder.Parser.String
 
 data Type = SVG | PNG
 
@@ -44,11 +42,7 @@ run args = withSurface t file size $ renderFretboard ((realToFrac *** realToFrac
       ".svg" -> SVG
       _      -> error "Unknown file type."
 
-    ParseScale (PScale (PNote tone accidental) scale) = parse rest
-
-    offsets = readOffsets scale
-    scale1  = Scale (toINote (Note tone 1 accidental)) offsets
-    marks   = zip tangoColors [scale1]
+    marks = zip tangoColors $ makeList $ makeScales $ parse rest
 
     fb = map2 f $ markList marks $ takeFrets 23 ebgdae
       where

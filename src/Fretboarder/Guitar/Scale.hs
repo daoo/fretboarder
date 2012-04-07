@@ -4,6 +4,7 @@
 
 module Fretboarder.Guitar.Scale where
 
+import Data.List
 import Test.QuickCheck
 
 import Fretboarder.Guitar.Interval
@@ -33,3 +34,5 @@ repeatScale (Scale note offsets) = note : concatMap f xs
     f n = map (+n) offsets
     xs  = iterate (+12) note
 
+joinScales :: Scale -> Scale -> Scale
+joinScales (Scale n1 os1) (Scale n2 os2) = Scale n1 $ sort $ union os1 (map (+(n1 - n2)) os2)

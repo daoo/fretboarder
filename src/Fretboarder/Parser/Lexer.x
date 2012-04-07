@@ -18,12 +18,13 @@ tokens :-
   $tone       { \s -> TTone (head s)       }
   $accidental { \s -> TAccidental (last s) }
   $alpha{2,}  { \s -> TScale s             }
-  "+"         { \_ -> TPlus }
+  "+"         { \_ -> TPlus                }
+  "*"         { \_ -> TMult                }
 {
 data Token = TTone Char
            | TAccidental Char
            | TScale String
-           | TPlus
+           | TPlus | TMult
  deriving (Eq,Show)
 
 lexer :: String -> [Token]

@@ -11,7 +11,8 @@ sources = $(shell find src/ -type f -name '*.hs')
 flags   = -isrc:$(outdir) -odir $(outdir) -hidir $(outdir)
 
 build: lexer.o parser.o
-	ghc --make $(warnings) $(flags) -o $(outdir)/$(exename) src/Fretboarder/CommandLine/Main.hs
+	ghc --make $(warnings) $(flags) -o $(outdir)/fretboarder src/Fretboarder/Applications/CommandLine.hs
+	ghc --make $(warnings) $(flags) -o $(outdir)/fretboarder-gtk2 src/Fretboarder/Applications/GUI.hs
 
 ghci: lexer.o parser.o
 	ghci $(warnings) $(flags) $(sources)

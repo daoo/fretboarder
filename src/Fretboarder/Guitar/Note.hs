@@ -4,6 +4,8 @@
 
 module Fretboarder.Guitar.Note where
 
+import Test.QuickCheck
+
 -- An internal note represntation where natural A in octave 0 represents the INote
 -- number 0. A# in octave 0: INote 1, and so forth.
 -- The same as the keys on a piano, if you start counting at 0 instead of 1.
@@ -28,6 +30,13 @@ data Note = Note Tone Octave Accidental
 
 instance Show Note where
   show (Note t o a) = concat [show t, show o, show a]
+
+instance Arbitrary Note where
+  arbitrary = do
+    t <- oneof $ map return [A, B, C, D, E, F, G]
+    o <- oneof $ map return [-1, 0, 1, 2, 3, 4, 5]
+    a <- oneof $ map return [Flat, Natural, Sharp]
+    return $ Note t o a
 
 a4, b4, c4, a5, b5 :: Note
 a4 = Note A 4 Natural

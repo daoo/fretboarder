@@ -4,7 +4,7 @@
 
 module Fretboarder.Guitar.ScaleConversion where
 
-import Fretboarder.Guitar.Scale
+import Fretboarder.Guitar.Interval
 
 diatonicToOffset :: DiatonicInterval -> Offset
 diatonicToOffset = toInteger . fromEnum
@@ -14,5 +14,5 @@ diatonicToIntervals _ []     = []
 diatonicToIntervals i (a:as) = b : diatonicToIntervals (i + b) as
   where
     b = d - i
-    d = diatonicToSemitones a
+    d = diatonicToOffset a
 

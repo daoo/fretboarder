@@ -4,11 +4,23 @@
 
 module Fretboarder.Guitar.Scale where
 
+import Test.QuickCheck
+
 import Fretboarder.Guitar.Interval
 import Fretboarder.Guitar.Note
 
 data Scale = Scale INote [Offset]
   deriving (Show)
+
+instance Arbitrary Scale where
+  arbitrary = do
+    scale <- oneof $ map return [ majorScale, minorScale, harmonicMinor
+                                , melodicMinor, minorPentatonic, majorPentatonic
+                                , bluesScale, ionianMode, dorianMode
+                                , phrygianMode, lydianMode, mixolydianMode
+                                , aeolianMode, locrianMode ]
+    note <- arbitrary
+    return $ Scale note scale
 
 hasNote :: Scale -> INote -> Bool
 hasNote (Scale base offsets) note = note' `elem` (0 : offsets)

@@ -8,6 +8,7 @@ import Control.Arrow
 import Control.Monad.IO.Class
 import Graphics.UI.Gtk
 
+import Fretboarder.Drawing.Cairo ()
 import Fretboarder.Drawing.Helper
 import Fretboarder.Parser.Parser
 

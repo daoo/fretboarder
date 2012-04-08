@@ -6,6 +6,7 @@ warnings = -Wall \
 	   -fwarn-monomorphism-restriction \
 	   -fwarn-tabs \
 	   -fwarn-unused-do-bind \
+	   -fno-warn-orphans \
 
 sources = $(shell find src/ -type f -name '*.hs')
 flags   = -isrc:$(outdir) -odir $(outdir) -hidir $(outdir)

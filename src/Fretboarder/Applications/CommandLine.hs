@@ -11,13 +11,13 @@ import System.FilePath
 
 import Graphics.Rendering.Cairo hiding (scale)
 
-import Fretboarder.Drawing.CairoExt
+import Fretboarder.Drawing.Cairo ()
 import Fretboarder.Drawing.Helper
 import Fretboarder.Parser.Parser
 
 data Type = SVG | PNG
 
-withSurface :: Type -> FilePath -> Size -> (Surface -> IO ()) -> IO ()
+withSurface :: Type -> FilePath -> (Int, Int) -> (Surface -> IO ()) -> IO ()
 withSurface SVG file (w, h) r = withSVGSurface file (realToFrac w) (realToFrac h) r
 withSurface PNG file (w, h) r = createImageSurface FormatARGB32 w h >>= (\s -> r s >> surfaceWriteToPNG s file)
 

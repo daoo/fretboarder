@@ -4,10 +4,7 @@
 
 module Fretboarder.Drawing.Helper where
 
-import Graphics.Rendering.Cairo hiding (scale)
-
-import Fretboarder.Drawing.Cairo
-import Fretboarder.Drawing.CairoExt
+import Fretboarder.Drawing.Backend
 import Fretboarder.Drawing.Color
 import Fretboarder.Guitar.Fretboard
 import Fretboarder.Guitar.Note
@@ -27,7 +24,7 @@ makeList (Different e1 e2)        = makeList e1 ++ makeList e2
 makeList (Join (Set s1) (Set s2)) = [s1 `joinScales` s2]
 makeList _                        = error "Can not transform Expr to list"
 
-render :: Point -> Expr PScale -> Render ()
+render :: Backend a => Point -> Expr PScale -> a ()
 render size expr = drawFretboard size $ markList marks fb
   where
     marks = zip tangoColors $ makeList $ makeScales expr

@@ -14,10 +14,10 @@ flags   = -isrc:$(outdir) -odir $(outdir) -hidir $(outdir)
 all: lexer.o parser.o cmdline gui
 
 cmdline: 
-	ghc --make $(warnings) $(flags) -o $(outdir)/fretboarder src/Fretboarder/Applications/CommandLine.hs
+	ghc --make $(warnings) $(flags) -o $(outdir)/$(exename) src/Fretboarder/Applications/CommandLine.hs
 
 gui:
-	ghc --make $(warnings) $(flags) -o $(outdir)/fretboarder-gtk2 src/Fretboarder/Applications/GUI.hs
+	ghc --make $(warnings) $(flags) -o $(outdir)/$(exename)-gtk2 src/Fretboarder/Applications/GUI.hs
 
 ghci: lexer.o parser.o
 	ghci $(warnings) $(flags) $(sources)

@@ -8,7 +8,6 @@ import Extensions.Tuple
 
 import Fretboarder.Guitar.Fretboard
 
-type Radians = Double
 type Color = (Double, Double, Double)
 type Point = (Double, Double)
 type Size  = (Double, Double)

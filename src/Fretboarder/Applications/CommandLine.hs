@@ -11,6 +11,7 @@ import System.FilePath
 
 import Graphics.Rendering.Cairo hiding (scale)
 
+import Fretboarder.Drawing.Backend
 import Fretboarder.Drawing.Cairo ()
 import Fretboarder.Drawing.Helper
 import Fretboarder.Parser.Parser
@@ -26,7 +27,7 @@ main = getArgs >>= run
 
 run :: [String] -> IO ()
 run args = case parse rest of
-  Ok expr    -> withSurface t file size $ (flip renderWith) $ render ((realToFrac *** realToFrac) size) expr
+  Ok expr    -> withSurface t file size $ (flip renderWith) $ render defaultSettings ((realToFrac *** realToFrac) size) expr
   Failed err -> putStrLn err
   where
     (w : h : file : _) = args

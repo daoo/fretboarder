@@ -6,9 +6,9 @@ module Fretboarder.Drawing.Backend where
 
 import Extensions.Tuple
 
+import Fretboarder.Drawing.Color
 import Fretboarder.Guitar.Fretboard
 
-type Color = (Double, Double, Double)
 type Point = (Double, Double)
 type Size  = (Double, Double)
 type Line  = (Point, Point)
@@ -63,24 +63,18 @@ drawFretboard (w, h) fb = do
     -- TODO: Support inlays with more than two dots per fret
     inlays :: [(Int, Int)] -> [Point]
     inlays []            = []
-    inlays ((f, 1) : as) = (fretx f, h / 2.0) : inlays as
-    inlays ((f, 2) : as) = (fretx f, 3.0 * freth / 2.0) : (fretx f, 7.0 * freth / 2.0) : inlays as
+    inlays ((f, 1) : as) = (fretxs !! f, h / 2.0) : inlays as
+    inlays ((f, 2) : as) = (fretxs !! f, 3.0 * freth / 2.0) : (fretxs !! f, 7.0 * freth / 2.0) : inlays as
     inlays (_ : as)      = inlays as
 
-    fretx :: Int -> Double
-    fretx i = fretw * realToFrac i - (fretw / 2.0)
-
-    frety :: Int -> Double
-    frety i = freth * realToFrac i
+    fretxs = 0 : iterate (+ fretw) (fretw / 2.0)
+    fretys = iterate (+ freth) 0
 
     toPoints :: Fretboard -> [(Point, [Color])]
-    toPoints = concatMap f . zip ys . map (zip xs)
+    toPoints = concatMap f . zip fretys . map (zip fretxs)
       where
         f (y, string)      = map (g y) string
         g y (x, Fret _ cs) = ((x, y), cs)
-
-        xs = map fretx [0..]
-        ys = map frety [0..]
 
     -- TODO: Make these configurable
     defInlays    = [(3, 1), (5, 1), (7, 1), (9, 1), (12, 2), (15, 1), (17, 1), (19, 1), (21, 1)]

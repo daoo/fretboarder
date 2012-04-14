@@ -50,8 +50,8 @@ drawFretboard (w, h) fb = do
   deltaLines fretcount (fretw, 0) ((fretw, 0), (fretw, h))
   deltaLines stringcount (0, freth) ((0, 0), (w, 0))
 
-  _ <- mapM (fillCircle defRadius) $ inlays defInlays
-  draw fb
+  mapM_ (fillCircle defRadius) $ inlays defInlays
+  mapM_ (uncurry (evenPie defRadius)) $ toPoints fb
 
   return ()
   where
@@ -70,21 +70,19 @@ drawFretboard (w, h) fb = do
     fretx :: Int -> Double
     fretx i = fretw * realToFrac i - (fretw / 2.0)
 
-    draw :: Backend a => Fretboard -> a ()
-    draw = mapM_ (uncurry drawString) . zip points
-      where
-        points = iterate (+++ (0, freth)) (-fretw / 2.0, 0)
+    frety :: Int -> Double
+    frety i = freth * realToFrac i
 
-    drawString :: Backend a => Point -> GuitarString -> a ()
-    drawString _ []      = return ()
-    drawString pt (f:fs) = drawFret pt f >> drawString (pt +++ delta) fs
+    toPoints :: Fretboard -> [(Point, [Color])]
+    toPoints = concatMap f . zip ys . map (zip xs)
       where
-        delta = (fretw, 0)
+        f (y, string)      = map (g y) string
+        g y (x, Fret _ cs) = ((x, y), cs)
 
-    drawFret :: Backend a => Point -> Fret -> a ()
-    drawFret pt (Fret _ colors) = evenPie defRadius pt colors
+        xs = map fretx [0..]
+        ys = map frety [0..]
 
     -- TODO: Make these configurable
     defInlays    = [(3, 1), (5, 1), (7, 1), (9, 1), (12, 2), (15, 1), (17, 1), (19, 1), (21, 1)]
-    defRadius    = (h / fromIntegral stringcount) / 3
+    defRadius    = (h / fromIntegral stringcount) / 5
     defLineWidth = 0.5

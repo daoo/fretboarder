@@ -37,11 +37,12 @@ evenPie r p colors = fillArcs r p $ zip colors (zip angles (tail angles))
 pi2 :: Double
 pi2 = pi * 2.0
 
+
 drawFretboard :: Backend a => Size -> Fretboard -> a ()
 drawFretboard (w, h) fb = do
-  setColor (255, 255, 255)
+  setColor bgColor
   fillRectangle (0, 0) (w, h)
-  setColor (0, 0, 0)
+  setColor fgColor
 
   setLineWidth $ defLineWidth * 10.0
   strokeLines [((0, 0), (0, h))]
@@ -80,3 +81,6 @@ drawFretboard (w, h) fb = do
     defInlays    = [(3, 1), (5, 1), (7, 1), (9, 1), (12, 2), (15, 1), (17, 1), (19, 1), (21, 1)]
     defRadius    = (h / fromIntegral stringcount) / 5
     defLineWidth = 0.5
+
+    bgColor = (0, 0, 0)
+    fgColor = (255, 255, 255)

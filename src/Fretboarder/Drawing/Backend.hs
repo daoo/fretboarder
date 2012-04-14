@@ -44,29 +44,28 @@ drawFretboard (w, h) fb = do
   setColor (0, 0, 0)
 
   setLineWidth $ defLineWidth * 10.0
-  strokeLines [((0, 0), (w, h))]
+  strokeLines [((0, 0), (0, h))]
   setLineWidth defLineWidth
 
-  deltaLines fretcount (fretw, 0) ((fretw, 0), (fretw, boardh))
-  deltaLines stringcount (0, freth) ((0, 0), (boardw, 0))
+  deltaLines fretcount (fretw, 0) ((fretw, 0), (fretw, h))
+  deltaLines stringcount (0, freth) ((0, 0), (w, 0))
 
   _ <- mapM (fillCircle defRadius) $ inlays defInlays
   draw fb
 
   return ()
   where
-    padding          = h * 0.2
-    (boardw, boardh) = (w - padding * 2.0, h - padding * 2.0)
-    (fretw, freth)   = (boardw / realToFrac fretcount, boardh / realToFrac (stringcount - 1))
-
     fretcount   = length (head fb) - 1
     stringcount = length fb
+    fretw       = w / realToFrac fretcount
+    freth       = h / realToFrac (stringcount - 1)
 
     -- TODO: Support inlays with more than two dots per fret
     inlays :: [(Int, Int)] -> [Point]
-    inlays ((f, 1) : as) = (fretx f, boardh / 2.0) : inlays as
+    inlays []            = []
+    inlays ((f, 1) : as) = (fretx f, h / 2.0) : inlays as
     inlays ((f, 2) : as) = (fretx f, 3.0 * freth / 2.0) : (fretx f, 7.0 * freth / 2.0) : inlays as
-    inlays _             = []
+    inlays (_ : as)      = inlays as
 
     fretx :: Int -> Double
     fretx i = fretw * realToFrac i - (fretw / 2.0)
@@ -86,6 +85,6 @@ drawFretboard (w, h) fb = do
     drawFret pt (Fret _ colors) = evenPie defRadius pt colors
 
     -- TODO: Make these configurable
-    defInlays    = [(1, 3), (1, 5), (1, 7), (1, 9), (2, 12), (1, 15), (1, 17), (1, 19), (1, 21)]
-    defRadius    = 7
+    defInlays    = [(3, 1), (5, 1), (7, 1), (9, 1), (12, 2), (15, 1), (17, 1), (19, 1), (21, 1)]
+    defRadius    = (h / fromIntegral stringcount) / 3
     defLineWidth = 0.5

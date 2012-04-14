@@ -17,7 +17,7 @@ instance Backend Render where
   strokeLines ls = mapM_ line ls >> stroke
 
   fillCircle r (x, y) = arc x y r 0 pi2 >> fill
-  fillArcs r (x, y) = mapM_ f
+  fillArcs r (x, y) cs = mapM_ f cs >> fill
     where
       f (c, (a, b)) = setColor c >> arc x y r a b
 

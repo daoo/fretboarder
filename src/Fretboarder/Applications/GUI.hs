@@ -8,6 +8,7 @@ import Control.Arrow
 import Control.Monad.IO.Class
 import Graphics.UI.Gtk
 
+import Fretboarder.Drawing.Backend
 import Fretboarder.Drawing.Cairo ()
 import Fretboarder.Drawing.Helper
 import Fretboarder.Parser.Parser
@@ -30,6 +31,10 @@ setupWindow = do
   boxPackStart vbox editor1 PackNatural 0
 
   _ <- window `on` deleteEvent $ liftIO mainQuit >> return False
+  {-_ <- window `on` configureEvent $ do-}
+    {-size <- eventSize-}
+    {-liftIO $ entryGetText entry >>= f-}
+    {-return False-}
 
   return window
 
@@ -50,6 +55,6 @@ draw canvas str = do
   size <- widgetGetSize canvas
 
   case parse str of
-    Ok expr -> renderWithDrawable win $ render ((realToFrac *** realToFrac) size) expr
+    Ok expr -> renderWithDrawable win $ render defaultSettings ((realToFrac *** realToFrac) size) expr
     _       -> return ()
 

@@ -13,6 +13,12 @@ type Point = (Double, Double)
 type Size  = (Double, Double)
 type Line  = (Point, Point)
 
+(+++) :: Point -> Point -> Point
+(x1, y1) +++ (x2, y2) = (x1 + x2, y1 + y2)
+
+pi2 :: Double
+pi2 = pi * 2.0
+
 class (Monad a) => Backend a where
   setColor :: Color -> a ()
   setLineWidth :: Double -> a ()
@@ -31,35 +37,52 @@ evenPie r p colors = fillArcs r p $ zip colors (zip angles (tail angles))
   where
     angles = [0, pi2 / realToFrac (length colors) .. ]
 
-(+++) :: Point -> Point -> Point
-(x1, y1) +++ (x2, y2) = (x1 + x2, y1 + y2)
+data Settings = Settings
+  { getInlays :: [(Int, Int)]
+  , getLineWidth :: Double
+  , getFretNames :: [String]
+  , getFgColor :: Color
+  , getBgColor :: Color }
 
-pi2 :: Double
-pi2 = pi * 2.0
+defaultSettings :: Settings
+defaultSettings = Settings
+  { getInlays = [(3, 1), (5, 1), (7, 1), (9, 1), (12, 2), (15, 1), (17, 1), (19, 1), (21, 1)]
+  , getLineWidth = 1.0
+  , getFretNames = []
+  , getFgColor = (0, 0, 0)
+  , getBgColor = (255, 255, 255) }
 
-
-drawFretboard :: Backend a => Size -> Fretboard -> a ()
-drawFretboard (w, h) fb = do
-  setColor bgColor
+drawFretboard :: Backend a => Settings -> Size -> Fretboard -> a ()
+drawFretboard set (w, h) fb = do
+  setColor $ getBgColor set
   fillRectangle (0, 0) (w, h)
-  setColor fgColor
+  setColor $ getFgColor set
 
-  setLineWidth $ defLineWidth * 10.0
-  strokeLines [((0, 0), (0, h))]
-  setLineWidth defLineWidth
+  setLineWidth $ getLineWidth set * 10.0
+  strokeLines [((px, py), (px, py + bh))]
+  setLineWidth $ getLineWidth set
 
-  deltaLines fretcount (fretw, 0) ((fretw, 0), (fretw, h))
-  deltaLines stringcount (0, freth) ((0, 0), (w, 0))
+  deltaLines fretcount (fretw, 0) ((px + fretw, py), (px + fretw, py + bh))
+  deltaLines stringcount (0, freth) ((px, py), (px + bw, py))
 
-  mapM_ (fillCircle defRadius) $ inlays defInlays
-  mapM_ (uncurry (evenPie defRadius)) $ toPoints fb
+  mapM_ (fillCircle radius) $ inlays $ getInlays set
+  mapM_ (uncurry (evenPie radius)) $ toPoints fb
 
   return ()
   where
+    px = 50
+    py = 20
+    bw = w - 2 * px
+    bh = h - 2 * py
+
     fretcount   = length (head fb) - 1
     stringcount = length fb
-    fretw       = w / realToFrac fretcount
-    freth       = h / realToFrac (stringcount - 1)
+    fretw       = bw / realToFrac fretcount
+    freth       = bh / realToFrac (stringcount - 1)
+    radius      = (bh / realToFrac stringcount) / 5
+
+    fretxs = px : iterate (+ fretw) (px + fretw / 2.0)
+    fretys = iterate (+ freth) py
 
     -- TODO: Support inlays with more than two dots per fret
     inlays :: [(Int, Int)] -> [Point]
@@ -68,19 +91,8 @@ drawFretboard (w, h) fb = do
     inlays ((f, 2) : as) = (fretxs !! f, 3.0 * freth / 2.0) : (fretxs !! f, 7.0 * freth / 2.0) : inlays as
     inlays (_ : as)      = inlays as
 
-    fretxs = 0 : iterate (+ fretw) (fretw / 2.0)
-    fretys = iterate (+ freth) 0
-
     toPoints :: Fretboard -> [(Point, [Color])]
     toPoints = concatMap f . zip fretys . map (zip fretxs)
       where
         f (y, string)      = map (g y) string
         g y (x, Fret _ cs) = ((x, y), cs)
-
-    -- TODO: Make these configurable
-    defInlays    = [(3, 1), (5, 1), (7, 1), (9, 1), (12, 2), (15, 1), (17, 1), (19, 1), (21, 1)]
-    defRadius    = (h / fromIntegral stringcount) / 5
-    defLineWidth = 0.5
-
-    bgColor = (0, 0, 0)
-    fgColor = (255, 255, 255)

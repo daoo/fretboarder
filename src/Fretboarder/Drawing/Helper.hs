@@ -24,8 +24,8 @@ makeList (Different e1 e2)        = makeList e1 ++ makeList e2
 makeList (Join (Set s1) (Set s2)) = [s1 `joinScales` s2]
 makeList _                        = error "Can not transform Expr to list"
 
-render :: Backend a => Point -> Expr PScale -> a ()
-render size expr = drawFretboard size $ markList marks fb
+render :: Backend a => Settings -> Size -> Expr PScale -> a ()
+render set size expr = drawFretboard set size $ markList marks fb
   where
     marks = zip tangoColors $ makeList $ makeScales expr
 

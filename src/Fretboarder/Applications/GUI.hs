@@ -27,32 +27,24 @@ setupWindow = do
   canvas <- drawingAreaNew
   boxPackEnd vbox canvas PackGrow 0
 
-  editor1 <- editorNew (draw canvas)
-  boxPackStart vbox editor1 PackNatural 0
+  entry <- entryNew
+  _ <- entry `on` keyReleaseEvent $
+    liftIO $ draw canvas entry >> return False
+
+  boxPackStart vbox entry PackNatural 0
 
   _ <- window `on` deleteEvent $ liftIO mainQuit >> return False
-  {-_ <- window `on` configureEvent $ do-}
-    {-size <- eventSize-}
-    {-liftIO $ entryGetText entry >>= f-}
-    {-return False-}
+  _ <- window `on` configureEvent $ do
+    liftIO $ draw canvas entry
+    return False
 
   return window
 
-editorNew :: (String -> IO ()) -> IO HBox
-editorNew f = do
-  hbox <- hBoxNew False 0
-  entry <- entryNew
-  boxPackStart hbox entry PackGrow 0
-
-  _ <- entry `on` keyReleaseEvent $
-    liftIO $ entryGetText entry >>= f >> return False
-
-  return hbox
-
-draw :: DrawingArea -> String -> IO ()
-draw canvas str = do
+draw :: DrawingArea -> Entry -> IO ()
+draw canvas entry = do
   win <- widgetGetDrawWindow canvas
   size <- widgetGetSize canvas
+  str <- entryGetText entry
 
   case parse str of
     Ok expr -> renderWithDrawable win $ render defaultSettings ((realToFrac *** realToFrac) size) expr

@@ -87,8 +87,8 @@ drawFretboard set (w, h) fb = do
     -- TODO: Support inlays with more than two dots per fret
     inlays :: [(Int, Int)] -> [Point]
     inlays []            = []
-    inlays ((f, 1) : as) = (fretxs !! f, h / 2.0) : inlays as
-    inlays ((f, 2) : as) = (fretxs !! f, 3.0 * freth / 2.0) : (fretxs !! f, 7.0 * freth / 2.0) : inlays as
+    inlays ((f, 1) : as) = (fretxs !! f, py + bh / 2.0) : inlays as
+    inlays ((f, 2) : as) = (fretxs !! f, py + 3.0 * freth / 2.0) : (fretxs !! f, py + 7.0 * freth / 2.0) : inlays as
     inlays (_ : as)      = inlays as
 
     toPoints :: Fretboard -> [(Point, [Color])]

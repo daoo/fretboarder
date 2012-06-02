@@ -34,9 +34,7 @@ setupWindow = do
   boxPackStart vbox entry PackNatural 0
 
   _ <- window `on` deleteEvent $ liftIO mainQuit >> return False
-  _ <- window `on` configureEvent $ do
-    liftIO $ draw canvas entry
-    return False
+  _ <- window `on` configureEvent $ liftIO (draw canvas entry) >> return False
 
   return window
 

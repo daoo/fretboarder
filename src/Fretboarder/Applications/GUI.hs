@@ -44,7 +44,7 @@ draw canvas entry = do
   size <- widgetGetSize canvas
   str <- entryGetText entry
 
-  case parse str of
-    Ok expr -> renderWithDrawable win $ render defaultSettings ((realToFrac *** realToFrac) size) expr
-    _       -> return ()
+  case parseExpr str of
+    Left _     -> return ()
+    Right expr -> renderWithDrawable win $ render defaultSettings ((realToFrac *** realToFrac) size) expr
 

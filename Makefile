@@ -8,7 +8,7 @@ warnings = -Wall \
 sources = $(shell find src/ -type f -and -name '*.hs' -and -not -name 'GUI.hs')
 flags   = -isrc:build -odir build -hidir build
 
-all: lexer parser cmdline gui
+all: cmdline gui
 
 cmdline: 
 	ghc --make $(warnings) $(flags) -o build/fretboarder src/Fretboarder/Applications/CommandLine.hs
@@ -16,24 +16,8 @@ cmdline:
 gui:
 	ghc --make $(warnings) $(flags) -o build/fretboarder-gtk src/Fretboarder/Applications/GUI.hs
 
-ghci: lexer_o parser_o
+ghci:
 	ghci $(warnings) $(flags) $(sources)
-
-lexer: lexer_hs lexer_o
-
-parser: parser_hs parser_o
-
-lexer_hs: src/Fretboarder/Parser/Lexer.x
-	alex src/Fretboarder/Parser/Lexer.x -o build/Fretboarder/Parser/Lexer.hs
-
-lexer_o: build/Fretboarder/Parser/Lexer.hs
-	ghc --make $(flags) build/Fretboarder/Parser/Lexer.hs
-
-parser_hs: src/Fretboarder/Parser/Parser.y
-	happy -agc src/Fretboarder/Parser/Parser.y -o build/Fretboarder/Parser/Parser.hs
-
-parser_o: build/Fretboarder/Parser/Parser.hs
-	ghc --make $(flags) build/Fretboarder/Parser/Parser.hs
 
 clean:
 	rm -r build/*

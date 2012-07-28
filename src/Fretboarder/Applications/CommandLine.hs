@@ -26,9 +26,9 @@ main :: IO ()
 main = getArgs >>= run
 
 run :: [String] -> IO ()
-run args = case parse rest of
-  Ok expr    -> withSurface t file size $ flip renderWith $ render defaultSettings ((realToFrac *** realToFrac) size) expr
-  Failed err -> putStrLn err
+run args = case parseExpr rest of
+  Left err   -> print err
+  Right expr -> withSurface t file size $ flip renderWith $ render defaultSettings ((realToFrac *** realToFrac) size) expr
   where
     (w : h : file : _) = args
 

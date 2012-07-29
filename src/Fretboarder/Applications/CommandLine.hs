@@ -26,17 +26,17 @@ main = getArgs >>= run
 run :: [String] -> IO ()
 run args = case parseExpr rest of
   Left err   -> print err
-  Right expr -> withSurface t file sizeInt $ flip renderWith $ render defaultSettings size expr
+  Right expr -> withSurface t file sizeInt $ flip renderWith $ render defaultSettings sizeDouble expr
   where
     (w : h : file : _) = args
 
     rest = unwords $ drop 3 args
 
-    size :: Size
-    size = mapBoth read (w, h)
-
     sizeInt :: (Int, Int)
-    sizeInt = mapBoth round size
+    sizeInt = mapBoth read (w, h)
+
+    sizeDouble :: Size
+    sizeDouble = mapBoth fromIntegral sizeInt
 
     t = case map toLower $ takeExtension file of
       ".png" -> PNG

@@ -35,9 +35,9 @@ note = choice $ map (\(str, n) -> oneOf str >> acc n)
   ]
   where
     acc :: Tone -> Parser PNote
-    acc t = (char '#' >> (return $ PNote t Sharp))
-        <|> (char 'b' >> (return $ PNote t Flat))
-        <|> (return (PNote t Natural))
+    acc t = (char '#' >> return (PNote t Sharp))
+        <|> (char 'b' >> return (PNote t Flat))
+        <|> return (PNote t Natural)
 
 scale :: Parser PScale
 scale = do

@@ -17,8 +17,9 @@ import System.FilePath
 data Type = SVG | PNG
 
 withSurface :: Type -> FilePath -> (Int, Int) -> (Surface -> IO ()) -> IO ()
-withSurface SVG file (w, h) r = withSVGSurface file (realToFrac w) (realToFrac h) r
-withSurface PNG file (w, h) r = createImageSurface FormatARGB32 w h >>= (\s -> r s >> surfaceWriteToPNG s file)
+withSurface t file (w, h) r = case t of
+  SVG -> withSVGSurface file (fromIntegral w) (fromIntegral h) r
+  PNG -> createImageSurface FormatARGB32 w h >>= (\s -> r s >> surfaceWriteToPNG s file)
 
 main :: IO ()
 main = getArgs >>= run

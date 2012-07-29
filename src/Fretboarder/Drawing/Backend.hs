@@ -35,7 +35,7 @@ deltaLines count delta = strokeLines . take count . iterate (mapBoth (+++ delta)
 evenPie :: Backend a => Double -> Point -> [Color] -> a ()
 evenPie r p colors = fillArcs r p $ zip colors (zip angles (tail angles))
   where
-    angles = [0, pi2 / realToFrac (length colors) .. ]
+    angles = [0, pi2 / fromIntegral (length colors) .. ]
 
 data Settings = Settings
   { getInlays :: [(Int, Int)]
@@ -77,9 +77,9 @@ drawFretboard set (w, h) fb = do
 
     fretcount   = length (head fb) - 1
     stringcount = length fb
-    fretw       = bw / realToFrac fretcount
-    freth       = bh / realToFrac (stringcount - 1)
-    radius      = (bh / realToFrac stringcount) / 5
+    fretw       = bw / fromIntegral fretcount
+    freth       = bh / fromIntegral (stringcount - 1)
+    radius      = (bh / fromIntegral stringcount) / 5
 
     fretxs = px : iterate (+ fretw) (px + fretw / 2.0)
     fretys = iterate (+ freth) py

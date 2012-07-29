@@ -39,9 +39,9 @@ setupWindow = do
 
 draw :: DrawingArea -> Entry -> IO ()
 draw canvas entry = do
-  win <- widgetGetDrawWindow canvas
+  win  <- widgetGetDrawWindow canvas
   size <- fmap (mapBoth fromIntegral) $ widgetGetSize canvas
-  str <- entryGetText entry
+  str  <- entryGetText entry
 
   case parseExpr str of
     Left _     -> return ()

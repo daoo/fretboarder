@@ -4,17 +4,15 @@
 
 module Main where
 
-import Control.Arrow
 import Data.Char
-import System.Environment
-import System.FilePath
-
-import Graphics.Rendering.Cairo hiding (scale)
-
+import Extensions.Tuple
 import Fretboarder.Drawing.Backend
 import Fretboarder.Drawing.Cairo ()
 import Fretboarder.Drawing.Helper
 import Fretboarder.Parser.Parser
+import Graphics.Rendering.Cairo hiding (scale)
+import System.Environment
+import System.FilePath
 
 data Type = SVG | PNG
 
@@ -28,12 +26,17 @@ main = getArgs >>= run
 run :: [String] -> IO ()
 run args = case parseExpr rest of
   Left err   -> print err
-  Right expr -> withSurface t file size $ flip renderWith $ render defaultSettings ((realToFrac *** realToFrac) size) expr
+  Right expr -> withSurface t file sizeInt $ flip renderWith $ render defaultSettings size expr
   where
     (w : h : file : _) = args
 
     rest = unwords $ drop 3 args
-    size = (read w, read h)
+
+    size :: Size
+    size = mapBoth read (w, h)
+
+    sizeInt :: (Int, Int)
+    sizeInt = mapBoth round size
 
     t = case map toLower $ takeExtension file of
       ".png" -> PNG

@@ -4,6 +4,7 @@
 
 module Fretboarder.Guitar.Note where
 
+import Control.Applicative
 import Test.QuickCheck
 
 -- An internal note represntation where natural A in octave 0 represents the INote
@@ -16,12 +17,18 @@ type Octave = Integer
 data Tone = A | B | C | D | E | F | G
   deriving (Show)
 
+instance Arbitrary Tone where
+  arbitrary = oneof $ map return [A, B, C, D, E, F, G]
+
 data Accidental = Natural | Flat | Sharp
 
 instance Show Accidental where
   show Flat    = "b"
   show Natural = ""
   show Sharp   = "#"
+
+instance Arbitrary Accidental where
+  arbitrary = oneof $ map return [Flat, Natural, Sharp]
 
 -- We use Scientific Pitch Notation to specify a Note.
 -- C4 is middle C and the octave increase one step between B and C.
@@ -32,11 +39,7 @@ instance Show Note where
   show (Note t o a) = shows t $ shows o $ show a
 
 instance Arbitrary Note where
-  arbitrary = do
-    t <- oneof $ map return [A, B, C, D, E, F, G]
-    o <- oneof $ map return [-1, 0, 1, 2, 3, 4, 5]
-    a <- oneof $ map return [Flat, Natural, Sharp]
-    return $ Note t o a
+  arbitrary = liftA3 Note arbitrary (choose (-1, 5)) arbitrary
 
 a4, b4, c4, a5, b5 :: Note
 a4 = Note A 4 Natural

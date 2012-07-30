@@ -47,7 +47,7 @@ setupWindow = do
   _ <- on window deleteEvent $ liftIO mainQuit >> return False
   _ <- on entry editableChanged $ do
     str <- entryGetText entry
-    (snd esTextChange) str
+    snd esTextChange str
 
   return window
 

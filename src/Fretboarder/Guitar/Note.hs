@@ -29,7 +29,7 @@ instance Show Accidental where
 data Note = Note Tone Octave Accidental
 
 instance Show Note where
-  show (Note t o a) = concat [show t, show o, show a]
+  show (Note t o a) = shows t $ shows o $ show a
 
 instance Arbitrary Note where
   arbitrary = do
@@ -48,6 +48,7 @@ b5 = Note B 5 Natural
 toINote :: Note -> INote
 toINote (Note t o a) = o' + t' + a'
   where
+    o' = o * 12 - 9
     t' = case t of
       C -> 0
       D -> 2
@@ -56,7 +57,6 @@ toINote (Note t o a) = o' + t' + a'
       G -> 7
       A -> 9
       B -> 11
-    o' = o * 12 - 9
     a' = case a of
       Flat    -> -1
       Natural -> 0
@@ -65,8 +65,9 @@ toINote (Note t o a) = o' + t' + a'
 fromINote :: INote -> Note
 fromINote i = Note t o a
   where
-    i'     = i + 9
-    o      = floor $ fromIntegral i' / 12.0
+    i' = i + 9
+    o  = floor $ fromIntegral i' / 12.0
+
     (t, a) = case i' `mod` 12 of
       0  -> (C, Natural)
       1  -> (C, Sharp)
@@ -85,8 +86,9 @@ fromINote i = Note t o a
 -- For some reason I can't understand, B# == C, B == Cb, E# == F and E == Fb
 -- This method normalizes those sharps and flats to naturals
 fixNote :: Note -> Note
-fixNote (Note B o Sharp) = Note C (o + 1) Natural
-fixNote (Note C o Flat)  = Note B (o - 1) Natural
-fixNote (Note E o Sharp) = Note F o Natural
-fixNote (Note F o Flat)  = Note E o Natural
-fixNote n                = n
+fixNote n = case n of
+  Note B o Sharp -> Note C (o + 1) Natural
+  Note C o Flat  -> Note B (o - 1) Natural
+  Note E o Sharp -> Note F o Natural
+  Note F o Flat  -> Note E o Natural
+  _              -> n

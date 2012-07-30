@@ -5,24 +5,25 @@
 module Fretboarder.Parser.String where
 
 import Data.List
-
-import Fretboarder.Guitar.Note
 import Fretboarder.Guitar.Interval
+import Fretboarder.Guitar.Note
 
 readTone :: Char -> Tone
-readTone 'A' = A
-readTone 'B' = B
-readTone 'C' = C
-readTone 'D' = D
-readTone 'E' = E
-readTone 'F' = F
-readTone 'G' = G
-readTone _   = error "No such tone."
+readTone t = case t of
+  'A' -> A
+  'B' -> B
+  'C' -> C
+  'D' -> D
+  'E' -> E
+  'F' -> F
+  'G' -> G
+  _   -> error "No such tone."
 
 readAccidental :: Char -> Accidental
-readAccidental '#' = Sharp
-readAccidental 'b' = Flat
-readAccidental _   = Natural
+readAccidental a = case a of
+  '#' -> Sharp
+  'b' -> Flat
+  _   -> Natural
 
 levenshtein :: String -> String -> Int
 levenshtein s t = d !! length s !! length t
@@ -41,10 +42,8 @@ levenshtein s t = d !! length s !! length t
             f False = 1
 
 readOffsets :: String -> [Offset]
-readOffsets str = snd $ head lst
+readOffsets str = snd $ head $ sort $ map f offsets
   where
-    lst = sort $ map f offsets
-
     f :: (String, [Offset]) -> (Int, [Offset])
     f (s, o) = (levenshtein s str, o)
 

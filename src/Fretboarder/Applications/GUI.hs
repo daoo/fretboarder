@@ -17,15 +17,24 @@ import Reactive.Banana
 main :: IO ()
 main = initGUI >> setupWindow >>= widgetShowAll >> mainGUI
 
-parseExprMaybe :: String -> Maybe (Expr PScale)
-parseExprMaybe str = case parseExpr str of
-  Left _     -> Nothing
-  Right expr -> Just expr
+colorGreen, colorRed :: Color
+colorGreen = Color 35328 57856 13312
+colorRed   = Color 61184 10496 10496
 
-setupNetwork :: (Expr PScale -> IO ()) -> AddHandler String -> IO EventNetwork
-setupNetwork draw esTextChange = compile $ do
-  eText <- fromAddHandler esTextChange
-  reactimate $ fmap draw $ filterJust $ parseExprMaybe <$> eText
+setupNetwork :: (Maybe (Expr PScale) -> IO ()) -> (Color -> IO ()) -> AddHandler String -> AddHandler () -> IO EventNetwork
+setupNetwork draw color esTextChange esConfigure = compile $ do
+  eText      <- fromAddHandler esTextChange
+  eConfigure <- fromAddHandler esConfigure
+  let (eError, eExpr) = split $ parseExpr <$> eText
+      bExpr = stepper Nothing $ Just <$> eExpr
+
+  reactimate $ draw <$> Just <$> eExpr
+  reactimate $ draw <$> (bExpr <@ eConfigure)
+  reactimate $ const (color colorGreen) <$> eExpr
+  reactimate $ const (color colorRed) <$> eError
+
+setWidgetBg :: WidgetClass self => self -> Color -> IO ()
+setWidgetBg e = widgetModifyBase e StateNormal
 
 setupWindow :: IO Window
 setupWindow = do
@@ -41,16 +50,20 @@ setupWindow = do
   boxPackStart vbox entry PackNatural 0
 
   esTextChange <- newAddHandler
-  network <- setupNetwork (drawScale canvas) (fst esTextChange)
+  esConfigure  <- newAddHandler
+
+  network <- setupNetwork (drawScale canvas) (setWidgetBg entry) (fst esTextChange) (fst esConfigure)
   actuate network
 
   _ <- on window deleteEvent $ liftIO mainQuit >> return False
+  _ <- on window configureEvent $ liftIO (snd esConfigure ()) >> return False
   _ <- on entry editableChanged $ entryGetText entry >>= snd esTextChange
 
   return window
 
-drawScale :: DrawingArea -> Expr PScale -> IO ()
-drawScale canvas expr = do
+drawScale :: DrawingArea -> Maybe (Expr PScale) -> IO ()
+drawScale _ Nothing          = return ()
+drawScale canvas (Just expr) = do
   win  <- widgetGetDrawWindow canvas
   size <- fmap (mapBoth fromIntegral) $ widgetGetSize canvas
   renderWithDrawable win $ render defaultSettings size expr

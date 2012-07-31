@@ -45,9 +45,7 @@ setupWindow = do
   actuate network
 
   _ <- on window deleteEvent $ liftIO mainQuit >> return False
-  _ <- on entry editableChanged $ do
-    str <- entryGetText entry
-    snd esTextChange str
+  _ <- on entry editableChanged $ entryGetText entry >>= snd esTextChange
 
   return window
 

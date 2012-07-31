@@ -5,10 +5,9 @@
 module Fretboarder.Guitar.Scale where
 
 import Data.List
-import Test.QuickCheck
-
 import Fretboarder.Guitar.Interval
 import Fretboarder.Guitar.Note
+import Test.QuickCheck
 
 data Scale = Scale INote [Offset]
   deriving (Show)

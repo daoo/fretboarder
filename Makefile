@@ -24,6 +24,6 @@ clean:
 	mkdir -p build/Fretboarder/Parser/
 
 lint:
-	hlint src -c
+	hlint src -cx
 
 .PHONY: clean lint

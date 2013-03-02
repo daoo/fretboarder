@@ -2,14 +2,15 @@
 -- Copyright (c) 2011-2012 Daniel Oom, see license.txt for more info.
 --
 
+{-# LANGUAGE LambdaCase #-}
+
 module Fretboarder.Parser.String where
 
-import Data.List
 import Fretboarder.Guitar.Interval
 import Fretboarder.Guitar.Note
 
 readTone :: Char -> Tone
-readTone t = case t of
+readTone = \case
   'A' -> A
   'B' -> B
   'C' -> C
@@ -20,7 +21,7 @@ readTone t = case t of
   _   -> error "No such tone."
 
 readAccidental :: Char -> Accidental
-readAccidental a = case a of
+readAccidental = \case
   '#' -> Sharp
   'b' -> Flat
   _   -> Natural
@@ -42,7 +43,7 @@ levenshtein s t = d !! length s !! length t
             f False = 1
 
 readOffsets :: String -> [Offset]
-readOffsets str = snd $ head $ sort $ map f offsets
+readOffsets str = snd $ minimum $ map f offsets
   where
     f :: (String, [Offset]) -> (Int, [Offset])
     f (s, o) = (levenshtein s str, o)

@@ -2,6 +2,8 @@
 -- Copyright (c) 2011-2012 Daniel Oom, see license.txt for more info.
 --
 
+{-# LANGUAGE LambdaCase #-}
+
 module Fretboarder.Guitar.Note where
 
 import Control.Applicative
@@ -10,9 +12,9 @@ import Test.QuickCheck
 -- An internal note represntation where natural A in octave 0 represents the INote
 -- number 0. A# in octave 0: INote 1, and so forth.
 -- The same as the keys on a piano, if you start counting at 0 instead of 1.
-type INote = Integer
+type INote = Int
 
-type Octave = Integer
+type Octave = Int
 
 data Tone = A | B | C | D | E | F | G
   deriving (Show)
@@ -23,9 +25,10 @@ instance Arbitrary Tone where
 data Accidental = Natural | Flat | Sharp
 
 instance Show Accidental where
-  show Flat    = "b"
-  show Natural = ""
-  show Sharp   = "#"
+  show = \case
+    Flat    -> "b"
+    Natural -> ""
+    Sharp   -> "#"
 
 instance Arbitrary Accidental where
   arbitrary = oneof $ map return [Flat, Natural, Sharp]
@@ -69,7 +72,7 @@ fromINote :: INote -> Note
 fromINote i = Note t o a
   where
     i' = i + 9
-    o  = floor $ fromIntegral i' / 12.0
+    o  = floor $ fromIntegral i' / (12.0 :: Double)
 
     (t, a) = case i' `mod` 12 of
       0  -> (C, Natural)
@@ -89,9 +92,9 @@ fromINote i = Note t o a
 -- For some reason I can't understand, B# == C, B == Cb, E# == F and E == Fb
 -- This method normalizes those sharps and flats to naturals
 fixNote :: Note -> Note
-fixNote n = case n of
+fixNote = \case
   Note B o Sharp -> Note C (o + 1) Natural
   Note C o Flat  -> Note B (o - 1) Natural
   Note E o Sharp -> Note F o Natural
   Note F o Flat  -> Note E o Natural
-  _              -> n
+  n              -> n

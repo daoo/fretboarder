@@ -21,8 +21,8 @@ module Fretboarder.Guitar.Interval where
 --
 -- Internally I prefer to use offsets.
 
-type Interval = Integer
-type Offset   = Integer
+type Interval = Int
+type Offset   = Int
 
 data DiatonicInterval = PerfectUnison | Minor2 | Major2 | Minor3 | Major3
                       | Perfect4 | Tritone | Perfect5 | Minor6 | Major6
@@ -54,3 +54,12 @@ mixolydianMode = [2, 4, 5, 7, 9, 10, 12] -- Major scale with lowered 7th
 aeolianMode    = [2, 3, 5, 7, 8, 10, 12] -- Identical to the minor scale
 locrianMode    = [1, 3, 5, 6, 8, 10, 12] -- Minor scale with lowered 2nd and 5th
 
+diatonicToOffset :: DiatonicInterval -> Offset
+diatonicToOffset = fromEnum
+
+diatonicToIntervals :: Int -> [DiatonicInterval] -> [Interval]
+diatonicToIntervals _ []     = []
+diatonicToIntervals i (a:as) = b : diatonicToIntervals (i + b) as
+  where
+    b = d - i
+    d = diatonicToOffset a

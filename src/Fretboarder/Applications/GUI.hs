@@ -13,6 +13,7 @@ import Fretboarder.Parser.Expr
 import Fretboarder.Parser.Parser
 import Graphics.UI.Gtk
 import Reactive.Banana
+import Reactive.Banana.Frameworks
 
 main :: IO ()
 main = initGUI >> setupWindow >>= widgetShowAll >> mainGUI

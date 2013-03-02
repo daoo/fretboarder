@@ -42,15 +42,17 @@ data Settings = Settings
   , getLineWidth :: Double
   , getFretNames :: [String]
   , getFgColor :: Color
-  , getBgColor :: Color }
+  , getBgColor :: Color
+  } deriving Show
 
 defaultSettings :: Settings
 defaultSettings = Settings
-  { getInlays = [(3, 1), (5, 1), (7, 1), (9, 1), (12, 2), (15, 1), (17, 1), (19, 1), (21, 1)]
+  { getInlays    = [(3, 1), (5, 1), (7, 1), (9, 1), (12, 2), (15, 1), (17, 1), (19, 1), (21, 1)]
   , getLineWidth = 1.0
   , getFretNames = []
-  , getFgColor = (0, 0, 0)
-  , getBgColor = (255, 255, 255) }
+  , getFgColor   = (0, 0, 0)
+  , getBgColor   = (255, 255, 255)
+  }
 
 drawFretboard :: Backend a => Settings -> Size -> Fretboard -> a ()
 drawFretboard set (w, h) fb = do
@@ -67,8 +69,6 @@ drawFretboard set (w, h) fb = do
 
   mapM_ (fillCircle radius) $ inlays $ getInlays set
   mapM_ (uncurry (evenPie radius)) $ toPoints fb
-
-  return ()
   where
     px = 50
     py = 20

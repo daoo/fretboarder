@@ -8,8 +8,10 @@ import Fretboarder.Drawing.Color
 import Fretboarder.Guitar.Note
 import Fretboarder.Guitar.Scale
 
-data Fret = Fret INote [Color]
-  deriving (Show)
+data Fret = Fret
+  { fretNote :: {-# UNPACK #-} !INote
+  , fretColors :: [Color]
+  } deriving (Show)
 
 type GuitarString = [Fret]
 type Fretboard    = [GuitarString]
@@ -26,15 +28,16 @@ ebgdae = map (createGuitarString . toINote)
   ]
 
 createGuitarString :: INote -> GuitarString
-createGuitarString n = zipWith Fret (iterate (+1) n) $ repeat []
+createGuitarString = map (`Fret` []) . iterate (+1)
 
 takeFrets :: Int -> Fretboard -> Fretboard
 takeFrets = map . take
 
 markString :: Color -> Scale -> GuitarString -> GuitarString
-markString _ _ []                                           = []
-markString c scale (f@(Fret n cs) : fs) | scale `hasNote` n = Fret n (c:cs) : markString c scale fs
-                                        | otherwise         = f : markString c scale fs
+markString c scale = map f
+  where
+    f fret@(Fret n cs) | scale `hasNote` n = Fret n (c:cs)
+                       | otherwise         = fret
 
 -- Note that the fretboard have to be finite
 markFretboard :: Color -> Scale -> Fretboard -> Fretboard

@@ -1,5 +1,2 @@
-Main
 *.svg
-*.hi
-*.o
-build/
+dist

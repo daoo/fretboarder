@@ -1,0 +1,37 @@
+name:                fretboarder
+version:             0.1.0.0
+synopsis:            Drawing scales and chord notes on the guitar neck
+description:         Program for drawing scales and chords on the guitar neck
+license:             PublicDomain
+author:              daoo
+maintainer:          daoo
+build-type:          Simple
+cabal-version:       >=1.8
+
+executable fretboarder
+  main-is: Fretboarder/Applications/CommandLine.hs
+  build-depends:
+    base            == 4.6.*,
+    cairo           == 0.12.*,
+    transformers    == 0.3.*,
+    gtk             == 0.12.*,
+    filepath        == 1.3.*,
+    QuickCheck      == 2.6.*,
+    parsec          == 3.1.*,
+    reactive-banana == 0.7.1.*
+  hs-source-dirs: src
+  ghc-options: -Wall
+
+executable fretboarder-gtk
+  main-is: Fretboarder/Applications/GUI.hs
+  build-depends:
+    base            == 4.6.*,
+    cairo           == 0.12.*,
+    transformers    == 0.3.*,
+    gtk             == 0.12.*,
+    filepath        == 1.3.*,
+    QuickCheck      == 2.6.*,
+    parsec          == 3.1.*,
+    reactive-banana == 0.7.1.*
+  hs-source-dirs: src
+  ghc-options: -Wall

@@ -1,7 +1,3 @@
---
--- Copyright (c) 2011-2012 Daniel Oom, see license.txt for more info.
---
-
 module Extensions.List where
 
 map2 :: (a -> b) -> [[a]] -> [[b]]

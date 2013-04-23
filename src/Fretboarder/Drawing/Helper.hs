@@ -1,9 +1,4 @@
---
--- Copyright (c) 2011-2012 Daniel Oom, see license.txt for more info.
---
-
 {-# LANGUAGE LambdaCase #-}
-
 module Fretboarder.Drawing.Helper where
 
 import Fretboarder.Drawing.Backend

@@ -1,9 +1,4 @@
---
--- Copyright (c) 2011-2012 Daniel Oom, see license.txt for more info.
---
-
 {-# LANGUAGE LambdaCase #-}
-
 module Fretboarder.Guitar.Note where
 
 import Control.Applicative

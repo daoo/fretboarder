@@ -1,7 +1,3 @@
---
--- Copyright (c) 2011-2012 Daniel Oom, see license.txt for more info.
---
-
 module Fretboarder.Guitar.Fretboard where
 
 import Fretboarder.Drawing.Color

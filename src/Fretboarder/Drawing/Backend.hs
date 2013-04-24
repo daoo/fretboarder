@@ -1,6 +1,5 @@
 module Fretboarder.Drawing.Backend where
 
-import Data.List
 import Extensions.Tuple
 import Fretboarder.Drawing.Color
 import Fretboarder.Guitar.Fretboard
@@ -57,17 +56,17 @@ drawFretboard set (w, h) fb = do
   setColor $ getFgColor set
 
   setLineWidth $ getLineWidth set * 10.0
-  strokeLines [((px, py), (px, py + bh))]
+  strokeLines [(topLeft, (px, py + bh))]
   setLineWidth $ getLineWidth set
 
   deltaLines fretcount (fretw, 0) ((px + fretw, py), (px + fretw, py + bh))
-  deltaLines stringcount (0, freth) ((px, py), (px + bw, py))
+  deltaLines stringcount (0, freth) (topLeft, (px + bw, py))
 
   mapM_ (fillCircle radius) $ inlays $ getInlays set
   mapM_ (uncurry (evenPie radius)) $ toPoints fb
   where
-    px = 50
-    py = 20
+    topLeft@(px, py) = (50, 20)
+
     bw = w - 2 * px
     bh = h - 2 * py
 
@@ -82,16 +81,20 @@ drawFretboard set (w, h) fb = do
     fretx i = px + fretw / 2.0 + fromIntegral (i - 1) * fretw
     frety i = py + fromIntegral i * freth
 
+    -- TODO: Support inlays with more than two dots per fret
     inlay 1 x = [(x, py + bh / 2.0)]
     inlay 2 x = [(x, py + 3.0 * freth / 2.0), (x, py + 7.0 * freth / 2.0)]
     inlay _ _ = undefined
 
-    -- TODO: Support inlays with more than two dots per fret
     inlays :: [(Int, Int)] -> [Point]
     inlays []            = []
     inlays ((f, c) : as) = inlay c (fretx f) ++ inlays as
 
     toPoints :: Fretboard -> [(Point, [Color])]
-    toPoints = concat . snd . mapAccumL (\acc string -> (acc + 1, snd $ mapAccumL (f acc) 0 string)) 0
+    toPoints = goy 0
       where
-        f y x fret = (x + 1, ((fretx x, frety y), fretColors fret))
+        gox _ _ []     = []
+        gox i y (f:fs) = ((fretx i, y), fretColors f) : gox (i + 1) y fs
+
+        goy _ []     = []
+        goy j (s:ss) = gox 0 (frety j) s ++ goy (j + 1) ss

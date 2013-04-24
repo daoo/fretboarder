@@ -1,29 +1,27 @@
+{-# LANGUAGE LambdaCase #-}
 module Fretboarder.Guitar.Interval where
 
--- | Describing Scales
--- Okay, we have three ways to describe the intervals between notes in a scale:
---   * Intervals,
---     Simple integer intervals where 1 equals to one semitone and 2 equals to
---     a note, 3 is a tone and a semitone, and so on. Can also be zero or
---     negative. Each integer in the list is relative to the integer just
---     before.
---   * Diatonic Intervals,
---     The same as integer intervals but each interval has a name:
---       * Major third = 2 tones
---       * Perfect fifth = 3 tones and a semitone
---       * etc...
---   * Offsets,
---     Again integers but is instead relative to the first note of the scale.
---
--- Internally I prefer to use offsets.
-
+-- |Semitone intervals
+-- 1 equals to one semitone and 2 equals to a tone, 3 is a tone plus a
+-- semitone, and so on. Can also be zero or negative. In a list each interval
+-- should be treated as relative to the preceding interval in the list.
 type Interval = Int
-type Offset   = Int
 
+-- |Semitone offset relative to a root note
+-- Similar to Intervals where 1 is a semitone and 2 is a whole tone and so on.
+-- But in a list the each offset is should be treated as relative to some root
+-- note.
+type Offset = Int
+
+-- |Diatonic Intervals,
+-- The same as integer intervals but each interval has a name:
+--   * Major third = 2 tones
+--   * Perfect fifth = 3 tones and a semitone
+--   * etc...
 data DiatonicInterval = PerfectUnison | Minor2 | Major2 | Minor3 | Major3
                       | Perfect4 | Tritone | Perfect5 | Minor6 | Major6
                       | Minor7 | Major7 | PerfectOctave
-  deriving (Show, Eq, Enum)
+  deriving (Show, Eq)
 
 -- Some predefined scale offsets
 minorScale, majorScale :: [Offset]
@@ -41,7 +39,8 @@ majorPentatonic = [2, 4, 7, 9, 12]
 bluesScale :: [Offset]
 bluesScale = [6]
 
-ionianMode, dorianMode, phrygianMode, lydianMode, mixolydianMode, aeolianMode, locrianMode :: [Interval]
+ionianMode, dorianMode, phrygianMode, lydianMode, mixolydianMode,
+  aeolianMode, locrianMode :: [Offset]
 ionianMode     = [2, 4, 5, 7, 9, 11, 12] -- Identical to the major scale
 dorianMode     = [2, 3, 5, 7, 9, 10, 12] -- Minor scale with raised 6th
 phrygianMode   = [1, 3, 5, 7, 8, 10, 12] -- Minor scale with lowered 2nd
@@ -51,9 +50,22 @@ aeolianMode    = [2, 3, 5, 7, 8, 10, 12] -- Identical to the minor scale
 locrianMode    = [1, 3, 5, 6, 8, 10, 12] -- Minor scale with lowered 2nd and 5th
 
 diatonicToOffset :: DiatonicInterval -> Offset
-diatonicToOffset = fromEnum
+diatonicToOffset = \case
+  PerfectUnison -> 0
+  Minor2        -> 1
+  Major2        -> 2
+  Minor3        -> 3
+  Major3        -> 4
+  Perfect4      -> 5
+  Tritone       -> 6
+  Perfect5      -> 7
+  Minor6        -> 8
+  Major6        -> 9
+  Minor7        -> 10
+  Major7        -> 11
+  PerfectOctave -> 12
 
-diatonicToIntervals :: Int -> [DiatonicInterval] -> [Interval]
+diatonicToIntervals :: Int -> [DiatonicInterval] -> [Offset]
 diatonicToIntervals _ []     = []
 diatonicToIntervals i (a:as) = b : diatonicToIntervals (i + b) as
   where

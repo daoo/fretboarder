@@ -19,16 +19,21 @@ colorGreen = Color 35328 57856 13312
 colorRed   = Color 61184 10496 10496
 
 setupNetwork :: (Maybe (Expr PScale) -> IO ()) -> (Color -> IO ()) -> AddHandler String -> AddHandler () -> IO EventNetwork
-setupNetwork draw color esTextChange esConfigure = compile $ do
-  eText      <- fromAddHandler esTextChange
-  eConfigure <- fromAddHandler esConfigure
-  let (eError, eExpr) = split $ parseExpr <$> eText
-      bExpr = stepper Nothing $ Just <$> eExpr
+setupNetwork draw color estext esconf = compile $ do
+  etext <- fromAddHandler estext
+  econf <- fromAddHandler esconf
+  let (err, expr) = split $ parseExpr <$> etext
 
-  reactimate $ draw <$> Just <$> eExpr
-  reactimate $ draw <$> (bExpr <@ eConfigure)
-  reactimate $ const (color colorGreen) <$> eExpr
-  reactimate $ const (color colorRed) <$> eError
+      edraw = accumE Nothing $ union
+        (id <$ econf)
+        ((const . Just) <$> expr)
+
+      ecolor = accumE colorRed $ union
+        (const colorGreen <$ expr)
+        (const colorRed   <$ err)
+
+  reactimate $ draw <$> edraw
+  reactimate $ color <$> ecolor
 
 setWidgetBg :: WidgetClass self => self -> Color -> IO ()
 setWidgetBg e = widgetModifyBase e StateNormal

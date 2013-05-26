@@ -67,5 +67,7 @@ drawScale :: DrawingArea -> Maybe (Expr PScale) -> IO ()
 drawScale _ Nothing          = return ()
 drawScale canvas (Just expr) = do
   win  <- widgetGetDrawWindow canvas
-  size <- fmap (mapBoth fromIntegral) $ widgetGetSize canvas
-  renderWithDrawable win $ render defaultSettings size expr
+  size@(w, h) <- widgetGetSize canvas
+  drawWindowBeginPaintRect win $ Rectangle 0 0 w h
+  renderWithDrawable win $ render defaultSettings (mapBoth fromIntegral size) expr
+  drawWindowEndPaint win

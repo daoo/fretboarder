@@ -13,7 +13,7 @@ readTone = \case
   'E' -> E
   'F' -> F
   'G' -> G
-  _   -> error "No such tone."
+  _   -> C -- Default to C
 
 readAccidental :: Char -> Accidental
 readAccidental = \case

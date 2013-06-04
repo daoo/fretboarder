@@ -64,12 +64,11 @@ toINote (Note t o a) = o' + t' + a'
       Sharp   -> 1
 
 fromINote :: INote -> Note
-fromINote i = Note t o a
+fromINote i = Note tone q accidental
   where
-    i' = i + 9
-    o  = floor $ fromIntegral i' / (12.0 :: Double)
+    (q, r) = fromIntegral (i+9) `quotRem` 12
 
-    (t, a) = case i' `mod` 12 of
+    (tone, accidental) = case r of
       0  -> (C, Natural)
       1  -> (C, Sharp)
       2  -> (D, Natural)
@@ -82,14 +81,14 @@ fromINote i = Note t o a
       9  -> (A, Natural)
       10 -> (A, Sharp)
       11 -> (B, Natural)
-      _  -> error "Should not happen"
+      _  -> (C, Natural) -- Default to C
 
 -- For some reason I can't understand, B# == C, B == Cb, E# == F and E == Fb
 -- This method normalizes those sharps and flats to naturals
 fixNote :: Note -> Note
 fixNote = \case
-  Note B o Sharp -> Note C (o + 1) Natural
-  Note C o Flat  -> Note B (o - 1) Natural
+  Note B o Sharp -> Note C (o+1) Natural
+  Note C o Flat  -> Note B (o-1) Natural
   Note E o Sharp -> Note F o Natural
   Note F o Flat  -> Note E o Natural
   n              -> n

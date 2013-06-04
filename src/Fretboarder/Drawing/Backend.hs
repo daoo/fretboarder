@@ -1,3 +1,4 @@
+{-# LANGUAGE BangPatterns #-}
 module Fretboarder.Drawing.Backend where
 
 import Extensions.Tuple
@@ -84,7 +85,7 @@ drawFretboard set (w, h) fb = do
     -- TODO: Support inlays with more than two dots per fret
     inlay 1 x = [(x, py + bh / 2.0)]
     inlay 2 x = [(x, py + 3.0 * freth / 2.0), (x, py + 7.0 * freth / 2.0)]
-    inlay _ _ = undefined
+    inlay _ _ = []
 
     inlays :: [(Int, Int)] -> [Point]
     inlays []            = []
@@ -93,8 +94,8 @@ drawFretboard set (w, h) fb = do
     toPoints :: Fretboard -> [(Point, [Color])]
     toPoints = goy 0
       where
-        gox _ _ []     = []
-        gox i y (f:fs) = ((fretx i, y), fretColors f) : gox (i + 1) y fs
+        gox  _  _ []     = []
+        gox !i !y (f:fs) = ((fretx i, y), fretColors f) : gox (i+1) y fs
 
-        goy _ []     = []
-        goy j (s:ss) = gox 0 (frety j) s ++ goy (j + 1) ss
+        goy  _ []     = []
+        goy !j (s:ss) = gox 0 (frety j) s ++ goy (j + 1) ss

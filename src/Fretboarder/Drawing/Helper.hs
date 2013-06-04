@@ -19,7 +19,7 @@ makeList = \case
   Set scale              -> [scale]
   Different e1 e2        -> makeList e1 ++ makeList e2
   Join (Set s1) (Set s2) -> [s1 `joinScales` s2]
-  _                      -> error "Can not transform Expr to list"
+  _                      -> undefined
 
 render :: Backend a => Settings -> Size -> Expr PScale -> a ()
 render set size expr = drawFretboard set size $ markList marks fb

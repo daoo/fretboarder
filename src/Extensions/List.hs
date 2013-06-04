@@ -8,4 +8,5 @@ hasDups []     = False
 hasDups (x:xs) = x `elem` xs || hasDups xs
 
 headOrEmpty :: [a] -> [a]
-headOrEmpty = take 1
+headOrEmpty []    = []
+headOrEmpty (x:_) = [x]

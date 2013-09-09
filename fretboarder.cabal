@@ -6,7 +6,7 @@ license: PublicDomain
 author: daoo
 maintainer: daoo
 build-type: Simple
-cabal-version: >=1.8
+cabal-version: >=1.18
 
 library
   exposed-modules:
@@ -25,13 +25,16 @@ library
   build-depends: base, QuickCheck, cairo, transformers, filepath, parsec
   hs-source-dirs: src
   ghc-options: -Wall
+  default-language: Haskell2010
 
 executable fretboarder
   main-is: src/CommandLine.hs
   build-depends: base, fretboarder, filepath, cairo
   ghc-options: -Wall
+  default-language: Haskell2010
 
 executable fretboarder-gtk
   main-is: src/GUI.hs
   build-depends: base, fretboarder, filepath, transformers, gtk, cairo, reactive-banana
   ghc-options: -Wall
+  default-language: Haskell2010

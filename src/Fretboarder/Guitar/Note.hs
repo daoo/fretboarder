@@ -47,10 +47,11 @@ a5 = Note A 5 Natural
 b5 = Note B 5 Natural
 
 toINote :: Note -> INote
-toINote (Note t o a) = o' + t' + a'
+toINote (Note t o a) = octave o + tone t + acc a
   where
-    o' = o * 12 - 9
-    t' = case t of
+    octave o = o * 12 - 9
+
+    tone = \case
       C -> 0
       D -> 2
       E -> 4
@@ -58,7 +59,8 @@ toINote (Note t o a) = o' + t' + a'
       G -> 7
       A -> 9
       B -> 11
-    a' = case a of
+
+    acc = \case
       Flat    -> -1
       Natural -> 0
       Sharp   -> 1

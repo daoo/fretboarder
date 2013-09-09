@@ -1,5 +1,21 @@
 {-# LANGUAGE LambdaCase #-}
-module Fretboarder.Guitar.Note where
+module Fretboarder.Guitar.Note
+  ( INote
+  , Octave
+  , Tone(..)
+  , Accidental(..)
+  , Note(..)
+
+  , a4
+  , b4
+  , c4
+  , a5
+  , b5
+
+  , toINote
+  , fromINote
+  , fixNote
+  ) where
 
 import Control.Applicative
 import Test.QuickCheck

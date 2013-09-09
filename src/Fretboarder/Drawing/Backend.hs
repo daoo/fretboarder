@@ -1,5 +1,28 @@
 {-# LANGUAGE BangPatterns #-}
-module Fretboarder.Drawing.Backend where
+module Fretboarder.Drawing.Backend
+  ( Point
+  , Size
+  , Line
+
+  , pi2
+
+  , Backend
+  , setColor
+  , setLineWidth
+  , strokeLines
+  , strokeRectangle
+  , fillRectangle
+  , fillCircle
+  , fillArcs
+
+  , deltaLines
+  , evenPie
+
+  , Settings(..)
+  , defaultSettings
+
+  , drawFretboard
+  ) where
 
 import Fretboarder.Drawing.Color
 import Fretboarder.Guitar.Fretboard

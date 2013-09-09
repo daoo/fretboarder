@@ -1,4 +1,6 @@
-module Fretboarder.Parser.Expr where
+module Fretboarder.Parser.Expr
+  ( Expr(..)
+  ) where
 
 data Expr a = Set a
             | Different (Expr a) (Expr a)

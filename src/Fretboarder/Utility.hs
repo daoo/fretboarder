@@ -1,7 +1,9 @@
 module Fretboarder.Utility where
 
+import Control.Arrow
+
 mapBoth :: (a -> b) -> (a, a) -> (b, b)
-mapBoth f (a, b) = (f a, f b)
+mapBoth f = f *** f
 
 map2 :: (a -> b) -> [[a]] -> [[b]]
 map2 = map . map

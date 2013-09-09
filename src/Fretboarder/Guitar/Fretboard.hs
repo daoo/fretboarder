@@ -1,4 +1,14 @@
-module Fretboarder.Guitar.Fretboard where
+module Fretboarder.Guitar.Fretboard
+  ( Fret(..)
+  , GuitarString
+  , Fretboard
+  , ebgdae
+  , createGuitarString
+  , takeFrets
+  , markString
+  , markFretboard
+  , markList
+  ) where
 
 import Fretboarder.Drawing.Color
 import Fretboarder.Guitar.Note

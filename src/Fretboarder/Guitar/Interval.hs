@@ -1,5 +1,27 @@
 {-# LANGUAGE LambdaCase #-}
-module Fretboarder.Guitar.Interval where
+module Fretboarder.Guitar.Interval
+  ( Interval
+  , Offset
+  , DiatonicInterval(..)
+
+  , minorScale
+  , majorScale
+  , harmonicMinor
+  , melodicMinor
+  , minorPentatonic
+  , majorPentatonic
+  , bluesScale
+  , ionianMode
+  , dorianMode
+  , phrygianMode
+  , lydianMode
+  , mixolydianMode
+  , aeolianMode
+  , locrianMode
+
+  , diatonicToOffset
+  , diatonicToIntervals
+  ) where
 
 -- |Semitone intervals
 -- 1 equals to one semitone and 2 equals to a tone, 3 is a tone plus a

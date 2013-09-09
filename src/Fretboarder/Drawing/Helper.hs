@@ -4,15 +4,8 @@ module Fretboarder.Drawing.Helper where
 import Fretboarder.Drawing.Backend
 import Fretboarder.Drawing.Color
 import Fretboarder.Guitar.Fretboard
-import Fretboarder.Guitar.Note
 import Fretboarder.Guitar.Scale
 import Fretboarder.Parser.Expr
-import Fretboarder.Parser.Parser
-import Fretboarder.Parser.String
-
-makeScales :: Expr PScale -> Expr Scale
-makeScales = fmap $ \case
-  PScale (PNote tone accidental) scale -> Scale (toINote (Note tone 1 accidental)) $ readOffsets scale
 
 makeList :: Expr Scale -> [Scale]
 makeList = \case
@@ -21,10 +14,10 @@ makeList = \case
   Join (Set s1) (Set s2) -> [s1 `joinScales` s2]
   _                      -> undefined
 
-render :: Backend a => Settings -> Size -> Expr PScale -> a ()
+render :: Backend a => Settings -> Size -> Expr Scale -> a ()
 render set size expr = drawFretboard set size $ markList marks fb
   where
-    marks = zip tangoColors $ makeList $ makeScales expr
+    marks = zip tangoColors $ makeList expr
 
     fb = takeFrets 23 ebgdae
 

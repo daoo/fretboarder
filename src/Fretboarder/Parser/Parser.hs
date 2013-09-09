@@ -1,12 +1,16 @@
+{-# LANGUAGE LambdaCase #-}
 module Fretboarder.Parser.Parser
-  ( PNote (..)
-  , PScale (..)
-  , parseExpr
+  ( parseExprScale
   ) where
 
+import Control.Applicative ((<$>))
+import Data.Char
+import Fretboarder.Guitar.Interval
 import Fretboarder.Guitar.Note
+import Fretboarder.Guitar.Scale
 import Fretboarder.Parser.Expr
-import Text.ParserCombinators.Parsec hiding (State, token, tokens)
+import Text.Parsec
+import Text.Parsec.String
 
 data PNote = PNote Tone Accidental
   deriving Show
@@ -14,45 +18,93 @@ data PNote = PNote Tone Accidental
 data PScale = PScale PNote String
   deriving Show
 
-operator :: Parser (Expr a -> Expr a -> Expr a)
-operator = choice
-  [ char '*' >> return Join
-  , char '+' >> return Different ]
+toneToChar :: Tone -> Char
+toneToChar = \case
+  A -> 'A'
+  B -> 'B'
+  C -> 'C'
+  D -> 'D'
+  E -> 'E'
+  F -> 'F'
+  G -> 'G'
 
-note :: Parser PNote
-note = choice $ map (\(str, n) -> oneOf str >> acc n)
-  [ ("Aa", A)
-  , ("Bb", B)
-  , ("Cc", C)
-  , ("Dd", D)
-  , ("Ee", E)
-  , ("Ff", F)
-  , ("Gg", G)
-  ]
+parsePNote :: Parser PNote
+parsePNote = f A <|> f B <|> f C <|> f D <|> f E <|> f F <|> f G
   where
-    acc :: Tone -> Parser PNote
-    acc t = (char '#' >> return (PNote t Sharp))
-        <|> (char 'b' >> return (PNote t Flat))
-        <|> return (PNote t Natural)
+    f t = (char c <|> char (toLower c)) >> (PNote t <$> acc)
+      where c = toneToChar t
 
-scale :: Parser PScale
-scale = do
-  n <- note
+    acc = (char '#' >> return Sharp)
+      <|> (char 'b' >> return Flat)
+      <|> return Natural
+
+parsePScale :: Parser PScale
+parsePScale = do
+  n <- parsePNote
   spaces
-  s <- many1 (letter <|> space)
+  s <- many (letter <|> space)
   return $ PScale n s
 
+parseOperator :: Parser (Expr a -> Expr a -> Expr a)
+parseOperator = (char '*' >> return Join)
+            <|> (char '+' >> return Different)
+
 -- HACK: Proper binary expression parser
-expr :: Parser (Expr PScale)
-expr = do
-  s <- scale
+parseExpr :: Parser a -> Parser (Expr a)
+parseExpr p = do
+  s <- p
   f <- option Set $ do
     spaces
-    op <- operator
+    op <- parseOperator
     spaces
-    e <- expr
+    e <- parseExpr p
     return $ op e . Set
   return $ f s
 
-parseExpr :: String -> Either ParseError (Expr PScale)
-parseExpr = parse expr "expr"
+parseExprScale :: String -> Either ParseError (Expr Scale)
+parseExprScale = parse (makeScales <$> parseExpr parsePScale) ""
+
+levenshtein :: String -> String -> Int
+levenshtein s t = d !! length s !! length t
+  where
+    d = [ [ distance m n | n <- [0..length t] ] | m <- [0..length s] ]
+
+    distance i 0 = i
+    distance 0 j = j
+    distance i j = minimum [a, b, c]
+      where
+        a = d !! (i - 1) !! j + 1
+        b = d !! i !! (j - 1) + 1
+        c = d !! (i - 1) !! (j - 1) + f (s !! (i - 1) == t !! (j - 1))
+          where
+            f True  = 0
+            f False = 1
+
+readOffsets :: String -> [Offset]
+readOffsets str = snd $ minimum $ map f offsets
+  where
+    f :: (String, [Offset]) -> (Int, [Offset])
+    f (s, o) = (levenshtein s str, o)
+
+    offsets :: [(String, [Offset])]
+    offsets = [ ("major", majorScale)
+              , ("minor", minorScale)
+
+              , ("harmonic minor", harmonicMinor)
+              , ("melodic minor", melodicMinor)
+
+              , ("minor pentatonic", minorPentatonic)
+              , ("major pentatonic", majorPentatonic)
+
+              , ("blues", bluesScale)
+
+              , ("ionian", ionianMode)
+              , ("dorian", dorianMode)
+              , ("phrygian", phrygianMode)
+              , ("lydian", lydianMode)
+              , ("mixolydian", mixolydianMode)
+              , ("aeolian", aeolianMode)
+              , ("locrian", locrianMode) ]
+
+makeScales :: Expr PScale -> Expr Scale
+makeScales = fmap $ \(PScale (PNote tone accidental) scale) -> Scale (toINote (Note tone 1 accidental)) $ readOffsets scale

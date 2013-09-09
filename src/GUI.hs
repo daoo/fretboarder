@@ -1,13 +1,14 @@
-module Main where
+module Main (main) where
 
 import Control.Monad.IO.Class
 import Fretboarder.Drawing.Backend
 import Fretboarder.Drawing.Cairo ()
 import Fretboarder.Drawing.Helper
+import Fretboarder.Guitar.Scale
 import Fretboarder.Parser.Expr
 import Fretboarder.Parser.Parser
 import Fretboarder.Utility
-import Graphics.UI.Gtk
+import Graphics.UI.Gtk hiding (Scale)
 import Reactive.Banana
 import Reactive.Banana.Frameworks
 
@@ -18,11 +19,11 @@ colorGreen, colorRed :: Color
 colorGreen = Color 35328 57856 13312
 colorRed   = Color 61184 10496 10496
 
-setupNetwork :: (Maybe (Expr PScale) -> IO ()) -> (Color -> IO ()) -> AddHandler String -> AddHandler () -> IO EventNetwork
+setupNetwork :: (Maybe (Expr Scale) -> IO ()) -> (Color -> IO ()) -> AddHandler String -> AddHandler () -> IO EventNetwork
 setupNetwork draw color estext esconf = compile $ do
   etext <- fromAddHandler estext
   econf <- fromAddHandler esconf
-  let (err, expr) = split $ parseExpr <$> etext
+  let (err, expr) = split $ parseExprScale <$> etext
 
       edraw = accumE Nothing $ union
         (id <$ econf)
@@ -63,7 +64,7 @@ setupWindow = do
 
   return window
 
-drawScale :: DrawingArea -> Maybe (Expr PScale) -> IO ()
+drawScale :: DrawingArea -> Maybe (Expr Scale) -> IO ()
 drawScale _ Nothing          = return ()
 drawScale canvas (Just expr) = do
   win  <- widgetGetDrawWindow canvas

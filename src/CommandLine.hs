@@ -1,4 +1,4 @@
-module Main where
+module Main (main) where
 
 import Data.Char
 import Fretboarder.Drawing.Backend
@@ -21,7 +21,7 @@ main :: IO ()
 main = do
   (w : h : file : rest) <- getArgs
 
-  case parseExpr (concat rest) of
+  case parseExprScale (concat rest) of
     Left err   -> print err
     Right expr -> let ft = case map toLower $ takeExtension file of
                         ".png" -> PNG

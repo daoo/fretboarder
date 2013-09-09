@@ -20,7 +20,6 @@ library
     Fretboarder.Guitar.Scale,
     Fretboarder.Parser.Expr,
     Fretboarder.Parser.Parser,
-    Fretboarder.Parser.String,
     Fretboarder.Utility
   build-depends: base, QuickCheck, cairo, transformers, filepath, parsec
   hs-source-dirs: src

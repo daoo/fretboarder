@@ -1,3 +1,5 @@
-module Fretboarder.Drawing.Color where
+module Fretboarder.Drawing.Color
+  ( Color
+  ) where
 
 type Color = (Double, Double, Double)

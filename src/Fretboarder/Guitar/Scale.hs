@@ -1,4 +1,9 @@
-module Fretboarder.Guitar.Scale where
+module Fretboarder.Guitar.Scale
+  ( Scale(..)
+  , hasNote
+  , repeatScale
+  , joinScales
+  ) where
 
 import Control.Applicative
 import Data.List

@@ -1,9 +1,9 @@
 {-# LANGUAGE BangPatterns #-}
 module Fretboarder.Drawing.Backend where
 
-import Extensions.Tuple
 import Fretboarder.Drawing.Color
 import Fretboarder.Guitar.Fretboard
+import Fretboarder.Utility
 
 type Point = (Double, Double)
 type Size  = (Double, Double)

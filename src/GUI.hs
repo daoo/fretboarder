@@ -1,12 +1,12 @@
 module Main where
 
 import Control.Monad.IO.Class
-import Extensions.Tuple
 import Fretboarder.Drawing.Backend
 import Fretboarder.Drawing.Cairo ()
 import Fretboarder.Drawing.Helper
 import Fretboarder.Parser.Expr
 import Fretboarder.Parser.Parser
+import Fretboarder.Utility
 import Graphics.UI.Gtk
 import Reactive.Banana
 import Reactive.Banana.Frameworks

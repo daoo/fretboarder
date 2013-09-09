@@ -1,11 +1,11 @@
 module Main where
 
 import Data.Char
-import Extensions.Tuple
 import Fretboarder.Drawing.Backend
 import Fretboarder.Drawing.Cairo ()
 import Fretboarder.Drawing.Helper
 import Fretboarder.Parser.Parser
+import Fretboarder.Utility
 import Graphics.Rendering.Cairo hiding (scale)
 import System.Environment
 import System.FilePath

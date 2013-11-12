@@ -15,7 +15,7 @@ data Scale = Scale INote [Offset]
   deriving (Show)
 
 instance Arbitrary Scale where
-  arbitrary = Scale <$> arbitrary <*> oneof (map return scales)
+  arbitrary = Scale <$> arbitrary <*> elements scales
     where
       scales = [ majorScale, minorScale, harmonicMinor, melodicMinor
                , minorPentatonic, majorPentatonic, bluesScale, ionianMode

@@ -31,7 +31,7 @@ data Tone = A | B | C | D | E | F | G
   deriving (Show)
 
 instance Arbitrary Tone where
-  arbitrary = oneof $ map return [A, B, C, D, E, F, G]
+  arbitrary = elements [A, B, C, D, E, F, G]
 
 data Accidental = Natural | Flat | Sharp
 
@@ -42,7 +42,7 @@ instance Show Accidental where
     Sharp   -> "#"
 
 instance Arbitrary Accidental where
-  arbitrary = oneof $ map return [Flat, Natural, Sharp]
+  arbitrary = elements [Flat, Natural, Sharp]
 
 -- We use Scientific Pitch Notation to specify a Note.
 -- C4 is middle C and the octave increase one step between B and C.

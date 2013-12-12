@@ -1,6 +1,7 @@
 {-# LANGUAGE BangPatterns #-}
 module Fretboarder.Drawing.Backend
-  ( Point
+  ( Color
+  , Point
   , Size
   , Line
 
@@ -24,10 +25,11 @@ module Fretboarder.Drawing.Backend
   , drawFretboard
   ) where
 
-import Fretboarder.Drawing.Color
 import Fretboarder.Guitar.Fretboard
+import Fretboarder.Guitar.Scale
 import Fretboarder.Utility
 
+type Color = (Double, Double, Double)
 type Point = (Double, Double)
 type Size  = (Double, Double)
 type Line  = (Point, Point)
@@ -58,6 +60,7 @@ evenPie r p colors = fillArcs r p $ zip colors (zip angles (tail angles))
 
 data Settings = Settings
   { getInlays :: [(Int, Int)]
+  , getFretCount :: Int
   , getLineWidth :: Double
   , getFretNames :: [String]
   , getFgColor :: Color
@@ -73,7 +76,7 @@ defaultSettings = Settings
   , getBgColor   = (255, 255, 255)
   }
 
-drawFretboard :: Backend a => Settings -> Size -> Fretboard -> a ()
+drawFretboard :: Backend a => Settings -> Size -> Fretboard -> [Scale] -> a ()
 drawFretboard set (w, h) fb = do
   setColor $ getBgColor set
   fillRectangle (0, 0) (w, h)

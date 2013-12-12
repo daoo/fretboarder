@@ -17,16 +17,25 @@ data Scale = Scale INote [Offset]
 instance Arbitrary Scale where
   arbitrary = Scale <$> arbitrary <*> elements scales
     where
-      scales = [ majorScale, minorScale, harmonicMinor, melodicMinor
-               , minorPentatonic, majorPentatonic, bluesScale, ionianMode
-               , dorianMode, phrygianMode, lydianMode, mixolydianMode
-               , aeolianMode, locrianMode
-               ]
+      scales =
+        [ majorOffsets
+        , minorOffsets
+        , harmonicMinor
+        , melodicMinor
+        , minorPentatonic
+        , majorPentatonic
+        , bluesOffsets
+        , ionianMode
+        , dorianMode
+        , phrygianMode
+        , lydianMode
+        , mixolydianMode
+        , aeolianMode
+        , locrianMode
+        ]
 
 hasNote :: Scale -> INote -> Bool
-hasNote (Scale base offsets) note = note' `elem` (0 : offsets)
-  where
-    note' = (note - base) `mod` 12
+hasNote (Scale base offsets) note = elem ((note - base) `mod` 12) offsets
 
 repeatScale :: Scale -> [INote]
 repeatScale (Scale note offsets) = note : concatMap f xs

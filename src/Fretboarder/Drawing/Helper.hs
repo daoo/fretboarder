@@ -2,7 +2,6 @@
 module Fretboarder.Drawing.Helper where
 
 import Fretboarder.Drawing.Backend
-import Fretboarder.Drawing.Color
 import Fretboarder.Guitar.Fretboard
 import Fretboarder.Guitar.Scale
 import Fretboarder.Parser.Expr

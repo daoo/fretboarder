@@ -10,16 +10,15 @@ cabal-version: >=1.18
 
 library
   exposed-modules:
-    Fretboarder.Drawing.Backend,
-    Fretboarder.Drawing.Cairo,
-    Fretboarder.Drawing.Color,
-    Fretboarder.Drawing.Helper,
-    Fretboarder.Guitar.Fretboard,
-    Fretboarder.Guitar.Interval,
-    Fretboarder.Guitar.Note,
-    Fretboarder.Guitar.Scale,
-    Fretboarder.Parser.Expr,
-    Fretboarder.Parser.Parser,
+    Fretboarder.Drawing.Backend
+    Fretboarder.Drawing.Cairo
+    Fretboarder.Drawing.Helper
+    Fretboarder.Guitar.Fretboard
+    Fretboarder.Guitar.Interval
+    Fretboarder.Guitar.Note
+    Fretboarder.Guitar.Scale
+    Fretboarder.Parser.Expr
+    Fretboarder.Parser.Parser
     Fretboarder.Utility
   build-depends: base, QuickCheck, cairo, transformers, filepath, parsec
   hs-source-dirs: src

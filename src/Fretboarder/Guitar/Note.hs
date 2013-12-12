@@ -65,7 +65,7 @@ b5 = Note B 5 Natural
 toINote :: Note -> INote
 toINote (Note t o a) = octave o + tone t + acc a
   where
-    octave o = o * 12 - 9
+    octave x = x * 12 - 9
 
     tone = \case
       C -> 0

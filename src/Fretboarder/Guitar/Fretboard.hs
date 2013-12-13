@@ -1,5 +1,6 @@
 module Fretboarder.Guitar.Fretboard
-  ( Fretboard
+  ( Fretboard(tuning)
+  , stringCount
   , ebgdae
   ) where
 
@@ -9,6 +10,9 @@ import Fretboarder.Guitar.Note
 newtype Fretboard = Fretboard
   { tuning :: [INote] -- ^The notes for each string
   }
+
+stringCount :: Fretboard -> Int
+stringCount = length . tuning
 
 mkFretboard :: [Note] -> Fretboard
 mkFretboard = Fretboard . map toINote

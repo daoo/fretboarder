@@ -1,7 +1,6 @@
 {-# LANGUAGE LambdaCase, GeneralizedNewtypeDeriving #-}
 module Fretboarder.Guitar.Interval
-  ( Offset
-  , DiatonicInterval(..)
+  ( Diatonic(..)
 
   , minorOffsets
   , majorOffsets
@@ -19,18 +18,8 @@ module Fretboarder.Guitar.Interval
   , locrianMode
   ) where
 
--- |Semitone offset relative to a root note.
--- Similar to Intervals where 1 is a semitone and 2 is a whole tone and so on.
--- However in a list each offset should be treated as relative to some root
--- note defined by the context the offset is used in.
-newtype Offset = Offset { mkOffset :: Int }
-  deriving Num
-
-instance Show Offset where
-  show = show . mkOffset
-
 -- |Diatonic Intervals.
-data DiatonicInterval
+data Diatonic
   = PerfectUnison
   | Minor2
   | Major2
@@ -44,12 +33,12 @@ data DiatonicInterval
   | Minor7
   | Major7
   | PerfectOctave
-  deriving (Show, Eq, Enum)
+  deriving (Show, Eq, Ord, Enum)
 
-math :: (Int -> Int -> Int) -> DiatonicInterval -> DiatonicInterval -> DiatonicInterval
+math :: (Int -> Int -> Int) -> Diatonic -> Diatonic -> Diatonic
 math op a b = toEnum $ op (fromEnum a) (fromEnum b) `mod` 13
 
-instance Num DiatonicInterval where
+instance Num Diatonic where
   (+) = math (+)
   (-) = math (-)
   (*) = math (*)
@@ -62,23 +51,23 @@ instance Num DiatonicInterval where
   fromInteger = toEnum . fromInteger
 
 -- Some predefined scale offsets
-minorOffsets, majorOffsets :: [Offset]
+minorOffsets, majorOffsets :: [Diatonic]
 majorOffsets = [0, 2, 4, 5, 7, 9, 11]
 minorOffsets = [0, 2, 3, 5, 7, 8, 10]
 
-harmonicMinor, melodicMinor :: [Offset]
+harmonicMinor, melodicMinor :: [Diatonic]
 harmonicMinor = [0, 2, 3, 5, 7, 8, 11]
 melodicMinor  = [0, 2, 3, 5, 7, 9, 11]
 
-minorPentatonic, majorPentatonic :: [Offset]
+minorPentatonic, majorPentatonic :: [Diatonic]
 minorPentatonic = [0, 3, 5, 7, 10]
 majorPentatonic = [0, 2, 4, 7, 9]
 
-bluesOffsets :: [Offset]
+bluesOffsets :: [Diatonic]
 bluesOffsets = [0, 6]
 
 ionianMode, dorianMode, phrygianMode, lydianMode, mixolydianMode,
-  aeolianMode, locrianMode :: [Offset]
+  aeolianMode, locrianMode :: [Diatonic]
 ionianMode     = [0, 2, 4, 5, 7, 9, 11] -- Identical to the major scale
 dorianMode     = [0, 2, 3, 5, 7, 9, 10] -- Minor scale with raised 6th
 phrygianMode   = [0, 1, 3, 5, 7, 8, 10] -- Minor scale with lowered 2nd

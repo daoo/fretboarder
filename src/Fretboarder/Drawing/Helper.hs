@@ -1,6 +1,7 @@
 {-# LANGUAGE LambdaCase #-}
 module Fretboarder.Drawing.Helper where
 
+import Data.Monoid
 import Fretboarder.Drawing.Backend
 import Fretboarder.Guitar.Fretboard
 import Fretboarder.Guitar.Scale
@@ -10,15 +11,11 @@ makeList :: Expr Scale -> [Scale]
 makeList = \case
   Set scale              -> [scale]
   Different e1 e2        -> makeList e1 ++ makeList e2
-  Join (Set s1) (Set s2) -> [s1 `joinScales` s2]
+  Join (Set s1) (Set s2) -> [s1 <> s2]
   _                      -> undefined
 
 render :: Backend a => Settings -> Size -> Expr Scale -> a ()
-render set size expr = drawFretboard set size $ markList marks fb
-  where
-    marks = zip tangoColors $ makeList expr
-
-    fb = takeFrets 23 ebgdae
+render set size expr = drawFretboard set size ebgdae (head $ makeList expr)
 
 tangoColors :: [Color]
 tangoColors = [ (0.988235294117647, 0.917647058823529, 0.309803921568627)

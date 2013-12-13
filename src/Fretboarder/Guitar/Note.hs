@@ -34,12 +34,7 @@ instance Arbitrary Tone where
   arbitrary = elements [A, B, C, D, E, F, G]
 
 data Accidental = Natural | Flat | Sharp
-
-instance Show Accidental where
-  show = \case
-    Flat    -> "b"
-    Natural -> ""
-    Sharp   -> "#"
+  deriving Show
 
 instance Arbitrary Accidental where
   arbitrary = elements [Flat, Natural, Sharp]
@@ -50,10 +45,13 @@ instance Arbitrary Accidental where
 data Note = Note Tone Octave Accidental
 
 instance Show Note where
-  show (Note t o a) = shows t $ shows o $ show a
+  show (Note t o a) = case a of
+    Flat    -> shows t $ shows o "b"
+    Natural -> shows t $ show o
+    Sharp   -> shows t $ shows o "#"
 
 instance Arbitrary Note where
-  arbitrary = liftA3 Note arbitrary (choose (-1, 5)) arbitrary
+  arbitrary = Note <$> arbitrary <*> choose (-1, 5) <*> arbitrary
 
 a4, b4, c4, a5, b5 :: Note
 a4 = Note A 4 Natural

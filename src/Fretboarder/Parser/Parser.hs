@@ -80,15 +80,15 @@ levenshtein s t = d !! length s !! length t
             f True  = 0
             f False = 1
 
-readOffsets :: String -> [Offset]
+readOffsets :: String -> [Diatonic]
 readOffsets str = snd $ minimum $ map f offsets
   where
-    f :: (String, [Offset]) -> (Int, [Offset])
+    f :: (String, [Diatonic]) -> (Int, [Diatonic])
     f (s, o) = (levenshtein s str, o)
 
-    offsets :: [(String, [Offset])]
-    offsets = [ ("major", majorScale)
-              , ("minor", minorScale)
+    offsets :: [(String, [Diatonic])]
+    offsets = [ ("major", majorOffsets)
+              , ("minor", minorOffsets)
 
               , ("harmonic minor", harmonicMinor)
               , ("melodic minor", melodicMinor)
@@ -96,7 +96,7 @@ readOffsets str = snd $ minimum $ map f offsets
               , ("minor pentatonic", minorPentatonic)
               , ("major pentatonic", majorPentatonic)
 
-              , ("blues", bluesScale)
+              , ("blues", bluesOffsets)
 
               , ("ionian", ionianMode)
               , ("dorian", dorianMode)

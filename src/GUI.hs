@@ -1,7 +1,7 @@
 module Main (main) where
 
 import Control.Monad.IO.Class
-import Fretboarder.Drawing.Backend
+import Fretboarder.Drawing.Backend hiding (Color)
 import Fretboarder.Drawing.Cairo ()
 import Fretboarder.Drawing.Helper
 import Fretboarder.Guitar.Scale

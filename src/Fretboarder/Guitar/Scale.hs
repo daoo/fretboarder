@@ -2,16 +2,16 @@ module Fretboarder.Guitar.Scale
   ( Scale(..)
   , hasNote
   , repeatScale
-  , joinScales
   ) where
 
 import Control.Applicative
 import Data.List
+import Data.Monoid
 import Fretboarder.Guitar.Interval
 import Fretboarder.Guitar.Note
 import Test.QuickCheck
 
-data Scale = Scale INote [Offset]
+data Scale = Scale INote [Diatonic]
   deriving (Show)
 
 instance Arbitrary Scale where
@@ -35,13 +35,17 @@ instance Arbitrary Scale where
         ]
 
 hasNote :: Scale -> INote -> Bool
-hasNote (Scale base offsets) note = elem ((note - base) `mod` 12) offsets
+hasNote (Scale base offsets) note = elem (fromIntegral $ note - base) offsets
 
 repeatScale :: Scale -> [INote]
-repeatScale (Scale note offsets) = note : concatMap f xs
+repeatScale (Scale note offsets) = go note offsets
   where
-    f n = map (+n) offsets
-    xs  = iterate (+12) note
+    go x []     = go x offsets
+    go x (y:ys) = x' : go x' ys
+      where x' = x + fromEnum y
 
-joinScales :: Scale -> Scale -> Scale
-joinScales (Scale n1 os1) (Scale n2 os2) = Scale n1 $ sort $ union os1 (map (+(n1 - n2)) os2)
+instance Monoid Scale where
+  mempty = Scale 0 []
+
+  mappend (Scale x xs) (Scale y ys) =
+    Scale x $ sort $ union xs (map (+ (toEnum $ x-y)) ys)

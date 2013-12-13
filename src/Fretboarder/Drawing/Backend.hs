@@ -62,7 +62,6 @@ data Settings = Settings
   { getInlays :: [(Int, Int)]
   , getFretCount :: Int
   , getLineWidth :: Double
-  , getFretNames :: [String]
   , getFgColor :: Color
   , getBgColor :: Color
   } deriving Show
@@ -71,13 +70,13 @@ defaultSettings :: Settings
 defaultSettings = Settings
   { getInlays    = [(3, 1), (5, 1), (7, 1), (9, 1), (12, 2), (15, 1), (17, 1), (19, 1), (21, 1)]
   , getLineWidth = 1.0
-  , getFretNames = []
+  , getFretCount = 23
   , getFgColor   = (0, 0, 0)
   , getBgColor   = (255, 255, 255)
   }
 
-drawFretboard :: Backend a => Settings -> Size -> Fretboard -> [Scale] -> a ()
-drawFretboard set (w, h) fb = do
+drawFretboard :: Backend a => Settings -> Size -> Fretboard -> Scale -> a ()
+drawFretboard set (w, h) fb scale = do
   setColor $ getBgColor set
   fillRectangle (0, 0) (w, h)
   setColor $ getFgColor set
@@ -90,15 +89,15 @@ drawFretboard set (w, h) fb = do
   deltaLines stringcount (0, freth) (topLeft, (px + bw, py))
 
   mapM_ (fillCircle radius) $ inlays $ getInlays set
-  mapM_ (uncurry (evenPie radius)) $ toPoints fb
+  fillPoints
   where
     topLeft@(px, py) = (50, 20)
 
     bw = w - 2 * px
     bh = h - 2 * py
 
-    fretcount   = length (head fb) - 1
-    stringcount = length fb
+    fretcount   = getFretCount set
+    stringcount = stringCount fb
     fretw       = bw / fromIntegral fretcount
     freth       = bh / fromIntegral (stringcount - 1)
     radius      = (bh / fromIntegral stringcount) / 5
@@ -117,11 +116,11 @@ drawFretboard set (w, h) fb = do
     inlays []            = []
     inlays ((f, c) : as) = inlay c (fretx f) ++ inlays as
 
-    toPoints :: Fretboard -> [(Point, [Color])]
-    toPoints = goy 0
+    fillPoints = goy 0
       where
-        gox  _  _ []     = []
-        gox !i !y (f:fs) = ((fretx i, y), fretColors f) : gox (i+1) y fs
+        goy !j | j < stringcount = gox 0 >> goy (j+1)
+               | otherwise       = return ()
 
-        goy  _ []     = []
-        goy !j (s:ss) = gox 0 (frety j) s ++ goy (j + 1) ss
+          where
+            gox !i | i < fretcount = fillCircle radius (fretx i, frety j) >> gox (i+1)
+                   | otherwise     = return ()

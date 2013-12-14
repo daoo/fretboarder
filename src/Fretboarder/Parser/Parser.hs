@@ -5,8 +5,8 @@ module Fretboarder.Parser.Parser
 
 import Control.Applicative ((<$>))
 import Data.Char
-import Fretboarder.Guitar.Interval
 import Fretboarder.Guitar.Note
+import Fretboarder.Guitar.Offset
 import Fretboarder.Guitar.Scale
 import Fretboarder.Parser.Expr
 import Text.Parsec
@@ -80,13 +80,13 @@ levenshtein s t = d !! length s !! length t
             f True  = 0
             f False = 1
 
-readOffsets :: String -> [Diatonic]
+readOffsets :: String -> [Offset]
 readOffsets str = snd $ minimum $ map f offsets
   where
-    f :: (String, [Diatonic]) -> (Int, [Diatonic])
+    f :: (String, [Offset]) -> (Int, [Offset])
     f (s, o) = (levenshtein s str, o)
 
-    offsets :: [(String, [Diatonic])]
+    offsets :: [(String, [Offset])]
     offsets = [ ("major", majorOffsets)
               , ("minor", minorOffsets)
 

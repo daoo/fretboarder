@@ -13,9 +13,10 @@ library
     Fretboarder.Drawing.Backend
     Fretboarder.Drawing.Cairo
     Fretboarder.Drawing.Helper
+    Fretboarder.Guitar.Diatonic
     Fretboarder.Guitar.Fretboard
-    Fretboarder.Guitar.Interval
     Fretboarder.Guitar.Note
+    Fretboarder.Guitar.Offset
     Fretboarder.Guitar.Scale
     Fretboarder.Parser.Expr
     Fretboarder.Parser.Parser

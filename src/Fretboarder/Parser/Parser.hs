@@ -1,10 +1,12 @@
 {-# LANGUAGE LambdaCase #-}
 module Fretboarder.Parser.Parser
   ( parseExprScale
+  , makeList
   ) where
 
 import Control.Applicative ((<$>))
 import Data.Char
+import Data.Monoid
 import Fretboarder.Guitar.Note
 import Fretboarder.Guitar.Offset
 import Fretboarder.Guitar.Scale
@@ -108,3 +110,10 @@ readOffsets str = snd $ minimum $ map f offsets
 
 makeScales :: Expr PScale -> Expr Scale
 makeScales = fmap $ \(PScale (PNote tone accidental) scale) -> Scale (toINote (Note tone 1 accidental)) $ readOffsets scale
+
+makeList :: Expr Scale -> [Scale]
+makeList = \case
+  Set scale              -> [scale]
+  Different e1 e2        -> makeList e1 ++ makeList e2
+  Join (Set s1) (Set s2) -> [s1 <> s2]
+  _                      -> undefined

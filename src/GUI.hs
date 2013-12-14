@@ -1,9 +1,8 @@
 module Main (main) where
 
 import Control.Monad.IO.Class
-import Fretboarder.Drawing.Backend hiding (Color)
-import Fretboarder.Drawing.Cairo ()
-import Fretboarder.Drawing.Helper
+import Fretboarder.Drawing.Cairo
+import Fretboarder.Guitar.Fretboard
 import Fretboarder.Guitar.Scale
 import Fretboarder.Parser.Expr
 import Fretboarder.Parser.Parser
@@ -70,5 +69,5 @@ drawScale canvas (Just expr) = do
   win  <- widgetGetDrawWindow canvas
   size@(w, h) <- widgetGetSize canvas
   drawWindowBeginPaintRect win $ Rectangle 0 0 w h
-  renderWithDrawable win $ render defaultSettings (mapBoth fromIntegral size) expr
+  renderWithDrawable win $ drawFretboard (mapBoth fromIntegral size) ebgdae (makeList expr)
   drawWindowEndPaint win

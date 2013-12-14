@@ -1,9 +1,8 @@
 module Main (main) where
 
 import Data.Char
-import Fretboarder.Drawing.Backend
-import Fretboarder.Drawing.Cairo ()
-import Fretboarder.Drawing.Helper
+import Fretboarder.Drawing.Cairo
+import Fretboarder.Guitar.Fretboard
 import Fretboarder.Parser.Parser
 import Fretboarder.Utility
 import Graphics.Rendering.Cairo hiding (scale)
@@ -29,4 +28,4 @@ main = do
                         _      -> error "Unknown file type."
                       sizei = mapBoth read (w, h)
                       sized = mapBoth fromIntegral sizei
-                   in withSurface ft file sizei $ flip renderWith $ render defaultSettings sized expr
+                   in withSurface ft file sizei $ flip renderWith $ drawFretboard sized ebgdae (makeList expr)

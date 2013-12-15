@@ -76,8 +76,8 @@ instance Arbitrary Scale where
         , locrianMode
         ]
 
-hasNote :: Scale -> INote -> Bool
-hasNote (Scale base offsets) note = elem (fromIntegral $ note - base) offsets
+hasNote :: INote -> Scale -> Bool
+hasNote note (Scale root offsets) = fromIntegral (note - root) `elem` offsets
 
 repeatScale :: Scale -> [INote]
 repeatScale (Scale note offsets) = go note offsets

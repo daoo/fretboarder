@@ -1,90 +1,91 @@
 {-# LANGUAGE BangPatterns, LambdaCase #-}
-module Fretboarder.Drawing.Cairo ( drawFretboard ) where
+module Fretboarder.Drawing.Cairo
+  ( drawFretboard ) where
 
+import Control.Applicative
+import Data.List
 import Fretboarder.Guitar.Fretboard
+import Fretboarder.Guitar.Note
 import Fretboarder.Guitar.Scale
-import Fretboarder.Utility
 import qualified Graphics.Rendering.Cairo as C
 
-type Color = (Double, Double, Double)
-type Point = (Double, Double)
-type Size  = (Double, Double)
-type Line  = (Point, Point)
+data Color = Color !Double !Double !Double
+data Point = Point !Double !Double
+data Line  = Line !Point !Point
 
-{-tangoColors :: [Color]-}
-{-tangoColors = [ (0.988235294117647, 0.917647058823529, 0.309803921568627)-}
-              {-, (0.937254901960784, 0.160784313725490, 0.16078431372549)-}
-              {-, (0.988235294117647, 0.686274509803922, 0.243137254901961)-}
-              {-, (0.678431372549020, 0.498039215686275, 0.658823529411765)-}
-              {-, (0.447058823529412, 0.623529411764706, 0.811764705882353)-}
-              {-, (0.541176470588235, 0.886274509803922, 0.203921568627451)-}
-              {-, (0.913725490196078, 0.725490196078431, 0.431372549019608)-}
-              {-, (0.533333333333333, 0.541176470588235, 0.52156862745098)-}
-              {-]-}
+instance Num Point where
+  Point x1 y1 + Point x2 y2 = Point (x1+x2) (y1+y2)
 
-(+++) :: Point -> Point -> Point
-(x1, y1) +++ (x2, y2) = (x1 + x2, y1 + y2)
+  (*) = undefined
+  (-) = undefined
+  abs = undefined
+  signum = undefined
+  fromInteger = undefined
+
+tangoColors :: [Color]
+tangoColors =
+  [ Color 0.988235294117647 0.917647058823529 0.309803921568627
+  , Color 0.937254901960784 0.160784313725490 0.160784313725490
+  , Color 0.988235294117647 0.686274509803922 0.243137254901961
+  , Color 0.678431372549020 0.498039215686275 0.658823529411765
+  , Color 0.447058823529412 0.623529411764706 0.811764705882353
+  , Color 0.541176470588235 0.886274509803922 0.203921568627451
+  , Color 0.913725490196078 0.725490196078431 0.431372549019608
+  , Color 0.533333333333333 0.541176470588235 0.521568627450980
+  ]
+
+(++++) :: Line -> Point -> Line
+Line a b ++++ p = Line (a + p) (b + p)
 
 pi2 :: Double
 pi2 = pi * 2.0
 
 setColor :: Color -> C.Render ()
-setColor (r, g, b) = C.setSourceRGB r g b
+setColor (Color r g b) = C.setSourceRGB r g b
 
-{-strokeRectangle :: Point -> Size -> C.Render ()-}
-{-strokeRectangle (x, y) (w, h) = C.rectangle x y w h >> C.stroke-}
+mkCircle :: Double -> Point -> C.Render ()
+mkCircle r (Point x y) = C.arc x y r 0 pi2
 
-fillRectangle :: Point -> Size -> C.Render ()
-fillRectangle (x, y) (w, h) = C.rectangle x y w h >> C.fill
+mkLine :: Line -> C.Render ()
+mkLine (Line (Point x1 y1) (Point x2 y2)) = C.moveTo x1 y1 >> C.lineTo x2 y2
 
-strokeLines :: [Line] -> C.Render ()
-strokeLines ls = mapM_ line ls >> C.stroke
+mkLines :: Int -> Point -> Line -> C.Render ()
+mkLines !count !delta !line = go 0 line
+  where
+    go !i !acc | i < count = mkLine acc >> go (i+1) (acc ++++ delta)
+               | otherwise = return ()
 
-fillCircle :: Double -> Point -> C.Render ()
-fillCircle r (x, y)  = C.arc x y r 0 pi2 >> C.fill
+getColor :: INote -> [Scale] -> Maybe Color
+getColor note scales = fst <$> find (hasNote note . snd) (zip tangoColors scales)
 
-{-fillArcs :: Double -> Point -> [(Color, (Double, Double))] -> C.Render ()-}
-{-fillArcs r (x, y) cs = mapM_ f cs >> C.fill-}
-  {-where-}
-    {-f (c, (a, b)) = setColor c >> C.arc x y r a b-}
-
-line :: Line -> C.Render ()
-line ((x1, y1), (x2, y2)) = C.moveTo x1 y1 >> C.lineTo x2 y2
-
-deltaLines :: Int -> Point -> Line -> C.Render ()
-deltaLines count delta = strokeLines . take count . iterate (mapBoth (+++ delta))
-
-{-evenPie :: Double -> Point -> [Color] -> C.Render ()-}
-{-evenPie r p colors = fillArcs r p $ zip colors (zip angles (tail angles))-}
-  {-where-}
-    {-angles = [0, pi2 / fromIntegral (length colors) .. ]-}
-
-drawFretboard :: Size -> Fretboard -> [Scale] -> C.Render ()
-drawFretboard (w, h) fb scales = do
+drawFretboard :: Double -> Double -> Fretboard -> [Scale] -> C.Render ()
+drawFretboard w h fb scales = do
   setColor bgColor
-  fillRectangle (0, 0) (w, h)
+  C.rectangle 0 0 w h
+  C.fill
   setColor fgColor
 
   C.setLineWidth (lineWidth * 10.0)
-  line (topLeft, (px, py + bh))
+  mkLine $ Line topLeft (Point px (py + bh))
   C.setLineWidth lineWidth
 
-  deltaLines frets (fretw, 0) ((px + fretw, py), (px + fretw, py + bh))
-  deltaLines strings (0, freth) (topLeft, (px + bw, py))
+  mkLines frets   (Point fretw 0) (Line (topLeft + Point fretw 0) (topLeft + Point fretw bh))
+  mkLines strings (Point 0 freth) (Line topLeft (topLeft + Point bw 0))
+  C.stroke
 
   drawInlays inlays
-  drawFrets
+  drawFrets (tuning fb)
   where
     lineWidth = 1.0
-    fgColor   = (0, 0, 0)
-    bgColor   = (255, 255, 255)
+    fgColor   = Color 0 0 0
+    bgColor   = Color 1 1 1
 
     frets   = 23
     strings = stringCount fb
 
     inlays = [(3, 1), (5, 1), (7, 1), (9, 1), (12, 2), (15, 1), (17, 1), (19, 1), (21, 1)]
 
-    topLeft@(px, py) = (50, 20)
+    topLeft@(Point px py) = Point 50 20
 
     bw = w - 2 * px
     bh = h - 2 * py
@@ -98,23 +99,32 @@ drawFretboard (w, h) fb scales = do
     fretx i = px + fretw / 2.0 + realToFrac (i - 1) * fretw
     frety i = py + realToFrac i * freth
 
-    circle = fillCircle radius
+    fillCircle point = mkCircle radius point >> C.fill
 
     -- TODO: Support inlays with more than two dots per fret
     drawInlay :: (Int, Int) -> C.Render ()
-    drawInlay (f, 1) = let x = fretx f in circle (x, py + bh / 2.0)
-    drawInlay (f, 2) = let x = fretx f in circle (x, py + 3.0 * freth / 2.0) >> circle (x, py + 7.0 * freth / 2.0)
-    drawInlay _      = return ()
+    drawInlay (f, 1) = do
+      let x = fretx f
+      fillCircle (Point x (py + bh / 2.0))
+
+    drawInlay (f, 2) = do
+      let x = fretx f
+      fillCircle (Point x (py + 3.0 * freth / 2.0))
+      fillCircle (Point x (py + 7.0 * freth / 2.0))
+
+    drawInlay _ = return ()
 
     drawInlays = mapM_ drawInlay
 
-    drawFret i j = circle (fretx i, frety j)
+    drawFret i j n = case getColor n scales of
+      Just c  -> setColor c >> fillCircle (Point (fretx i) (frety j))
+      Nothing -> return ()
 
     drawFrets = goy 0
       where
-        goy !j | j < strings = gox 0 >> goy (j+1)
-               | otherwise   = return ()
+        goy  _ []        = return ()
+        goy !j (root:ys) = gox 0 >> goy (j+1) ys
 
           where
-            gox !i | i <= frets = drawFret i j >> gox (i+1)
+            gox !i | i <= frets = drawFret i j (root+i) >> gox (i+1)
                    | otherwise  = return ()

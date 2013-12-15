@@ -4,7 +4,6 @@ import Data.Char
 import Fretboarder.Drawing.Cairo
 import Fretboarder.Guitar.Fretboard
 import Fretboarder.Parser.Parser
-import Fretboarder.Utility
 import Graphics.Rendering.Cairo hiding (scale)
 import System.Environment
 import System.FilePath
@@ -16,16 +15,21 @@ withSurface t file (w, h) r = case t of
   SVG -> withSVGSurface file (fromIntegral w) (fromIntegral h) r
   PNG -> createImageSurface FormatARGB32 w h >>= (\s -> r s >> surfaceWriteToPNG s file)
 
+findImageType :: FilePath -> ImageType
+findImageType path = case map toLower $ takeExtension path of
+  ".png" -> PNG
+  ".svg" -> SVG
+  _      -> error "Unknown file type."
+
 main :: IO ()
 main = do
-  (w : h : file : rest) <- getArgs
+  (w : h : path : rest) <- getArgs
 
   case parseExprScale (concat rest) of
     Left err   -> print err
-    Right expr -> let ft = case map toLower $ takeExtension file of
-                        ".png" -> PNG
-                        ".svg" -> SVG
-                        _      -> error "Unknown file type."
-                      sizei = mapBoth read (w, h)
-                      sized = mapBoth fromIntegral sizei
-                   in withSurface ft file sizei $ flip renderWith $ drawFretboard sized ebgdae (makeList expr)
+    Right expr -> let ft = findImageType path
+                      wi = read w :: Int
+                      hi = read h :: Int
+                      wd = realToFrac wi
+                      hd = realToFrac hi
+                   in withSurface ft path (wi, hi) $ flip renderWith $ drawFretboard wd hd ebgdae (makeList expr)

@@ -6,7 +6,6 @@ import Fretboarder.Guitar.Fretboard
 import Fretboarder.Guitar.Scale
 import Fretboarder.Parser.Expr
 import Fretboarder.Parser.Parser
-import Fretboarder.Utility
 import Graphics.UI.Gtk hiding (Scale)
 import Reactive.Banana
 import Reactive.Banana.Frameworks
@@ -67,7 +66,7 @@ drawScale :: DrawingArea -> Maybe (Expr Scale) -> IO ()
 drawScale _ Nothing          = return ()
 drawScale canvas (Just expr) = do
   win  <- widgetGetDrawWindow canvas
-  size@(w, h) <- widgetGetSize canvas
+  (w, h) <- widgetGetSize canvas
   drawWindowBeginPaintRect win $ Rectangle 0 0 w h
-  renderWithDrawable win $ drawFretboard (mapBoth fromIntegral size) ebgdae (makeList expr)
+  renderWithDrawable win $ drawFretboard (realToFrac w) (realToFrac h) ebgdae (makeList expr)
   drawWindowEndPaint win

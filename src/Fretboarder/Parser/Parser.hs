@@ -109,7 +109,7 @@ readOffsets str = snd $ minimum $ map f offsets
               , ("locrian", locrianMode) ]
 
 makeScales :: Expr PScale -> Expr Scale
-makeScales = fmap $ \(PScale (PNote tone accidental) scale) -> Scale (toINote (Note tone 1 accidental)) $ readOffsets scale
+makeScales = fmap $ \(PScale (PNote t a) s) -> Scale (noteToI (Note 1 t a)) $ readOffsets s
 
 makeList :: Expr Scale -> [Scale]
 makeList = \case

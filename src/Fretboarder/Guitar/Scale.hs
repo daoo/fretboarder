@@ -80,7 +80,7 @@ hasNote :: INote -> Scale -> Bool
 hasNote note (Scale root offsets) = fromIntegral (note - root) `elem` offsets
 
 repeatScale :: Scale -> [INote]
-repeatScale (Scale note offsets) = go note offsets
+repeatScale (Scale root offsets) = go root offsets
   where
     go x []     = go x offsets
     go x (y:ys) = x' : go x' ys

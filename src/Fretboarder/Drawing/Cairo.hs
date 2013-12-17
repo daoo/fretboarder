@@ -74,6 +74,7 @@ drawFretboard w h fb scales = do
     fgColor   = Color 0 0 0
     bgColor   = Color 1 1 1
 
+    frets, strings :: Int
     frets   = 23
     strings = stringCount fb
 
@@ -137,5 +138,5 @@ drawFretboard w h fb scales = do
     drawString !y !root = drawFret fretx1 y root >> go 1 fretx2
       where
         go :: Int -> Double -> C.Render ()
-        go !i !x | i <= frets = drawFret x y (root+i) >> go (i+1) (x+fretw)
+        go !i !x | i <= frets = drawFret x y (root + fromIntegral i) >> go (succ i) (x+fretw)
                  | otherwise  = return ()

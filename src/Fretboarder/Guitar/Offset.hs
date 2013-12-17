@@ -1,3 +1,4 @@
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 module Fretboarder.Guitar.Offset
   ( Offset
   , addOffset
@@ -12,7 +13,7 @@ instance Show Offset where
   show = show . mkOffset
 
 math :: (Int -> Int -> Int) -> Offset -> Offset -> Offset
-math op a b = Offset (op (mkOffset a) (mkOffset b) `mod` 12)
+math op (Offset a) (Offset b) = Offset (op a b `mod` 12)
 
 instance Num Offset where
   (+) = math (+)
@@ -27,4 +28,4 @@ instance Num Offset where
   fromInteger = Offset . (`mod` 12) . fromInteger
 
 addOffset :: INote -> Offset -> INote
-addOffset a (Offset b) = a + b
+addOffset a (Offset b) = a + fromIntegral b

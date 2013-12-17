@@ -1,48 +1,58 @@
-{-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE LambdaCase, GeneralizedNewtypeDeriving #-}
 module Fretboarder.Guitar.Note
   ( INote
   , Octave
   , Tone(..)
   , Accidental(..)
-  , Note(..)
+  , Note(Note)
 
-  , a4
-  , b4
-  , c4
-  , a5
-  , b5
-
-  , toINote
-  , fromINote
+  , iToNote
+  , noteToI
   , fixNote
   ) where
 
 import Control.Applicative
 import Test.QuickCheck
 
--- An internal note represntation where natural A in octave 0 represents the INote
--- number 0. A# in octave 0: INote 1, and so forth.
--- The same as the keys on a piano, if you start counting at 0 instead of 1.
-type INote = Int
+-- |An musical octave containing 12 notes.
+newtype Octave = Octave { mkOctave :: Int }
+  deriving (Eq, Enum, Ord, Num, Real, Integral)
 
-type Octave = Int
+instance Show Octave where
+  show = show . mkOctave
 
+instance Arbitrary Octave where
+  arbitrary = Octave <$> choose (0, 10)
+
+-- |A musical tone.
 data Tone = A | B | C | D | E | F | G
   deriving (Show)
 
 instance Arbitrary Tone where
   arbitrary = elements [A, B, C, D, E, F, G]
 
+-- |A musical accidental.
 data Accidental = Natural | Flat | Sharp
   deriving Show
 
 instance Arbitrary Accidental where
   arbitrary = elements [Flat, Natural, Sharp]
 
--- We use Scientific Pitch Notation to specify a Note.
--- C4 is middle C and the octave increase one step between B and C.
--- E.g: A3, A3#/B3b, B3/C4b, B3#/C4, C4#/D4b, etc...
-data Note = Note Tone Octave Accidental
+-- |Represents a musical note.
+--
+-- Efficient non-reduntant representation. Note number zero represents A in
+-- octave 0. Increments in semitones.
+newtype INote = INote Int
+  deriving (Show, Eq, Enum, Ord, Num, Real, Integral)
+
+instance Arbitrary INote where
+  arbitrary = INote <$> choose (0, 120)
+
+-- |Representation for the scientific pitch notation.
+--
+-- This type is highly redundant and confusing to use. The INote type is much
+-- better to use in code and Note should only be used for user interaction.
+data Note = Note Octave Tone Accidental
 
 instance Show Note where
   show (Note t o a) = case a of
@@ -51,43 +61,36 @@ instance Show Note where
     Sharp   -> shows t $ shows o "#"
 
 instance Arbitrary Note where
-  arbitrary = Note <$> arbitrary <*> choose (-1, 5) <*> arbitrary
+  arbitrary = Note <$> arbitrary <*> arbitrary <*> arbitrary
 
-a4, b4, c4, a5, b5 :: Note
-a4 = Note A 4 Natural
-b4 = Note B 4 Natural
-c4 = Note C 4 Natural
-a5 = Note A 5 Natural
-b5 = Note B 5 Natural
-
-toINote :: Note -> INote
-toINote (Note t o a) = octave o + tone t + acc a
+noteToI :: Note -> INote
+noteToI (Note o t a) = fromIntegral $ (o' * 12) + t' + a'
   where
-    octave x = x * 12 - 9
+    o' = mkOctave o
 
-    tone = \case
-      C -> 0
-      D -> 2
-      E -> 4
-      F -> 5
-      G -> 7
-      A -> 9
-      B -> 11
+    t' = case t of
+      A -> 0
+      B -> 2
+      C -> 3
+      D -> 5
+      E -> 7
+      F -> 8
+      G -> 10
 
-    acc = \case
+    a' = case a of
       Flat    -> -1
       Natural -> 0
       Sharp   -> 1
 
-fromINote :: INote -> Note
-fromINote i = Note tone q accidental
+iToNote :: INote -> Note
+iToNote i = Note (fromIntegral q) tone accidental
   where
-    (q, r) = fromIntegral (i+9) `quotRem` 12
+    (q, r) = i `quotRem` 12
 
     (tone, accidental) = case r of
-      0  -> (C, Natural)
-      1  -> (C, Sharp)
-      2  -> (D, Natural)
+      0  -> (A, Natural)
+      1  -> (A, Sharp)
+      2  -> (B, Natural)
       3  -> (D, Sharp)
       4  -> (E, Natural)
       5  -> (F, Natural)
@@ -99,12 +102,16 @@ fromINote i = Note tone q accidental
       11 -> (B, Natural)
       _  -> (C, Natural) -- Default to C
 
--- For some reason I can't understand, B# == C, B == Cb, E# == F and E == Fb
--- This method normalizes those sharps and flats to naturals
+-- |Fix note representation for display.
+--
+-- For some reason beyond human understanding, we have that B# == C, B == Cb,
+-- E# == F and E == Fb. The sharps and flats of these notes are not used at all
+-- in written musical notation. This function normalizes those sharps and flats
+-- to naturals.
 fixNote :: Note -> Note
 fixNote = \case
-  Note B o Sharp -> Note C (o+1) Natural
-  Note C o Flat  -> Note B (o-1) Natural
-  Note E o Sharp -> Note F o Natural
-  Note F o Flat  -> Note E o Natural
+  Note o B Sharp -> Note (o+1) C Natural
+  Note o C Flat  -> Note (o+1) B Natural
+  Note o E Sharp -> Note o F Natural
+  Note o F Flat  -> Note o E Natural
   n              -> n

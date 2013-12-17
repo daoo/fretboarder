@@ -53,6 +53,7 @@ mixolydianMode = [0, 2, 4, 5, 7, 9, 10] -- Major scale with lowered 7th
 aeolianMode    = [0, 2, 3, 5, 7, 8, 10] -- Identical to the minor scale
 locrianMode    = [0, 1, 3, 5, 6, 8, 10] -- Minor scale with lowered 2nd and 5th
 
+-- |Octave repeating musical scale.
 data Scale = Scale INote [Offset]
   deriving Show
 

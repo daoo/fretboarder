@@ -1,12 +1,14 @@
 module Main (main) where
 
+import Data.Attoparsec.Text
 import Data.Char
 import Fretboarder.Drawing.Cairo
 import Fretboarder.Guitar.Fretboard
-import Fretboarder.Parser.Parser
+import Fretboarder.Parser
 import Graphics.Rendering.Cairo hiding (scale)
 import System.Environment
 import System.FilePath
+import qualified Data.Text as T
 
 data ImageType = SVG | PNG
 
@@ -25,11 +27,11 @@ main :: IO ()
 main = do
   (w : h : path : rest) <- getArgs
 
-  case parseExprScale (concat rest) of
-    Left err   -> print err
-    Right expr -> let ft = findImageType path
-                      wi = read w :: Int
-                      hi = read h :: Int
-                      wd = realToFrac wi
-                      hd = realToFrac hi
-                   in withSurface ft path (wi, hi) $ flip renderWith $ drawFretboard wd hd ebgdae (makeList expr)
+  case parseOnly parseScale (T.pack $ concat rest) of
+    Left err    -> print err
+    Right scale -> let ft = findImageType path
+                       wi = read w :: Int
+                       hi = read h :: Int
+                       wd = realToFrac wi
+                       hd = realToFrac hi
+                    in withSurface ft path (wi, hi) $ flip renderWith $ drawFretboard wd hd ebgdae scale

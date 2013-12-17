@@ -1,7 +1,6 @@
 {-# LANGUAGE LambdaCase, GeneralizedNewtypeDeriving #-}
 module Fretboarder.Guitar.Note
-  ( INote
-  , Octave
+  ( Octave
   , Tone(..)
   , Accidental(..)
   , Note(Note)
@@ -12,6 +11,7 @@ module Fretboarder.Guitar.Note
   ) where
 
 import Control.Applicative
+import Fretboarder.Guitar.INote
 import Test.QuickCheck
 
 -- |An musical octave containing 12 notes.
@@ -37,16 +37,6 @@ data Accidental = Natural | Flat | Sharp
 
 instance Arbitrary Accidental where
   arbitrary = elements [Flat, Natural, Sharp]
-
--- |Represents a musical note.
---
--- Efficient non-reduntant representation. Note number zero represents A in
--- octave 0. Increments in semitones.
-newtype INote = INote Int
-  deriving (Show, Eq, Enum, Ord, Num, Real, Integral)
-
-instance Arbitrary INote where
-  arbitrary = INote <$> choose (0, 120)
 
 -- |Representation for the scientific pitch notation.
 --

@@ -13,25 +13,25 @@ library
     Fretboarder.Drawing.Cairo
     Fretboarder.Guitar.Diatonic
     Fretboarder.Guitar.Fretboard
+    Fretboarder.Guitar.INote
     Fretboarder.Guitar.Note
     Fretboarder.Guitar.Offset
     Fretboarder.Guitar.Scale
-    Fretboarder.Parser.Expr
-    Fretboarder.Parser.Parser
+    Fretboarder.Parser
     Fretboarder.Utility
-  build-depends: base, QuickCheck, cairo, transformers, filepath, parsec
+  build-depends: base, QuickCheck, cairo, transformers, filepath, attoparsec
   hs-source-dirs: src
   ghc-options: -Wall
   default-language: Haskell2010
 
 executable fretboarder
   main-is: src/CommandLine.hs
-  build-depends: base, fretboarder, filepath, cairo
+  build-depends: base, fretboarder, filepath, cairo, attoparsec, text
   ghc-options: -Wall
   default-language: Haskell2010
 
 executable fretboarder-gtk
   main-is: src/GUI.hs
-  build-depends: base, fretboarder, filepath, transformers, gtk, cairo, reactive-banana
+  build-depends: base, fretboarder, filepath, transformers, gtk, cairo, reactive-banana, attoparsec, text
   ghc-options: -Wall
   default-language: Haskell2010

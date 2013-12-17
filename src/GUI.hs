@@ -1,14 +1,15 @@
 module Main (main) where
 
 import Control.Monad.IO.Class
+import Data.Attoparsec.Text
 import Fretboarder.Drawing.Cairo
 import Fretboarder.Guitar.Fretboard
 import Fretboarder.Guitar.Scale
-import Fretboarder.Parser.Expr
-import Fretboarder.Parser.Parser
+import Fretboarder.Parser
 import Graphics.UI.Gtk hiding (Scale)
 import Reactive.Banana
 import Reactive.Banana.Frameworks
+import qualified Data.Text as T
 
 main :: IO ()
 main = initGUI >> setupWindow >>= widgetShowAll >> mainGUI
@@ -17,18 +18,18 @@ colorGreen, colorRed :: Color
 colorGreen = Color 35328 57856 13312
 colorRed   = Color 61184 10496 10496
 
-setupNetwork :: (Maybe (Expr Scale) -> IO ()) -> (Color -> IO ()) -> AddHandler String -> AddHandler () -> IO EventNetwork
+setupNetwork :: (Maybe Scale -> IO ()) -> (Color -> IO ()) -> AddHandler String -> AddHandler () -> IO EventNetwork
 setupNetwork draw color estext esconf = compile $ do
   etext <- fromAddHandler estext
   econf <- fromAddHandler esconf
-  let (err, expr) = split $ parseExprScale <$> etext
+  let (err, scale) = split $ (parseOnly parseScale . T.pack) <$> etext
 
       edraw = accumE Nothing $ union
         (id <$ econf)
-        ((const . Just) <$> expr)
+        ((const . Just) <$> scale)
 
       ecolor = accumE colorRed $ union
-        (const colorGreen <$ expr)
+        (const colorGreen <$ scale)
         (const colorRed   <$ err)
 
   reactimate $ draw <$> edraw
@@ -62,11 +63,11 @@ setupWindow = do
 
   return window
 
-drawScale :: DrawingArea -> Maybe (Expr Scale) -> IO ()
+drawScale :: DrawingArea -> Maybe Scale -> IO ()
 drawScale _ Nothing          = return ()
-drawScale canvas (Just expr) = do
+drawScale canvas (Just scale) = do
   win  <- widgetGetDrawWindow canvas
   (w, h) <- widgetGetSize canvas
   drawWindowBeginPaintRect win $ Rectangle 0 0 w h
-  renderWithDrawable win $ drawFretboard (realToFrac w) (realToFrac h) ebgdae (makeList expr)
+  renderWithDrawable win $ drawFretboard (realToFrac w) (realToFrac h) ebgdae scale
   drawWindowEndPaint win

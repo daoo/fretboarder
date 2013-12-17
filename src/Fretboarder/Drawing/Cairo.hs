@@ -2,10 +2,8 @@
 module Fretboarder.Drawing.Cairo
   ( drawFretboard ) where
 
-import Control.Applicative
-import Data.List
 import Fretboarder.Guitar.Fretboard
-import Fretboarder.Guitar.Note
+import Fretboarder.Guitar.INote
 import Fretboarder.Guitar.Scale
 import qualified Graphics.Rendering.Cairo as C
 
@@ -49,11 +47,11 @@ mkLines !count !delta !line = go 0 line
     go !i !acc | i < count = mkLine acc >> go (i+1) (acc .+. delta)
                | otherwise = return ()
 
-getColor :: INote -> [Scale] -> Maybe Color
-getColor note scales = fst <$> find (hasNote note . snd) (zip tangoColors scales)
+getColor :: INote -> Scale -> Maybe Color
+getColor note scale = if hasNote note scale then Just (head tangoColors) else Nothing
 
-drawFretboard :: Double -> Double -> Fretboard -> [Scale] -> C.Render ()
-drawFretboard w h fb scales = do
+drawFretboard :: Double -> Double -> Fretboard -> Scale -> C.Render ()
+drawFretboard w h fb scale = do
   setColor bgColor
   C.rectangle 0 0 w h
   C.fill
@@ -123,7 +121,7 @@ drawFretboard w h fb scales = do
 
     drawInlays = mapM_ drawInlay
 
-    drawFret !x !y !n = case getColor n scales of
+    drawFret !x !y !n = case getColor n scale of
       Just c  -> setColor c >> fillCircle (Point x y)
       Nothing -> return ()
 

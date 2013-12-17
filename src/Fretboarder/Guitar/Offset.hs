@@ -2,9 +2,11 @@
 module Fretboarder.Guitar.Offset
   ( Offset
   , addOffset
+  , lower
+  , raise
   ) where
 
-import Fretboarder.Guitar.Note
+import Fretboarder.Guitar.INote
 
 newtype Offset = Offset { mkOffset :: Int }
   deriving (Eq, Ord)
@@ -29,3 +31,12 @@ instance Num Offset where
 
 addOffset :: INote -> Offset -> INote
 addOffset a (Offset b) = a + fromIntegral b
+
+mapAt :: Int -> (a -> a) -> [a] -> [a]
+mapAt _ _ []     = []
+mapAt 0 f (x:xs) = f x : xs
+mapAt i f (x:xs) = x : mapAt (i-1) f xs
+
+lower, raise :: Int -> [Offset] -> [Offset]
+lower i = mapAt (i-1) (subtract 1)
+raise i = mapAt (i+1) (subtract 1)

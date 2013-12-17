@@ -4,6 +4,7 @@ module Fretboarder.Guitar.Fretboard
   , ebgdae
   ) where
 
+import Fretboarder.Guitar.INote
 import Fretboarder.Guitar.Note
 
 -- |Represent a fretboard with a specific tuning

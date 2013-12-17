@@ -1,5 +1,7 @@
 module Fretboarder.Guitar.Scale
   ( Scale(..)
+  , raise
+  , lower
 
   , majorOffsets
   , minorOffsets
@@ -23,7 +25,7 @@ module Fretboarder.Guitar.Scale
 import Control.Applicative
 import Data.List
 import Data.Monoid
-import Fretboarder.Guitar.Note
+import Fretboarder.Guitar.INote
 import Fretboarder.Guitar.Offset
 import Test.QuickCheck
 
@@ -33,8 +35,8 @@ majorOffsets = [0, 2, 4, 5, 7, 9, 11]
 minorOffsets = [0, 2, 3, 5, 7, 8, 10]
 
 harmonicMinor, melodicMinor :: [Offset]
-harmonicMinor = [0, 2, 3, 5, 7, 8, 11]
-melodicMinor  = [0, 2, 3, 5, 7, 9, 11]
+harmonicMinor = raise 7 minorOffsets
+melodicMinor  = lower 3 majorOffsets
 
 minorPentatonic, majorPentatonic :: [Offset]
 minorPentatonic = [0, 3, 5, 7, 10]
@@ -45,13 +47,13 @@ bluesOffsets = [0, 6]
 
 ionianMode, dorianMode, phrygianMode, lydianMode, mixolydianMode,
   aeolianMode, locrianMode :: [Offset]
-ionianMode     = [0, 2, 4, 5, 7, 9, 11] -- Identical to the major scale
-dorianMode     = [0, 2, 3, 5, 7, 9, 10] -- Minor scale with raised 6th
-phrygianMode   = [0, 1, 3, 5, 7, 8, 10] -- Minor scale with lowered 2nd
-lydianMode     = [0, 2, 4, 6, 7, 9, 11] -- Major scale with raised 4th
-mixolydianMode = [0, 2, 4, 5, 7, 9, 10] -- Major scale with lowered 7th
-aeolianMode    = [0, 2, 3, 5, 7, 8, 10] -- Identical to the minor scale
-locrianMode    = [0, 1, 3, 5, 6, 8, 10] -- Minor scale with lowered 2nd and 5th
+ionianMode     = majorOffsets
+dorianMode     = raise 6 minorOffsets
+phrygianMode   = lower 2 minorOffsets
+lydianMode     = raise 4 majorOffsets
+mixolydianMode = lower 7 majorOffsets
+aeolianMode    = minorOffsets
+locrianMode    = lower 2 $ lower 5 $ minorOffsets
 
 -- |Octave repeating musical scale.
 data Scale = Scale INote [Offset]

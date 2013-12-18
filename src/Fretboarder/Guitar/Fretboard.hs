@@ -10,7 +10,7 @@ import Fretboarder.Guitar.Note
 -- |Represent a fretboard with a specific tuning
 newtype Fretboard = Fretboard
   { tuning :: [INote] -- ^The notes for each string
-  }
+  } deriving Show
 
 stringCount :: Fretboard -> Int
 stringCount = length . tuning

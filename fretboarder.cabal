@@ -10,6 +10,7 @@ cabal-version: >=1.18
 
 library
   exposed-modules:
+    Fretboarder.Drawing.ASCII
     Fretboarder.Drawing.Cairo
     Fretboarder.Guitar.Diatonic
     Fretboarder.Guitar.Fretboard

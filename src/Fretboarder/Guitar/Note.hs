@@ -62,13 +62,13 @@ noteToI (Note o t a) = fromIntegral $ (o' * 12) + t' + a'
     o' = mkOctave o
 
     t' = case t of
-      A -> 0
-      B -> 2
-      C -> 3
-      D -> 5
-      E -> 7
-      F -> 8
-      G -> 10
+      A -> 9
+      B -> 11
+      C -> 0
+      D -> 2
+      E -> 4
+      F -> 5
+      G -> 7
 
     a' = case a of
       Flat    -> -1
@@ -81,18 +81,18 @@ iToNote i = Note (fromIntegral q) tone accidental
     (q, r) = i `quotRem` 12
 
     (tone, accidental) = case r of
-      0  -> (A, Natural)
-      1  -> (A, Sharp)
-      2  -> (B, Natural)
-      3  -> (C, Natural)
-      4  -> (C, Sharp)
-      5  -> (D, Natural)
-      6  -> (D, Sharp)
-      7  -> (E, Natural)
-      8  -> (F, Natural)
-      9  -> (F, Sharp)
-      10 -> (G, Natural)
-      11 -> (G, Sharp)
+      0  -> (C, Natural)
+      1  -> (C, Sharp)
+      2  -> (D, Natural)
+      3  -> (D, Sharp)
+      4  -> (E, Natural)
+      5  -> (F, Natural)
+      6  -> (F, Sharp)
+      7  -> (G, Natural)
+      8  -> (G, Sharp)
+      9  -> (A, Natural)
+      10 -> (A, Sharp)
+      11 -> (B, Natural)
       _  -> (A, Natural) -- this case can not happen because of rem 12
 
 -- |Fix note representation for display.

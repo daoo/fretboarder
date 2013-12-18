@@ -44,6 +44,9 @@ instance Arbitrary Accidental where
 -- better to use in code and Note should only be used for user interaction.
 data Note = Note Octave Tone Accidental
 
+instance Eq Note where
+  a == b = noteToI a == noteToI b
+
 instance Show Note where
   show (Note o t a) = case a of
     Flat    -> shows t $ shows o "b"

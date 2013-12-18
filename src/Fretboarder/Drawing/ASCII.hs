@@ -5,7 +5,6 @@ import Fretboarder.Guitar.Fretboard
 import Fretboarder.Guitar.INote
 import Fretboarder.Guitar.Note
 import Fretboarder.Guitar.Scale
-import Text.Printf
 
 -- TODO: Use some bytestring builder
 asciiFretboard :: Int -> Fretboard -> Scale -> String

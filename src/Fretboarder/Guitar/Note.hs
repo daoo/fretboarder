@@ -45,7 +45,7 @@ instance Arbitrary Accidental where
 data Note = Note Octave Tone Accidental
 
 instance Show Note where
-  show (Note t o a) = case a of
+  show (Note o t a) = case a of
     Flat    -> shows t $ shows o "b"
     Natural -> shows t $ show o
     Sharp   -> shows t $ shows o "#"
@@ -81,16 +81,16 @@ iToNote i = Note (fromIntegral q) tone accidental
       0  -> (A, Natural)
       1  -> (A, Sharp)
       2  -> (B, Natural)
-      3  -> (D, Sharp)
-      4  -> (E, Natural)
-      5  -> (F, Natural)
-      6  -> (F, Sharp)
-      7  -> (G, Natural)
-      8  -> (G, Sharp)
-      9  -> (A, Natural)
-      10 -> (A, Sharp)
-      11 -> (B, Natural)
-      _  -> (C, Natural) -- Default to C
+      3  -> (C, Natural)
+      4  -> (C, Sharp)
+      5  -> (D, Natural)
+      6  -> (D, Sharp)
+      7  -> (E, Natural)
+      8  -> (F, Natural)
+      9  -> (F, Sharp)
+      10 -> (G, Natural)
+      11 -> (G, Sharp)
+      _  -> (A, Natural) -- this case can not happen because of rem 12
 
 -- |Fix note representation for display.
 --

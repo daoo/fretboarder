@@ -8,8 +8,10 @@ import Test.QuickCheck
 --
 -- Efficient non-reduntant representation. Note number zero represents A in
 -- octave 0. Increments in semitones.
-newtype INote = INote Int
+newtype INote = INote { mkINote :: Int }
   deriving (Show, Eq, Enum, Ord, Num, Real, Integral)
 
 instance Arbitrary INote where
   arbitrary = INote <$> choose (0, 120)
+
+  shrink = map INote . shrink . mkINote

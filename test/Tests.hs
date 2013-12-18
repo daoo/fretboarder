@@ -1,33 +1,20 @@
 module Tests where
 
 import Data.List
-import Extensions.List
+import Fretboarder.Guitar.INote
 import Fretboarder.Guitar.Note
 import Fretboarder.Guitar.Scale
 
-propHasDups :: (Eq a) => [a] -> Bool
-propHasDups xs = nubTest xs == hasDups xs
-  where
-    nubTest [] = False
-    nubTest ys = nub ys /= ys
-
 propFromToINote :: INote -> Bool
-propFromToINote i = i == toINote (fromINote i)
-
-propRepeat :: Scale -> Bool
-propRepeat s = not . hasDups $ take 100 $ repeatScale s
-
-propHasNotes :: Scale -> Bool
-propHasNotes scale = all (hasNote scale) xs
-  where
-    xs = take 100 $ repeatScale scale
+propFromToINote i = i == noteToI (iToNote i)
 
 equalINotes :: Bool
-equalINotes = all (\ (a, b) -> toINote a == toINote b) notes
+equalINotes = all (\ (a, b) -> noteToI a == noteToI b) notes
   where
     notes =
-      [ (Note A 4 Sharp   , Note B 4 Flat)
-      , (Note B 4 Natural , Note C 5 Flat)
-      , (Note B 4 Sharp   , Note C 5 Natural)
-      , (Note E 4 Natural , Note F 4 Flat)
-      , (Note E 4 Sharp   , Note F 4 Natural) ]
+      [ (Note 4 A Sharp   , Note 4 B Flat)
+      , (Note 4 B Natural , Note 5 C Flat)
+      , (Note 4 B Sharp   , Note 5 C Natural)
+      , (Note 4 E Natural , Note 4 F Flat)
+      , (Note 4 E Sharp   , Note 4 F Natural)
+      ]

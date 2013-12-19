@@ -6,12 +6,15 @@ module Fretboarder.Music.SPN
   , PitchClass(..)
   , SPN(SPN)
 
+  , toOffset
+  , fromOffset
   , toSemi
   , fromSemi
   , fixSPN
   ) where
 
 import Control.Applicative
+import Fretboarder.Music.Offset
 import Fretboarder.Music.Semitone
 import Test.QuickCheck
 
@@ -40,6 +43,7 @@ instance Arbitrary Accidental where
   arbitrary = elements [Flat, Natural, Sharp]
 
 data PitchClass = Cn | Cs | Dn | Ds | En | Fn | Fs | Gn | Gs | An | As | Bn
+  deriving Enum
 
 -- |Representation for the scientific pitch notation.
 --
@@ -58,6 +62,12 @@ instance Show SPN where
 
 instance Arbitrary SPN where
   arbitrary = SPN <$> arbitrary <*> arbitrary <*> arbitrary
+
+toOffset :: PitchClass -> Offset
+toOffset = toEnum . fromEnum
+
+fromOffset :: Offset -> PitchClass
+fromOffset = toEnum . fromEnum
 
 toSemi :: SPN -> Semitone
 toSemi (SPN o t a) = fromIntegral $ (o' * 12) + t' + a'

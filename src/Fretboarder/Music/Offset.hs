@@ -15,23 +15,36 @@ import Fretboarder.Music.Semitone
 newtype Offset = Offset { mkOffset :: Int }
   deriving (Eq, Ord)
 
+lift :: Int -> Offset
+lift = Offset . (`rem` 12)
+
+unary :: (Int -> Int) -> Offset -> Offset
+unary f (Offset x) = Offset (f x `rem` 12)
+
+binary :: (Int -> Int -> Int) -> Offset -> Offset -> Offset
+binary op (Offset a) (Offset b) = Offset (op a b `rem` 12)
+
+instance Enum Offset where
+  succ = unary succ
+  pred = unary pred
+
+  fromEnum = mkOffset
+  toEnum   = lift
+
 instance Show Offset where
   show = show . mkOffset
 
-math :: (Int -> Int -> Int) -> Offset -> Offset -> Offset
-math op (Offset a) (Offset b) = Offset (op a b `mod` 12)
-
 instance Num Offset where
-  (+) = math (+)
-  (-) = math (-)
-  (*) = math (*)
+  (+) = binary (+)
+  (-) = binary (-)
+  (*) = binary (*)
 
   negate (Offset x) = Offset (11 - x)
 
   signum = const (Offset 1)
   abs    = id
 
-  fromInteger = Offset . (`mod` 12) . fromInteger
+  fromInteger = lift . fromInteger
 
 addOffset :: Semitone -> Offset -> Semitone
 addOffset a (Offset b) = a + fromIntegral b

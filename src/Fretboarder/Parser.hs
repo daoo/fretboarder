@@ -7,7 +7,11 @@ import Control.Applicative
 import Data.Attoparsec.Text hiding (D)
 import Fretboarder.Music.Note
 import Fretboarder.Music.Offset
+import Fretboarder.Music.SPN
 import Fretboarder.Music.Scale
+
+parseOctave :: Parser Octave
+parseOctave = decimal
 
 parseTone :: Parser Tone
 parseTone =
@@ -25,8 +29,12 @@ parseAccidental =
   (Flat <$ char 'b') <|>
   pure Natural
 
-parseNote :: Parser Note
-parseNote = Note 0 <$> parseTone <*> parseAccidental
+parseSPN :: Parser SPN
+parseSPN = do
+  t <- parseTone
+  o <- parseOctave
+  a <- parseAccidental
+  return $ SPN o t a
 
 parseOffsets :: Parser [Offset]
 parseOffsets =
@@ -47,7 +55,7 @@ parseOffsets =
 
 parseScale :: Parser Scale
 parseScale = do
-  n <- parseNote
+  n <- parseSPN
   _ <- space
   s <- parseOffsets
-  return $ Scale (noteToI n) s
+  return $ Scale (toSemi n) s

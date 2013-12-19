@@ -3,8 +3,8 @@ module Fretboarder.Drawing.Cairo
   ( drawFretboard ) where
 
 import Fretboarder.Music.Fretboard
-import Fretboarder.Music.INote
 import Fretboarder.Music.Scale
+import Fretboarder.Music.Semitone
 import qualified Graphics.Rendering.Cairo as C
 
 data Color = Color {-# UNPACK #-} !Double {-# UNPACK #-} !Double {-# UNPACK #-} !Double
@@ -47,7 +47,7 @@ mkLines !count !delta !line = go 0 line
     go !i !acc | i < count = mkLine acc >> go (i+1) (acc .+. delta)
                | otherwise = return ()
 
-getColor :: INote -> Scale -> Maybe Color
+getColor :: Semitone -> Scale -> Maybe Color
 getColor note scale = if hasNote note scale then Just (head tangoColors) else Nothing
 
 drawFretboard :: Double -> Double -> Fretboard -> Scale -> C.Render ()
@@ -125,14 +125,14 @@ drawFretboard w h fb scale = do
       Just c  -> setColor c >> fillCircle (Point x y)
       Nothing -> return ()
 
-    drawStrings :: [INote] -> C.Render ()
+    drawStrings :: [Semitone] -> C.Render ()
     drawStrings = go 0 frety1
       where
-        go :: Int -> Double -> [INote] -> C.Render ()
+        go :: Int -> Double -> [Semitone] -> C.Render ()
         go  _  _ []        = return ()
         go !j !y (root:ys) = drawString y root >> go (j+1) (y+freth) ys
 
-    drawString :: Double -> INote -> C.Render ()
+    drawString :: Double -> Semitone -> C.Render ()
     drawString !y !root = drawFret fretx1 y root >> go 1 fretx2
       where
         go :: Int -> Double -> C.Render ()

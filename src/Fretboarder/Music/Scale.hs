@@ -25,7 +25,7 @@ module Fretboarder.Music.Scale
 import Control.Applicative
 import Data.List
 import Data.Monoid
-import Fretboarder.Music.INote
+import Fretboarder.Music.Semitone
 import Fretboarder.Music.Offset
 import Test.QuickCheck
 
@@ -56,7 +56,7 @@ aeolianMode    = minorOffsets
 locrianMode    = lower 2 $ lower 5 $ minorOffsets
 
 -- |Octave repeating musical scale.
-data Scale = Scale INote [Offset]
+data Scale = Scale Semitone [Offset]
   deriving Show
 
 instance Arbitrary Scale where
@@ -79,10 +79,10 @@ instance Arbitrary Scale where
         , locrianMode
         ]
 
-hasNote :: INote -> Scale -> Bool
+hasNote :: Semitone -> Scale -> Bool
 hasNote note (Scale root offsets) = fromIntegral (note - root) `elem` offsets
 
-repeatScale :: Scale -> [INote]
+repeatScale :: Scale -> [Semitone]
 repeatScale (Scale root offsets) = go root offsets
   where
     go x []     = go x offsets

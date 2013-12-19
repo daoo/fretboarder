@@ -14,10 +14,11 @@ library
     Fretboarder.Drawing.Cairo
     Fretboarder.Music.Diatonic
     Fretboarder.Music.Fretboard
-    Fretboarder.Music.INote
     Fretboarder.Music.Note
     Fretboarder.Music.Offset
+    Fretboarder.Music.SPN
     Fretboarder.Music.Scale
+    Fretboarder.Music.Semitone
     Fretboarder.Parser
     Fretboarder.Utility
   build-depends: base, QuickCheck, cairo, transformers, filepath, attoparsec

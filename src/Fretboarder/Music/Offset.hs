@@ -6,7 +6,7 @@ module Fretboarder.Music.Offset
   , raise
   ) where
 
-import Fretboarder.Music.INote
+import Fretboarder.Music.Semitone
 
 newtype Offset = Offset { mkOffset :: Int }
   deriving (Eq, Ord)
@@ -29,7 +29,7 @@ instance Num Offset where
 
   fromInteger = Offset . (`mod` 12) . fromInteger
 
-addOffset :: INote -> Offset -> INote
+addOffset :: Semitone -> Offset -> Semitone
 addOffset a (Offset b) = a + fromIntegral b
 
 mapAt :: Int -> (a -> a) -> [a] -> [a]

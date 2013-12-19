@@ -1,5 +1,5 @@
 {-# LANGUAGE LambdaCase, GeneralizedNewtypeDeriving #-}
-module Fretboarder.Music.INote ( INote ) where
+module Fretboarder.Music.Semitone ( Semitone ) where
 
 import Control.Applicative
 import Test.QuickCheck
@@ -8,10 +8,10 @@ import Test.QuickCheck
 --
 -- Efficient non-reduntant representation. Note number zero represents A in
 -- octave 0. Increments in semitones.
-newtype INote = INote { mkINote :: Int }
+newtype Semitone = Semitone { mkSemitone :: Int }
   deriving (Show, Eq, Enum, Ord, Num, Real, Integral)
 
-instance Arbitrary INote where
-  arbitrary = INote <$> choose (0, 120)
+instance Arbitrary Semitone where
+  arbitrary = Semitone <$> choose (0, 120)
 
-  shrink = map INote . shrink . mkINote
+  shrink = map Semitone . shrink . mkSemitone

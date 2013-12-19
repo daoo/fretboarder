@@ -4,27 +4,28 @@ module Fretboarder.Music.Fretboard
   , ebgdae
   ) where
 
-import Fretboarder.Music.INote
 import Fretboarder.Music.Note
+import Fretboarder.Music.SPN
+import Fretboarder.Music.Semitone
 
 -- |Represent a fretboard with a specific tuning
 newtype Fretboard = Fretboard
-  { tuning :: [INote] -- ^The notes for each string
+  { tuning :: [Semitone] -- ^The notes for each string
   } deriving Show
 
 stringCount :: Fretboard -> Int
 stringCount = length . tuning
 
-mkFretboard :: [Note] -> Fretboard
-mkFretboard = Fretboard . map noteToI
+mkFretboard :: [SPN] -> Fretboard
+mkFretboard = Fretboard . map toSemi
 
 -- The fretboard for a standard EBGDAE tuning
 ebgdae :: Fretboard
 ebgdae = mkFretboard
-  [ Note 4 E Natural
-  , Note 3 B Natural
-  , Note 3 G Natural
-  , Note 3 D Natural
-  , Note 2 A Natural
-  , Note 2 E Natural
+  [ SPN 4 E Natural
+  , SPN 3 B Natural
+  , SPN 3 G Natural
+  , SPN 3 D Natural
+  , SPN 2 A Natural
+  , SPN 2 E Natural
   ]

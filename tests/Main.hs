@@ -1,21 +1,21 @@
 module Main where
 
-import Fretboarder.Guitar.INote
-import Fretboarder.Guitar.Note
+import Fretboarder.Guitar.SPN
+import Fretboarder.Guitar.Semitone
 import Test.Framework
 import Test.Framework.Providers.HUnit
 import Test.Framework.Providers.QuickCheck2
 import Test.HUnit (Assertion, (@?=))
 
-prop_fromToINote :: INote -> Bool
-prop_fromToINote i = i == noteToI (iToNote i)
+prop_fromToSemitone :: Semitone -> Bool
+prop_fromToSemitone i = i == noteToI (iToNote i)
 
 (@=) :: Eq a => a -> a -> Assertion
 a @= b = a == b @?= True
 
 tests :: [Test]
 tests =
-  [ testProperty "INote <-> Note conversion" prop_fromToINote
+  [ testProperty "Semitone <-> Note conversion" prop_fromToINote
   , testGroup "Note equalities"
     [ testCase "A4# = B4b" (Note 4 A Sharp   @= Note 4 B Flat)
     , testCase "B4  = C5b" (Note 4 B Natural @= Note 5 C Flat)

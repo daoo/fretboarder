@@ -8,6 +8,10 @@ module Fretboarder.Music.Offset
 
 import Fretboarder.Music.Semitone
 
+-- |Type for offset within a pitch class.
+--
+-- Used for defining scales and chords. These offsets are relative to some root
+-- note that is defined by context.
 newtype Offset = Offset { mkOffset :: Int }
   deriving (Eq, Ord)
 

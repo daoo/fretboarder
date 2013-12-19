@@ -36,6 +36,8 @@ data Accidental = Natural | Flat | Sharp
 instance Arbitrary Accidental where
   arbitrary = elements [Flat, Natural, Sharp]
 
+data PitchClass = Cn | Cs | Dn | Ds | En | Fn | Fs | Gn | Gs | An | As | Bn
+
 -- |Representation for the scientific pitch notation.
 --
 -- This type is highly redundant and confusing to use. The Semitone type is much

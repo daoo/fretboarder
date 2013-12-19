@@ -3,8 +3,8 @@ module Main (main) where
 import Control.Monad.IO.Class
 import Data.Attoparsec.Text
 import Fretboarder.Drawing.Cairo
-import Fretboarder.Guitar.Fretboard
-import Fretboarder.Guitar.Scale
+import Fretboarder.Music.Fretboard
+import Fretboarder.Music.Scale
 import Fretboarder.Parser
 import Graphics.UI.Gtk hiding (Scale)
 import Reactive.Banana

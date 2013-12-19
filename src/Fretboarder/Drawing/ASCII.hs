@@ -1,10 +1,10 @@
 module Fretboarder.Drawing.ASCII where
 
 import Data.List
-import Fretboarder.Guitar.Fretboard
-import Fretboarder.Guitar.INote
-import Fretboarder.Guitar.Note
-import Fretboarder.Guitar.Scale
+import Fretboarder.Music.Fretboard
+import Fretboarder.Music.INote
+import Fretboarder.Music.Note
+import Fretboarder.Music.Scale
 
 -- TODO: Use some bytestring builder
 asciiFretboard :: Int -> Fretboard -> Scale -> String

@@ -1,4 +1,4 @@
-module Fretboarder.Guitar.Scale
+module Fretboarder.Music.Scale
   ( Scale(..)
   , raise
   , lower
@@ -25,8 +25,8 @@ module Fretboarder.Guitar.Scale
 import Control.Applicative
 import Data.List
 import Data.Monoid
-import Fretboarder.Guitar.INote
-import Fretboarder.Guitar.Offset
+import Fretboarder.Music.INote
+import Fretboarder.Music.Offset
 import Test.QuickCheck
 
 -- Some predefined scale offsets

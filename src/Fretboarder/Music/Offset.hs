@@ -1,12 +1,12 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
-module Fretboarder.Guitar.Offset
+module Fretboarder.Music.Offset
   ( Offset
   , addOffset
   , lower
   , raise
   ) where
 
-import Fretboarder.Guitar.INote
+import Fretboarder.Music.INote
 
 newtype Offset = Offset { mkOffset :: Int }
   deriving (Eq, Ord)

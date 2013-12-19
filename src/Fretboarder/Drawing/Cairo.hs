@@ -2,9 +2,9 @@
 module Fretboarder.Drawing.Cairo
   ( drawFretboard ) where
 
-import Fretboarder.Guitar.Fretboard
-import Fretboarder.Guitar.INote
-import Fretboarder.Guitar.Scale
+import Fretboarder.Music.Fretboard
+import Fretboarder.Music.INote
+import Fretboarder.Music.Scale
 import qualified Graphics.Rendering.Cairo as C
 
 data Color = Color {-# UNPACK #-} !Double {-# UNPACK #-} !Double {-# UNPACK #-} !Double

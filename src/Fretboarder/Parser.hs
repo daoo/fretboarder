@@ -5,9 +5,9 @@ module Fretboarder.Parser
 
 import Control.Applicative
 import Data.Attoparsec.Text hiding (D)
-import Fretboarder.Guitar.Note
-import Fretboarder.Guitar.Offset
-import Fretboarder.Guitar.Scale
+import Fretboarder.Music.Note
+import Fretboarder.Music.Offset
+import Fretboarder.Music.Scale
 
 parseTone :: Parser Tone
 parseTone =

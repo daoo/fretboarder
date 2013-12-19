@@ -1,5 +1,5 @@
 {-# LANGUAGE LambdaCase, GeneralizedNewtypeDeriving #-}
-module Fretboarder.Guitar.Note
+module Fretboarder.Music.Note
   ( Octave
   , Tone(..)
   , Accidental(..)
@@ -11,7 +11,7 @@ module Fretboarder.Guitar.Note
   ) where
 
 import Control.Applicative
-import Fretboarder.Guitar.INote
+import Fretboarder.Music.INote
 import Test.QuickCheck
 
 -- |An musical octave containing 12 notes.

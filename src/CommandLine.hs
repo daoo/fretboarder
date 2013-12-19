@@ -3,7 +3,7 @@ module Main (main) where
 import Data.Attoparsec.Text
 import Data.Char
 import Fretboarder.Drawing.Cairo
-import Fretboarder.Guitar.Fretboard
+import Fretboarder.Music.Fretboard
 import Fretboarder.Parser
 import Graphics.Rendering.Cairo hiding (scale)
 import System.Environment

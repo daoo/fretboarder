@@ -1,5 +1,5 @@
 {-# LANGUAGE LambdaCase, GeneralizedNewtypeDeriving #-}
-module Fretboarder.Guitar.INote ( INote ) where
+module Fretboarder.Music.INote ( INote ) where
 
 import Control.Applicative
 import Test.QuickCheck

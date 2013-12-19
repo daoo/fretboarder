@@ -12,12 +12,12 @@ library
   exposed-modules:
     Fretboarder.Drawing.ASCII
     Fretboarder.Drawing.Cairo
-    Fretboarder.Guitar.Diatonic
-    Fretboarder.Guitar.Fretboard
-    Fretboarder.Guitar.INote
-    Fretboarder.Guitar.Note
-    Fretboarder.Guitar.Offset
-    Fretboarder.Guitar.Scale
+    Fretboarder.Music.Diatonic
+    Fretboarder.Music.Fretboard
+    Fretboarder.Music.INote
+    Fretboarder.Music.Note
+    Fretboarder.Music.Offset
+    Fretboarder.Music.Scale
     Fretboarder.Parser
     Fretboarder.Utility
   build-depends: base, QuickCheck, cairo, transformers, filepath, attoparsec

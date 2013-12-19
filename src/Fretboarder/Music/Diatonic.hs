@@ -1,9 +1,9 @@
-module Fretboarder.Guitar.Diatonic
+module Fretboarder.Music.Diatonic
   ( Diatonic(..)
   , diatonicToOffset
   ) where
 
-import Fretboarder.Guitar.Offset
+import Fretboarder.Music.Offset
 
 -- |Diatonic Intervals.
 data Diatonic

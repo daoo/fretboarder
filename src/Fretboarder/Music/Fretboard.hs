@@ -1,11 +1,11 @@
-module Fretboarder.Guitar.Fretboard
+module Fretboarder.Music.Fretboard
   ( Fretboard(tuning)
   , stringCount
   , ebgdae
   ) where
 
-import Fretboarder.Guitar.INote
-import Fretboarder.Guitar.Note
+import Fretboarder.Music.INote
+import Fretboarder.Music.Note
 
 -- |Represent a fretboard with a specific tuning
 newtype Fretboard = Fretboard

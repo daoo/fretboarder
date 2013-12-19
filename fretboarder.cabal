@@ -15,7 +15,6 @@ library
     Fretboarder.Drawing.Expr
     Fretboarder.Music.Diatonic
     Fretboarder.Music.Fretboard
-    Fretboarder.Music.Note
     Fretboarder.Music.Offset
     Fretboarder.Music.SPN
     Fretboarder.Music.Scale

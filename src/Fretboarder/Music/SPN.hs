@@ -3,13 +3,16 @@ module Fretboarder.Music.SPN
   ( Octave
   , Tone(..)
   , Accidental(..)
+  , PitchClass(..)
   , SPN(SPN)
 
+  , toSemi
+  , fromSemi
   , fixSPN
   ) where
 
 import Control.Applicative
-import Fretboarder.Music.Note
+import Fretboarder.Music.Semitone
 import Test.QuickCheck
 
 -- |An musical octave containing 12 notes.
@@ -56,43 +59,44 @@ instance Show SPN where
 instance Arbitrary SPN where
   arbitrary = SPN <$> arbitrary <*> arbitrary <*> arbitrary
 
-instance Note SPN where
-  toSemi (SPN o t a) = fromIntegral $ (o' * 12) + t' + a'
-    where
-      o' = mkOctave o
+toSemi :: SPN -> Semitone
+toSemi (SPN o t a) = fromIntegral $ (o' * 12) + t' + a'
+  where
+    o' = mkOctave o
 
-      t' = case t of
-        A -> 9
-        B -> 11
-        C -> 0
-        D -> 2
-        E -> 4
-        F -> 5
-        G -> 7
+    t' = case t of
+      A -> 9
+      B -> 11
+      C -> 0
+      D -> 2
+      E -> 4
+      F -> 5
+      G -> 7
 
-      a' = case a of
-        Flat    -> -1
-        Natural -> 0
-        Sharp   -> 1
+    a' = case a of
+      Flat    -> -1
+      Natural -> 0
+      Sharp   -> 1
 
-  fromSemi n = SPN (fromIntegral q) tone accidental
-    where
-      (q, r) = n `quotRem` 12
+fromSemi :: Semitone -> SPN
+fromSemi n = SPN (fromIntegral q) tone accidental
+  where
+    (q, r) = n `quotRem` 12
 
-      (tone, accidental) = case r of
-        0  -> (C, Natural)
-        1  -> (C, Sharp)
-        2  -> (D, Natural)
-        3  -> (D, Sharp)
-        4  -> (E, Natural)
-        5  -> (F, Natural)
-        6  -> (F, Sharp)
-        7  -> (G, Natural)
-        8  -> (G, Sharp)
-        9  -> (A, Natural)
-        10 -> (A, Sharp)
-        11 -> (B, Natural)
-        _  -> (A, Natural) -- this case can not happen because of rem 12
+    (tone, accidental) = case r of
+      0  -> (C, Natural)
+      1  -> (C, Sharp)
+      2  -> (D, Natural)
+      3  -> (D, Sharp)
+      4  -> (E, Natural)
+      5  -> (F, Natural)
+      6  -> (F, Sharp)
+      7  -> (G, Natural)
+      8  -> (G, Sharp)
+      9  -> (A, Natural)
+      10 -> (A, Sharp)
+      11 -> (B, Natural)
+      _  -> (A, Natural) -- this case can not happen because of rem 12
 
 -- |Fix note representation for display.
 --

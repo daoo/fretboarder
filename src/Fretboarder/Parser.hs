@@ -14,7 +14,6 @@ module Fretboarder.Parser
 import Control.Applicative
 import Data.Attoparsec.Text hiding (D)
 import Fretboarder.Drawing.Expr
-import Fretboarder.Music.Note
 import Fretboarder.Music.Offset
 import Fretboarder.Music.SPN
 import Fretboarder.Music.Scale

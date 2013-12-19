@@ -4,7 +4,6 @@ module Fretboarder.Music.Fretboard
   , ebgdae
   ) where
 
-import Fretboarder.Music.Note
 import Fretboarder.Music.SPN
 import Fretboarder.Music.Semitone
 

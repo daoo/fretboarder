@@ -2,7 +2,6 @@ module Fretboarder.Drawing.ASCII where
 
 import Data.List
 import Fretboarder.Music.Fretboard
-import Fretboarder.Music.Note
 import Fretboarder.Music.SPN
 import Fretboarder.Music.Scale
 import Fretboarder.Music.Semitone

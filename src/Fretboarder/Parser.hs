@@ -46,7 +46,7 @@ parseSPN = do
   t <- parseTone
   o <- parseOctave
   a <- parseAccidental
-  return $ SPN o t a
+  return $ mkSPN o t a
 
 parseOffsets :: Parser [Offset]
 parseOffsets =

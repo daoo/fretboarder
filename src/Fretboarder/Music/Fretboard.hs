@@ -21,10 +21,10 @@ mkFretboard = Fretboard . map toSemi
 -- The fretboard for a standard EBGDAE tuning
 ebgdae :: Fretboard
 ebgdae = mkFretboard
-  [ SPN 4 E Natural
-  , SPN 3 B Natural
-  , SPN 3 G Natural
-  , SPN 3 D Natural
-  , SPN 2 A Natural
-  , SPN 2 E Natural
+  [ mkSPN 4 E Natural
+  , mkSPN 3 B Natural
+  , mkSPN 3 G Natural
+  , mkSPN 3 D Natural
+  , mkSPN 2 A Natural
+  , mkSPN 2 E Natural
   ]

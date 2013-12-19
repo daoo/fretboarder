@@ -4,13 +4,16 @@ module Fretboarder.Music.SPN
   , Tone(..)
   , Accidental(..)
   , PitchClass(..)
-  , SPN(SPN)
+  , SPN(..)
+  , mkSPN
+
+  , tone
+  , accidental
 
   , toOffset
   , fromOffset
   , toSemi
   , fromSemi
-  , fixSPN
   ) where
 
 import Control.Applicative
@@ -43,25 +46,83 @@ instance Arbitrary Accidental where
   arbitrary = elements [Flat, Natural, Sharp]
 
 data PitchClass = Cn | Cs | Dn | Ds | En | Fn | Fs | Gn | Gs | An | As | Bn
-  deriving Enum
+  deriving (Eq, Enum)
 
--- |Representation for the scientific pitch notation.
+instance Arbitrary PitchClass where
+  arbitrary = elements [Cn, Cs, Dn, Ds, En, Fn, Fs, Gn, Gs, An, As, Bn]
+
+tone :: PitchClass -> Tone
+tone = \case
+  Cn -> C
+  Cs -> C
+  Dn -> D
+  Ds -> D
+  En -> E
+  Fn -> F
+  Fs -> F
+  Gn -> G
+  Gs -> G
+  An -> A
+  As -> A
+  Bn -> B
+
+accidental :: PitchClass -> Accidental
+accidental = \case
+  Cn -> Natural
+  Cs -> Sharp
+  Dn -> Natural
+  Ds -> Sharp
+  En -> Natural
+  Fn -> Natural
+  Fs -> Sharp
+  Gn -> Natural
+  Gs -> Sharp
+  An -> Natural
+  As -> Sharp
+  Bn -> Natural
+
+-- |Non-redundant type for the scientific pitch notation.
 --
--- This type is highly redundant and confusing to use. The Semitone type is much
--- better to use in code and SPN should only be used for user interaction.
-data SPN = SPN Octave Tone Accidental
+-- The Semitone type is much better to use in code and SPN should only be used
+-- for user interaction.
+data SPN = SPN
+  { octave :: {-# UNPACK #-} !Octave
+  , pitchClass :: !PitchClass
+  }
+  deriving Eq
 
-instance Eq SPN where
-  a == b = toSemi a == toSemi b
+mkSPN :: Octave -> Tone -> Accidental -> SPN
+mkSPN o t a = case (t, a) of
+  (C, Flat)    -> SPN (o-1) Bn
+  (C, Natural) -> SPN o Cn
+  (C, Sharp)   -> SPN o Cs
+  (D, Flat)    -> SPN o Cs
+  (D, Natural) -> SPN o Dn
+  (D, Sharp)   -> SPN o Ds
+  (E, Flat)    -> SPN o Ds
+  (E, Natural) -> SPN o En
+  (E, Sharp)   -> SPN o Fn
+  (F, Flat)    -> SPN o En
+  (F, Natural) -> SPN o Fn
+  (F, Sharp)   -> SPN o Fs
+  (G, Flat)    -> SPN o Fs
+  (G, Natural) -> SPN o Gn
+  (G, Sharp)   -> SPN o Gs
+  (A, Flat)    -> SPN o Gs
+  (A, Natural) -> SPN o An
+  (A, Sharp)   -> SPN o As
+  (B, Flat)    -> SPN o As
+  (B, Natural) -> SPN o Bn
+  (B, Sharp)   -> SPN (o+1) Cn
 
 instance Show SPN where
-  show (SPN o t a) = case a of
-    Flat    -> shows t $ shows o "b"
-    Natural -> shows t $ show o
-    Sharp   -> shows t $ shows o "#"
+  show (SPN o p) = case accidental p of
+    Flat    -> shows (tone p) $ shows o "b"
+    Natural -> shows (tone p) $ show o
+    Sharp   -> shows (tone p) $ shows o "#"
 
 instance Arbitrary SPN where
-  arbitrary = SPN <$> arbitrary <*> arbitrary <*> arbitrary
+  arbitrary = SPN <$> arbitrary <*> arbitrary
 
 toOffset :: PitchClass -> Offset
 toOffset = toEnum . fromEnum
@@ -70,54 +131,9 @@ fromOffset :: Offset -> PitchClass
 fromOffset = toEnum . fromEnum
 
 toSemi :: SPN -> Semitone
-toSemi (SPN o t a) = fromIntegral $ (o' * 12) + t' + a'
-  where
-    o' = mkOctave o
-
-    t' = case t of
-      A -> 9
-      B -> 11
-      C -> 0
-      D -> 2
-      E -> 4
-      F -> 5
-      G -> 7
-
-    a' = case a of
-      Flat    -> -1
-      Natural -> 0
-      Sharp   -> 1
+toSemi (SPN o p) = fromIntegral $ (fromIntegral o * 12) + fromEnum p
 
 fromSemi :: Semitone -> SPN
-fromSemi n = SPN (fromIntegral q) tone accidental
+fromSemi n = SPN (fromIntegral q) (toEnum r)
   where
-    (q, r) = n `quotRem` 12
-
-    (tone, accidental) = case r of
-      0  -> (C, Natural)
-      1  -> (C, Sharp)
-      2  -> (D, Natural)
-      3  -> (D, Sharp)
-      4  -> (E, Natural)
-      5  -> (F, Natural)
-      6  -> (F, Sharp)
-      7  -> (G, Natural)
-      8  -> (G, Sharp)
-      9  -> (A, Natural)
-      10 -> (A, Sharp)
-      11 -> (B, Natural)
-      _  -> (A, Natural) -- this case can not happen because of rem 12
-
--- |Fix note representation for display.
---
--- For some reason beyond human understanding, we have that B# == C, B == Cb,
--- E# == F and E == Fb. The sharps and flats of these notes are not used at all
--- in written musical notation. This function normalizes those sharps and flats
--- to naturals.
-fixSPN :: SPN -> SPN
-fixSPN = \case
-  SPN o B Sharp -> SPN (o+1) C Natural
-  SPN o C Flat  -> SPN (o+1) B Natural
-  SPN o E Sharp -> SPN o F Natural
-  SPN o F Flat  -> SPN o E Natural
-  n             -> n
+    (q, r) = fromIntegral n `quotRem` 12

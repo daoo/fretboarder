@@ -3,7 +3,6 @@ module Main (main) where
 import Data.Attoparsec.Text
 import Data.Char
 import Fretboarder.Drawing.Cairo
-import Fretboarder.Drawing.Expr
 import Fretboarder.Music.Fretboard
 import Fretboarder.Parser
 import Graphics.Rendering.Cairo hiding (scale)
@@ -28,11 +27,12 @@ main :: IO ()
 main = do
   (w : h : path : rest) <- getArgs
 
-  case parseOnly parseScale (T.pack $ concat rest) of
+  let ft = findImageType path
+      wi = read w :: Int
+      hi = read h :: Int
+      wd = realToFrac wi
+      hd = realToFrac hi
+
+  case parseOnly parseExprs (T.pack $ concat rest) of
     Left err    -> print err
-    Right scale -> let ft = findImageType path
-                       wi = read w :: Int
-                       hi = read h :: Int
-                       wd = realToFrac wi
-                       hd = realToFrac hi
-                    in withSurface ft path (wi, hi) $ flip renderWith $ drawFretboard wd hd ebgdae [FullScale scale]
+    Right exprs -> withSurface ft path (wi, hi) $ flip renderWith $ drawFretboard wd hd ebgdae exprs

@@ -5,7 +5,6 @@ import Data.Attoparsec.Text
 import Fretboarder.Drawing.Cairo
 import Fretboarder.Drawing.Expr
 import Fretboarder.Music.Fretboard
-import Fretboarder.Music.Scale
 import Fretboarder.Parser
 import Graphics.UI.Gtk hiding (Scale)
 import Reactive.Banana
@@ -19,11 +18,11 @@ colorGreen, colorRed :: Color
 colorGreen = Color 35328 57856 13312
 colorRed   = Color 61184 10496 10496
 
-setupNetwork :: (Maybe Scale -> IO ()) -> (Color -> IO ()) -> AddHandler String -> AddHandler () -> IO EventNetwork
+setupNetwork :: (Maybe [Expr] -> IO ()) -> (Color -> IO ()) -> AddHandler String -> AddHandler () -> IO EventNetwork
 setupNetwork draw color estext esconf = compile $ do
   etext <- fromAddHandler estext
   econf <- fromAddHandler esconf
-  let (err, scale) = split $ (parseOnly parseScale . T.pack) <$> etext
+  let (err, scale) = split $ (parseOnly parseExprs . T.pack) <$> etext
 
       edraw = accumE Nothing $ union
         (id <$ econf)
@@ -64,11 +63,11 @@ setupWindow = do
 
   return window
 
-drawScale :: DrawingArea -> Maybe Scale -> IO ()
+drawScale :: DrawingArea -> Maybe [Expr] -> IO ()
 drawScale _ Nothing          = return ()
-drawScale canvas (Just scale) = do
+drawScale canvas (Just exprs) = do
   win  <- widgetGetDrawWindow canvas
   (w, h) <- widgetGetSize canvas
   drawWindowBeginPaintRect win $ Rectangle 0 0 w h
-  renderWithDrawable win $ drawFretboard (realToFrac w) (realToFrac h) ebgdae [FullScale scale]
+  renderWithDrawable win $ drawFretboard (realToFrac w) (realToFrac h) ebgdae exprs
   drawWindowEndPaint win

@@ -1,14 +1,27 @@
 {-# LANGUAGE OverloadedStrings, LambdaCase #-}
 module Fretboarder.Parser
-  ( parseScale
+  ( parseSemitone
+  , parseOctave
+  , parseTone
+  , parseAccidental
+  , parseSPN
+  , parseOffsets
+  , parseScale
+  , parseExpr
+  , parseExprs
   ) where
 
 import Control.Applicative
 import Data.Attoparsec.Text hiding (D)
+import Fretboarder.Drawing.Expr
 import Fretboarder.Music.Note
 import Fretboarder.Music.Offset
 import Fretboarder.Music.SPN
 import Fretboarder.Music.Scale
+import Fretboarder.Music.Semitone
+
+parseSemitone :: Parser Semitone
+parseSemitone = decimal
 
 parseOctave :: Parser Octave
 parseOctave = decimal
@@ -38,8 +51,6 @@ parseSPN = do
 
 parseOffsets :: Parser [Offset]
 parseOffsets =
-  (majorOffsets <$ "major") <|>
-  (minorOffsets <$ "minor") <|>
   (harmonicMinor <$ "harmonic minor") <|>
   (melodicMinor <$ "melodic minor") <|>
   (minorPentatonic <$ "minor pentatonic") <|>
@@ -51,11 +62,19 @@ parseOffsets =
   (lydianMode <$ "lydian") <|>
   (mixolydianMode <$ "mixolydian") <|>
   (aeolianMode <$ "aeolian") <|>
-  (locrianMode <$ "locrian")
+  (locrianMode <$ "locrian") <|>
+  (majorOffsets <$ "major") <|>
+  (minorOffsets <$ "minor")
 
 parseScale :: Parser Scale
 parseScale = do
   n <- parseSPN
-  _ <- space
+  skipSpace
   s <- parseOffsets
   return $ Scale (toSemi n) s
+
+parseExpr :: Parser Expr
+parseExpr = (FullScale <$> parseScale) <|> ((OnePitch . toSemi) <$> parseSPN)
+
+parseExprs :: Parser [Expr]
+parseExprs = sepBy1 parseExpr (skipSpace >> char ',' >> skipSpace)

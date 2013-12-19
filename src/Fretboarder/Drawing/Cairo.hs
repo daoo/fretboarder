@@ -2,8 +2,9 @@
 module Fretboarder.Drawing.Cairo
   ( drawFretboard ) where
 
+import Data.Array.IArray
+import Fretboarder.Drawing.Expr
 import Fretboarder.Music.Fretboard
-import Fretboarder.Music.Scale
 import Fretboarder.Music.Semitone
 import qualified Graphics.Rendering.Cairo as C
 
@@ -14,8 +15,8 @@ data Line  = Line {-# UNPACK #-} !Point {-# UNPACK #-} !Point
 (.+) :: Point -> Point -> Point
 Point x1 y1 .+ Point x2 y2 = Point (x1+x2) (y1+y2)
 
-tangoColors :: [Color]
-tangoColors =
+tangoColors :: Array Int Color
+tangoColors = listArray (0, 7)
   [ Color 0.988235294117647 0.917647058823529 0.309803921568627
   , Color 0.937254901960784 0.160784313725490 0.160784313725490
   , Color 0.988235294117647 0.686274509803922 0.243137254901961
@@ -47,11 +48,11 @@ mkLines !count !delta !line = go 0 line
     go !i !acc | i < count = mkLine acc >> go (i+1) (acc .+. delta)
                | otherwise = return ()
 
-getColor :: Semitone -> Scale -> Maybe Color
-getColor note scale = if hasNote note scale then Just (head tangoColors) else Nothing
+getColor :: Semitone -> [Expr] -> [Color]
+getColor n = map (tangoColors !) . semiIndex n
 
-drawFretboard :: Double -> Double -> Fretboard -> Scale -> C.Render ()
-drawFretboard w h fb scale = do
+drawFretboard :: Double -> Double -> Fretboard -> [Expr] -> C.Render ()
+drawFretboard w h fb e = do
   setColor bgColor
   C.rectangle 0 0 w h
   C.fill
@@ -121,9 +122,8 @@ drawFretboard w h fb scale = do
 
     drawInlays = mapM_ drawInlay
 
-    drawFret !x !y !n = case getColor n scale of
-      Just c  -> setColor c >> fillCircle (Point x y)
-      Nothing -> return ()
+    drawFret !x !y !n =
+      mapM_ (\c -> setColor c >> fillCircle (Point x y)) (getColor n e)
 
     drawStrings :: [Semitone] -> C.Render ()
     drawStrings = go 0 frety1

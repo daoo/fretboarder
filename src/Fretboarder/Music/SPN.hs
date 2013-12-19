@@ -24,14 +24,14 @@ instance Arbitrary Octave where
 
 -- |A musical tone.
 data Tone = A | B | C | D | E | F | G
-  deriving (Show)
+  deriving (Eq, Show)
 
 instance Arbitrary Tone where
   arbitrary = elements [A, B, C, D, E, F, G]
 
 -- |A musical accidental.
 data Accidental = Natural | Flat | Sharp
-  deriving Show
+  deriving (Eq, Show)
 
 instance Arbitrary Accidental where
   arbitrary = elements [Flat, Natural, Sharp]

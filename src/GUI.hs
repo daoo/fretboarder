@@ -3,6 +3,7 @@ module Main (main) where
 import Control.Monad.IO.Class
 import Data.Attoparsec.Text
 import Fretboarder.Drawing.Cairo
+import Fretboarder.Drawing.Expr
 import Fretboarder.Music.Fretboard
 import Fretboarder.Music.Scale
 import Fretboarder.Parser
@@ -69,5 +70,5 @@ drawScale canvas (Just scale) = do
   win  <- widgetGetDrawWindow canvas
   (w, h) <- widgetGetSize canvas
   drawWindowBeginPaintRect win $ Rectangle 0 0 w h
-  renderWithDrawable win $ drawFretboard (realToFrac w) (realToFrac h) ebgdae scale
+  renderWithDrawable win $ drawFretboard (realToFrac w) (realToFrac h) ebgdae [FullScale scale]
   drawWindowEndPaint win

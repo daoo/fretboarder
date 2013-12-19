@@ -3,6 +3,7 @@ module Main (main) where
 import Data.Attoparsec.Text
 import Data.Char
 import Fretboarder.Drawing.Cairo
+import Fretboarder.Drawing.Expr
 import Fretboarder.Music.Fretboard
 import Fretboarder.Parser
 import Graphics.Rendering.Cairo hiding (scale)
@@ -34,4 +35,4 @@ main = do
                        hi = read h :: Int
                        wd = realToFrac wi
                        hd = realToFrac hi
-                    in withSurface ft path (wi, hi) $ flip renderWith $ drawFretboard wd hd ebgdae scale
+                    in withSurface ft path (wi, hi) $ flip renderWith $ drawFretboard wd hd ebgdae [FullScale scale]

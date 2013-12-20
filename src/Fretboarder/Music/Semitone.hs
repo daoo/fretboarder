@@ -12,6 +12,6 @@ newtype Semitone = Semitone { mkSemitone :: Int }
   deriving (Show, Eq, Enum, Ord, Num, Real, Integral)
 
 instance Arbitrary Semitone where
-  arbitrary = Semitone <$> choose (0, 120)
+  arbitrary = Semitone <$> choose (-50, 200)
 
   shrink = map Semitone . shrink . mkSemitone

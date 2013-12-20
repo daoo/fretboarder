@@ -29,7 +29,7 @@ instance Show Octave where
   show = show . mkOctave
 
 instance Arbitrary Octave where
-  arbitrary = Octave <$> choose (0, 10)
+  arbitrary = Octave <$> choose (-1, 11)
 
 -- |A musical tone.
 data Tone = A | B | C | D | E | F | G
@@ -136,4 +136,4 @@ toSemi (SPN o p) = fromIntegral $ (fromIntegral o * 12) + fromEnum p
 fromSemi :: Semitone -> SPN
 fromSemi n = SPN (fromIntegral q) (toEnum r)
   where
-    (q, r) = fromIntegral n `quotRem` 12
+    (q, r) = fromIntegral n `divMod` 12

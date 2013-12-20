@@ -17,13 +17,13 @@ newtype Offset = Offset { mkOffset :: Int }
   deriving (Eq, Ord)
 
 lift :: Int -> Offset
-lift = Offset . (`rem` 12)
+lift = Offset . (`mod` 12)
 
 unary :: (Int -> Int) -> Offset -> Offset
-unary f (Offset x) = Offset (f x `rem` 12)
+unary f (Offset x) = Offset (f x `mod` 12)
 
 binary :: (Int -> Int -> Int) -> Offset -> Offset -> Offset
-binary op (Offset a) (Offset b) = Offset (op a b `rem` 12)
+binary op (Offset a) (Offset b) = Offset (op a b `mod` 12)
 
 instance Enum Offset where
   succ = unary succ

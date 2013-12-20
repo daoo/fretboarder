@@ -3,6 +3,7 @@ module Fretboarder.Music.Scale
   , raise
   , lower
 
+  , chromatic
   , majorOffsets
   , minorOffsets
   , harmonicMinor
@@ -30,6 +31,9 @@ import Fretboarder.Music.Offset
 import Test.QuickCheck
 
 -- Some predefined scale offsets
+chromatic :: [Offset]
+chromatic = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+
 majorOffsets, minorOffsets :: [Offset]
 majorOffsets = [0, 2, 4, 5, 7, 9, 11]
 minorOffsets = [0, 2, 3, 5, 7, 8, 10]

@@ -5,7 +5,7 @@ module Fretboarder.Drawing.Cairo
 import Data.Array.IArray
 import Fretboarder.Drawing.Expr
 import Fretboarder.Music.Fretboard
-import Fretboarder.Music.Semitone
+import Fretboarder.Music.Note
 import qualified Graphics.Rendering.Cairo as C
 
 data Color = Color {-# UNPACK #-} !Double {-# UNPACK #-} !Double {-# UNPACK #-} !Double
@@ -48,7 +48,7 @@ mkLines !count !delta !line = go 0 line
     go !i !acc | i < count = mkLine acc >> go (i+1) (acc .+. delta)
                | otherwise = return ()
 
-getColor :: Semitone -> [Expr] -> [Color]
+getColor :: Note -> [Expr] -> [Color]
 getColor n = map (tangoColors !) . semiIndex n
 
 drawFretboard :: Double -> Double -> Fretboard -> [Expr] -> C.Render ()
@@ -126,14 +126,14 @@ drawFretboard w h fb e = do
       []    -> return ()
       (c:_) -> setColor c >> fillCircle (Point x y)
 
-    drawStrings :: [Semitone] -> C.Render ()
+    drawStrings :: [Note] -> C.Render ()
     drawStrings = go 0 frety1
       where
-        go :: Int -> Double -> [Semitone] -> C.Render ()
+        go :: Int -> Double -> [Note] -> C.Render ()
         go  _  _ []        = return ()
         go !j !y (root:ys) = drawString y root >> go (j+1) (y+freth) ys
 
-    drawString :: Double -> Semitone -> C.Render ()
+    drawString :: Double -> Note -> C.Render ()
     drawString !y !root = drawFret fretx1 y root >> go 1 fretx2
       where
         go :: Int -> Double -> C.Render ()

@@ -5,18 +5,18 @@ module Fretboarder.Drawing.Expr
   ) where
 
 import Fretboarder.Music.RootedScale
-import Fretboarder.Music.Semitone
+import Fretboarder.Music.Note
 
 data Expr = FullScale RootedScale
-          | OnePitch Semitone
+          | OnePitch Note
           -- Chords, triads, stuff?
 
-includes :: Semitone -> Expr -> Bool
+includes :: Note -> Expr -> Bool
 includes n = \case
   FullScale s -> hasNote n s
   OnePitch n' -> n == n'
 
-semiIndex :: Semitone -> [Expr] -> [Int]
+semiIndex :: Note -> [Expr] -> [Int]
 semiIndex n = go 0 []
   where
     go _ acc []     = acc

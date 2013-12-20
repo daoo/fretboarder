@@ -17,7 +17,7 @@ module Fretboarder.Music.SPN
   ) where
 
 import Control.Applicative
-import Fretboarder.Music.Semitone
+import Fretboarder.Music.Note
 import Test.QuickCheck
 
 -- |An musical octave containing 12 notes.
@@ -82,7 +82,7 @@ accidental = \case
 
 -- |Non-redundant type for the scientific pitch notation.
 --
--- The Semitone type is much better to use in code and SPN should only be used
+-- The Note type is much better to use in code and SPN should only be used
 -- for user interaction.
 data SPN = SPN
   { octave :: {-# UNPACK #-} !Octave
@@ -129,10 +129,10 @@ toOffset = mkScaleOffset . fromEnum
 fromOffset :: ScaleOffset -> PitchClass
 fromOffset = toEnum . fromScaleOffset
 
-toSemi :: SPN -> Semitone
-toSemi (SPN o p) = mkSemitone $ (fromIntegral o * 12) + fromEnum p
+toSemi :: SPN -> Note
+toSemi (SPN o p) = mkNote $ (fromIntegral o * 12) + fromEnum p
 
-fromSemi :: Semitone -> SPN
+fromSemi :: Note -> SPN
 fromSemi n = SPN (Octave q) (toEnum r)
   where
-    (q, r) = fromSemitone n `divMod` 12
+    (q, r) = fromNote n `divMod` 12

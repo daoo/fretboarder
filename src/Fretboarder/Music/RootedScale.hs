@@ -4,12 +4,12 @@ module Fretboarder.Music.RootedScale
   ) where
 
 import Fretboarder.Music.Scale
-import Fretboarder.Music.Semitone
+import Fretboarder.Music.Note
 
 data RootedScale = RootedScale
-  { root :: Semitone
+  { root :: Note
   , scale :: Scale
   } deriving Show
 
-hasNote :: Semitone -> RootedScale -> Bool
+hasNote :: Note -> RootedScale -> Bool
 hasNote n (RootedScale r s) = hasOffset s (scaled $ n `off` r)

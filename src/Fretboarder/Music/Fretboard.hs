@@ -5,11 +5,11 @@ module Fretboarder.Music.Fretboard
   ) where
 
 import Fretboarder.Music.SPN
-import Fretboarder.Music.Semitone
+import Fretboarder.Music.Note
 
 -- |Represent a fretboard with a specific tuning
 newtype Fretboard = Fretboard
-  { tuning :: [Semitone] -- ^The notes for each string
+  { tuning :: [Note] -- ^The notes for each string
   } deriving Show
 
 stringCount :: Fretboard -> Int

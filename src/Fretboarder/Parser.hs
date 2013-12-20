@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings, LambdaCase #-}
 module Fretboarder.Parser
-  ( parseSemitone
+  ( parseNote
   , parseOctave
   , parseTone
   , parseAccidental
@@ -17,11 +17,11 @@ import Fretboarder.Drawing.Expr
 import Fretboarder.Music.RootedScale
 import Fretboarder.Music.SPN
 import Fretboarder.Music.Scale
-import Fretboarder.Music.Semitone
+import Fretboarder.Music.Note
 import Fretboarder.Music.Western
 
-parseSemitone :: Parser Semitone
-parseSemitone = mkSemitone <$> decimal
+parseNote :: Parser Note
+parseNote = mkNote <$> decimal
 
 parseOctave :: Parser Octave
 parseOctave = decimal

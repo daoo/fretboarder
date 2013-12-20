@@ -1,7 +1,7 @@
 {-# LANGUAGE LambdaCase, GeneralizedNewtypeDeriving #-}
-module Fretboarder.Music.Semitone
-  ( Semitone(fromSemitone)
-  , mkSemitone
+module Fretboarder.Music.Note
+  ( Note(fromNote)
+  , mkNote
 
   , Offset
   , mkOffset
@@ -16,22 +16,21 @@ module Fretboarder.Music.Semitone
 import Control.Applicative
 import Test.QuickCheck
 
--- |Represents a musical note.
+-- |Type for musical notes.
 --
--- Efficient non-reduntant representation. The value 0 is C0 and then it
--- increments in semi tones.
-newtype Semitone = Semitone { fromSemitone :: Int }
+-- The value 0 is C0 and then it increments with semitone steps.
+newtype Note = Note { fromNote :: Int }
   deriving (Eq, Ord, Enum, Num, Show)
 
-mkSemitone :: Int -> Semitone
-mkSemitone = Semitone
+mkNote :: Int -> Note
+mkNote = Note
 
-instance Arbitrary Semitone where
-  arbitrary = Semitone <$> choose (-50, 200)
+instance Arbitrary Note where
+  arbitrary = Note <$> choose (-50, 200)
 
-  shrink = map Semitone . shrink . fromSemitone
+  shrink = map Note . shrink . fromNote
 
--- |Type for offset between two notes.
+-- |Type for the semitone distance between two notes.
 newtype Offset = Offset Int
   deriving (Eq, Ord, Enum, Show)
 
@@ -41,12 +40,13 @@ mkOffset = Offset
 instance Arbitrary Offset where
   arbitrary = Offset `fmap` choose (-100, 100)
 
-(+.) :: Semitone -> Offset -> Semitone
-Semitone a +. Offset b = Semitone (a + b)
+(+.) :: Note -> Offset -> Note
+Note a +. Offset b = Note (a + b)
 
-off :: Semitone -> Semitone -> Offset
-off a b = Offset (fromSemitone a - fromSemitone b)
+off :: Note -> Note -> Offset
+off a b = Offset (fromNote a - fromNote b)
 
+-- |Type for the distance between two pitches within a pitch class.
 newtype ScaleOffset = ScaleOffset { fromScaleOffset :: Int }
   deriving (Eq, Ord, Show)
 

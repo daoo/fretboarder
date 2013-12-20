@@ -10,7 +10,7 @@ module Fretboarder.Music.Scale
 import Data.Bits
 import Data.List
 import Data.Word
-import Fretboarder.Music.Semitone
+import Fretboarder.Music.Note
 import Test.QuickCheck
 
 -- |Type for a octave repeating scale.

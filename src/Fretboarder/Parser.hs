@@ -21,7 +21,7 @@ import Fretboarder.Music.Note
 import Fretboarder.Music.Western
 
 parseNote :: Parser Note
-parseNote = mkNote <$> decimal
+parseNote = Note <$> decimal
 
 parseOctave :: Parser Octave
 parseOctave = decimal

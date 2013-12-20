@@ -1,10 +1,8 @@
 {-# LANGUAGE LambdaCase, GeneralizedNewtypeDeriving #-}
 module Fretboarder.Music.Note
-  ( Note(fromNote)
-  , mkNote
+  ( Note(Note, fromNote)
 
-  , Offset
-  , mkOffset
+  , Offset(Offset)
   , (+.)
   , off
 
@@ -22,8 +20,6 @@ import Test.QuickCheck
 newtype Note = Note { fromNote :: Int }
   deriving (Eq, Ord, Enum, Num, Show)
 
-mkNote :: Int -> Note
-mkNote = Note
 
 instance Arbitrary Note where
   arbitrary = Note <$> choose (-50, 200)
@@ -33,9 +29,6 @@ instance Arbitrary Note where
 -- |Type for the semitone distance between two notes.
 newtype Offset = Offset Int
   deriving (Eq, Ord, Enum, Show)
-
-mkOffset :: Int -> Offset
-mkOffset = Offset
 
 instance Arbitrary Offset where
   arbitrary = Offset `fmap` choose (-100, 100)

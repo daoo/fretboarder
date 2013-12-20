@@ -130,7 +130,7 @@ fromOffset :: ScaleOffset -> PitchClass
 fromOffset = toEnum . fromScaleOffset
 
 toSemi :: SPN -> Note
-toSemi (SPN o p) = mkNote $ (fromIntegral o * 12) + fromEnum p
+toSemi (SPN o p) = Note $ (fromIntegral o * 12) + fromEnum p
 
 fromSemi :: Note -> SPN
 fromSemi n = SPN (Octave q) (toEnum r)

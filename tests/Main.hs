@@ -7,8 +7,14 @@ import Test.Framework.Providers.HUnit
 import Test.Framework.Providers.QuickCheck2
 import Test.HUnit (Assertion, (@?=))
 
-prop_fromToSemi :: Semitone -> Bool
-prop_fromToSemi i = i == toSemi (fromSemi i)
+prop_spnFromTo :: SPN -> Bool
+prop_spnFromTo n = n == fromSemi (toSemi n)
+
+prop_semiFromTo :: Semitone -> Bool
+prop_semiFromTo n = n == toSemi (fromSemi n)
+
+prop_mkSPN :: SPN -> Bool
+prop_mkSPN n@(SPN o p) = n == mkSPN o (tone p) (accidental p)
 
 (@=) :: Eq a => a -> a -> Assertion
 a @= b = a == b @?= True
@@ -18,7 +24,11 @@ a @/= b = a == b @?= False
 
 tests :: [Test]
 tests =
-  [ testProperty "Semitone conversion" prop_fromToSemi
+  [ testGroup "Note properties"
+    [ testProperty "Semitone conversion" prop_semiFromTo
+    , testProperty "SPN conversion" prop_spnFromTo
+    , testProperty "SPN creation" prop_mkSPN
+    ]
   , testGroup "Semitone values"
     [ testCase "0 is C0"  (fromSemi 0 @= mkSPN 0 C Natural)
     , testCase "1 is C0#" (fromSemi 1 @= mkSPN 0 C Sharp)

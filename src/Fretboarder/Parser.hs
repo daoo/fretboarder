@@ -14,13 +14,14 @@ module Fretboarder.Parser
 import Control.Applicative
 import Data.Attoparsec.Text hiding (D)
 import Fretboarder.Drawing.Expr
-import Fretboarder.Music.Offset
+import Fretboarder.Music.RootedScale
 import Fretboarder.Music.SPN
 import Fretboarder.Music.Scale
 import Fretboarder.Music.Semitone
+import Fretboarder.Music.Western
 
 parseSemitone :: Parser Semitone
-parseSemitone = decimal
+parseSemitone = mkSemitone <$> decimal
 
 parseOctave :: Parser Octave
 parseOctave = decimal
@@ -48,29 +49,29 @@ parseSPN = do
   a <- parseAccidental
   return $ mkSPN o t a
 
-parseOffsets :: Parser [Offset]
+parseOffsets :: Parser Scale
 parseOffsets =
-  (harmonicMinor <$ "harmonic minor") <|>
-  (melodicMinor <$ "melodic minor") <|>
-  (minorPentatonic <$ "minor pentatonic") <|>
-  (majorPentatonic <$ "major pentatonic") <|>
-  (bluesOffsets <$ "blues") <|>
-  (ionianMode <$ "ionian") <|>
-  (dorianMode <$ "dorian") <|>
-  (phrygianMode <$ "phrygian") <|>
-  (lydianMode <$ "lydian") <|>
-  (mixolydianMode <$ "mixolydian") <|>
-  (aeolianMode <$ "aeolian") <|>
-  (locrianMode <$ "locrian") <|>
-  (majorOffsets <$ "major") <|>
-  (minorOffsets <$ "minor")
+  (harmonicMinor   <$ "harmonic minor") <|>
+  (melodicMinor    <$ "melodic minor") <|>
+  (pentatonicMinor <$ "minor pentatonic") <|>
+  (pentatonicMajor <$ "major pentatonic") <|>
+  (blues           <$ "blues") <|>
+  (ionian          <$ "ionian") <|>
+  (dorian          <$ "dorian") <|>
+  (phrygian        <$ "phrygian") <|>
+  (lydian          <$ "lydian") <|>
+  (mixolydian      <$ "mixolydian") <|>
+  (aeolian         <$ "aeolian") <|>
+  (locrian         <$ "locrian") <|>
+  (major           <$ "major") <|>
+  (minor           <$ "minor")
 
-parseScale :: Parser Scale
+parseScale :: Parser RootedScale
 parseScale = do
   n <- parseSPN
   skipSpace
   s <- parseOffsets
-  return $ Scale (toSemi n) s
+  return $ RootedScale (toSemi n) s
 
 parseExpr :: Parser Expr
 parseExpr = (FullScale <$> parseScale) <|> ((OnePitch . toSemi) <$> parseSPN)

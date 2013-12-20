@@ -1,9 +1,6 @@
 module Fretboarder.Music.Diatonic
   ( Diatonic(..)
-  , diatonicToOffset
   ) where
-
-import Fretboarder.Music.Offset
 
 -- |Diatonic Intervals.
 data Diatonic
@@ -21,6 +18,3 @@ data Diatonic
   | Major7
   | PerfectOctave
   deriving (Show, Eq, Ord, Enum)
-
-diatonicToOffset :: Diatonic -> Offset
-diatonicToOffset = fromIntegral . fromEnum

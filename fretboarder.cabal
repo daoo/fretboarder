@@ -15,10 +15,11 @@ library
     Fretboarder.Drawing.Expr
     Fretboarder.Music.Diatonic
     Fretboarder.Music.Fretboard
-    Fretboarder.Music.Offset
+    Fretboarder.Music.RootedScale
     Fretboarder.Music.SPN
     Fretboarder.Music.Scale
     Fretboarder.Music.Semitone
+    Fretboarder.Music.Western
     Fretboarder.Parser
     Fretboarder.Utility
   build-depends: base, cairo, attoparsec, array, QuickCheck

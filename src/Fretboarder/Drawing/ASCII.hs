@@ -27,7 +27,7 @@ asciiFretboard c fb exprs = intercalate "\n" $ map showString $ tuning fb
       (x:_) -> [x]
 
     showFrets :: Semitone -> String
-    showFrets root = intercalate "|" $ map showFret [root + 1 .. root + fromIntegral c]
+    showFrets root = intercalate "|" $ map showFret [root + toEnum 1 .. root + toEnum c]
 
     showFret n = case getChars n exprs of
       []    -> "---"

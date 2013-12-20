@@ -1,102 +1,37 @@
 module Fretboarder.Music.Scale
-  ( Scale(..)
-  , raise
+  ( Scale
+  , hasOffset
+  , fromOffsets
+  , toOffsets
   , lower
-
-  , chromatic
-  , majorOffsets
-  , minorOffsets
-  , harmonicMinor
-  , melodicMinor
-  , minorPentatonic
-  , majorPentatonic
-  , bluesOffsets
-  , ionianMode
-  , dorianMode
-  , phrygianMode
-  , lydianMode
-  , mixolydianMode
-  , aeolianMode
-  , locrianMode
-
-  , hasNote
-  , repeatScale
+  , raise
   ) where
 
-import Control.Applicative
+import Data.Bits
 import Data.List
-import Data.Monoid
+import Data.Word
 import Fretboarder.Music.Semitone
-import Fretboarder.Music.Offset
 import Test.QuickCheck
 
--- Some predefined scale offsets
-chromatic :: [Offset]
-chromatic = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
-
-majorOffsets, minorOffsets :: [Offset]
-majorOffsets = [0, 2, 4, 5, 7, 9, 11]
-minorOffsets = [0, 2, 3, 5, 7, 8, 10]
-
-harmonicMinor, melodicMinor :: [Offset]
-harmonicMinor = raise 7 minorOffsets
-melodicMinor  = lower 3 majorOffsets
-
-minorPentatonic, majorPentatonic :: [Offset]
-minorPentatonic = [0, 3, 5, 7, 10]
-majorPentatonic = [0, 2, 4, 7, 9]
-
-bluesOffsets :: [Offset]
-bluesOffsets = [0, 6]
-
-ionianMode, dorianMode, phrygianMode, lydianMode, mixolydianMode,
-  aeolianMode, locrianMode :: [Offset]
-ionianMode     = majorOffsets
-dorianMode     = raise 6 minorOffsets
-phrygianMode   = lower 2 minorOffsets
-lydianMode     = raise 4 majorOffsets
-mixolydianMode = lower 7 majorOffsets
-aeolianMode    = minorOffsets
-locrianMode    = lower 2 $ lower 5 $ minorOffsets
-
--- |Octave repeating musical scale.
-data Scale = Scale Semitone [Offset]
-  deriving Show
+-- |Type for a octave repeating scale.
+newtype Scale = Scale { bitField :: Word16 }
+  deriving (Eq, Show)
 
 instance Arbitrary Scale where
-  arbitrary = Scale <$> arbitrary <*> elements scales
-    where
-      scales =
-        [ majorOffsets
-        , minorOffsets
-        , harmonicMinor
-        , melodicMinor
-        , minorPentatonic
-        , majorPentatonic
-        , bluesOffsets
-        , ionianMode
-        , dorianMode
-        , phrygianMode
-        , lydianMode
-        , mixolydianMode
-        , aeolianMode
-        , locrianMode
-        ]
+  arbitrary = Scale `fmap` choose (1, 2^12-1)
 
-hasNote :: Semitone -> Scale -> Bool
-hasNote note (Scale root offsets) = fromIntegral (note - root) `elem` offsets
+hasOffset :: Scale -> ScaleOffset -> Bool
+hasOffset s = testBit (bitField s) . fromScaleOffset
 
-repeatScale :: Scale -> [Semitone]
-repeatScale (Scale root offsets) = go root offsets
-  where
-    go x []     = go x offsets
-    go x (y:ys) = x' : go x' ys
-      where x' = addOffset x y
+fromOffsets :: [ScaleOffset] -> Scale
+fromOffsets = Scale . foldl' (\acc -> setBit acc . fromScaleOffset) 0
 
-instance Monoid Scale where
-  mempty = Scale 0 []
+toOffsets :: Scale -> [ScaleOffset]
+toOffsets (Scale bits) = map mkScaleOffset $ filter (testBit bits) [0..11]
 
-  mappend (Scale x xs) (Scale y ys) =
-    Scale x $ sort $ union xs (map (+d) ys)
-    where
-      d = fromIntegral $ x-y
+moveBit :: Bits a => Int -> Int -> a -> a
+moveBit d i a = setBit (clearBit a i) (i + d)
+
+lower, raise :: Int -> Scale -> Scale
+lower i (Scale bits) = Scale $ moveBit (-1) i bits
+raise i (Scale bits) = Scale $ moveBit 1 i bits

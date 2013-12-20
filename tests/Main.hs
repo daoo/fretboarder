@@ -1,13 +1,30 @@
 module Main where
 
-import Fretboarder.Music.Offset
+import Fretboarder.Music.RootedScale
 import Fretboarder.Music.SPN
 import Fretboarder.Music.Scale
 import Fretboarder.Music.Semitone
+import Fretboarder.Music.Western
 import Test.Framework
 import Test.Framework.Providers.HUnit
 import Test.Framework.Providers.QuickCheck2
 import Test.HUnit (Assertion, (@?=))
+import Test.QuickCheck
+
+genRemoveRandom :: [a] -> Int -> Gen [a]
+genRemoveRandom xs 0 = return xs
+genRemoveRandom [] _ = error "list to small"
+genRemoveRandom xs n = do
+  i <- choose (0, n-1)
+  genRemoveRandom (remove i xs) (n-1)
+
+  where
+    remove _ []     = error "index to large"
+    remove 0 (y:ys) = ys
+    remove i (y:ys) = y : remove (i-1) ys
+
+genScaleOffsets :: Gen [ScaleOffset]
+genScaleOffsets = choose (1, 12) >>= genRemoveRandom [0,1,2,3,4,5,6,7,8,9,10,11]
 
 prop_spnFromTo :: SPN -> Bool
 prop_spnFromTo n = n == fromSemi (toSemi n)
@@ -18,14 +35,21 @@ prop_semiFromTo n = n == toSemi (fromSemi n)
 prop_mkSPN :: SPN -> Bool
 prop_mkSPN n@(SPN o p) = n == mkSPN o (tone p) (accidental p)
 
-prop_offsetFromTo :: Offset -> Bool
+prop_offsetFromTo :: ScaleOffset -> Bool
 prop_offsetFromTo o = o == toOffset (fromOffset o)
 
 prop_pitchClassFromTo :: PitchClass -> Bool
 prop_pitchClassFromTo p = p == fromOffset (toOffset p)
 
+prop_offsetsFromTo :: Property
+prop_offsetsFromTo = forAll genScaleOffsets $ \offsets ->
+  offsets == toOffsets (fromOffsets offsets)
+
+prop_scaleFromTo :: Scale -> Bool
+prop_scaleFromTo scale = scale == fromOffsets (toOffsets scale)
+
 prop_chromaticAll :: Semitone -> Semitone -> Bool
-prop_chromaticAll root other = hasNote other (Scale root chromatic)
+prop_chromaticAll r o = hasNote o (RootedScale r chromatic)
 
 (@=) :: Eq a => a -> a -> Assertion
 a @= b = a == b @?= True
@@ -43,7 +67,9 @@ tests =
     , testProperty "PitchClass conversion" prop_pitchClassFromTo
     ]
   , testGroup "Scale properties"
-    [ testProperty "Chromatic has all notes" prop_chromaticAll
+    [ testProperty "ScaleOffsets conversion" prop_offsetsFromTo
+    , testProperty "Scale conversion" prop_scaleFromTo
+    , testProperty "Chromatic has all notes" prop_chromaticAll
     ]
   , testGroup "Semitone values"
     [ testCase "0 is C0"  (fromSemi 0 @= mkSPN 0 C Natural)

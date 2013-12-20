@@ -17,7 +17,6 @@ module Fretboarder.Music.SPN
   ) where
 
 import Control.Applicative
-import Fretboarder.Music.Offset
 import Fretboarder.Music.Semitone
 import Test.QuickCheck
 
@@ -124,16 +123,16 @@ instance Show SPN where
 instance Arbitrary SPN where
   arbitrary = SPN <$> arbitrary <*> arbitrary
 
-toOffset :: PitchClass -> Offset
-toOffset = toEnum . fromEnum
+toOffset :: PitchClass -> ScaleOffset
+toOffset = mkScaleOffset . fromEnum
 
-fromOffset :: Offset -> PitchClass
-fromOffset = toEnum . fromEnum
+fromOffset :: ScaleOffset -> PitchClass
+fromOffset = toEnum . fromScaleOffset
 
 toSemi :: SPN -> Semitone
-toSemi (SPN o p) = fromIntegral $ (fromIntegral o * 12) + fromEnum p
+toSemi (SPN o p) = mkSemitone $ (fromIntegral o * 12) + fromEnum p
 
 fromSemi :: Semitone -> SPN
-fromSemi n = SPN (fromIntegral q) (toEnum r)
+fromSemi n = SPN (Octave q) (toEnum r)
   where
-    (q, r) = fromIntegral n `divMod` 12
+    (q, r) = fromSemitone n `divMod` 12

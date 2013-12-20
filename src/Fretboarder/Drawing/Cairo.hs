@@ -137,5 +137,5 @@ drawFretboard w h fb e = do
     drawString !y !root = drawFret fretx1 y root >> go 1 fretx2
       where
         go :: Int -> Double -> C.Render ()
-        go !i !x | i <= frets = drawFret x y (root + fromIntegral i) >> go (succ i) (x+fretw)
+        go !i !x | i <= frets = drawFret x y (root +. mkOffset i) >> go (succ i) (x+fretw)
                  | otherwise  = return ()

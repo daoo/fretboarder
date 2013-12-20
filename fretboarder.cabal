@@ -26,6 +26,12 @@ library
   ghc-options: -Wall
   default-language: Haskell2010
 
+executable fretboarder-ascii
+  main-is: src/ASCII.hs
+  build-depends: base, fretboarder, attoparsec, text
+  ghc-options: -Wall
+  default-language: Haskell2010
+
 executable fretboarder-img
   main-is: src/ImgFile.hs
   build-depends: base, fretboarder, filepath, cairo, attoparsec, text

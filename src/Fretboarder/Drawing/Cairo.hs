@@ -122,8 +122,9 @@ drawFretboard w h fb e = do
 
     drawInlays = mapM_ drawInlay
 
-    drawFret !x !y !n =
-      mapM_ (\c -> setColor c >> fillCircle (Point x y)) (getColor n e)
+    drawFret !x !y !n = case getColor n e of
+      []    -> return ()
+      (c:_) -> setColor c >> fillCircle (Point x y)
 
     drawStrings :: [Semitone] -> C.Render ()
     drawStrings = go 0 frety1

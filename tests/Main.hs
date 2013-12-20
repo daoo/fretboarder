@@ -2,6 +2,7 @@ module Main where
 
 import Fretboarder.Music.Offset
 import Fretboarder.Music.SPN
+import Fretboarder.Music.Scale
 import Fretboarder.Music.Semitone
 import Test.Framework
 import Test.Framework.Providers.HUnit
@@ -23,6 +24,9 @@ prop_offsetFromTo o = o == toOffset (fromOffset o)
 prop_pitchClassFromTo :: PitchClass -> Bool
 prop_pitchClassFromTo p = p == fromOffset (toOffset p)
 
+prop_chromaticAll :: Semitone -> Semitone -> Bool
+prop_chromaticAll root other = hasNote other (Scale root chromatic)
+
 (@=) :: Eq a => a -> a -> Assertion
 a @= b = a == b @?= True
 
@@ -37,6 +41,9 @@ tests =
     , testProperty "SPN creation" prop_mkSPN
     , testProperty "Offset conversion" prop_offsetFromTo
     , testProperty "PitchClass conversion" prop_pitchClassFromTo
+    ]
+  , testGroup "Scale properties"
+    [ testProperty "Chromatic has all notes" prop_chromaticAll
     ]
   , testGroup "Semitone values"
     [ testCase "0 is C0"  (fromSemi 0 @= mkSPN 0 C Natural)

@@ -4,6 +4,7 @@ module Fretboarder.Music.SPN
   , Tone(..)
   , Accidental(..)
   , PitchClass(..)
+  , mkPitchClass
   , SPN(..)
   , mkSPN
 
@@ -46,6 +47,30 @@ instance Arbitrary Accidental where
 
 data PitchClass = Cn | Cs | Dn | Ds | En | Fn | Fs | Gn | Gs | An | As | Bn
   deriving (Eq, Enum, Show)
+
+mkPitchClass :: Tone -> Accidental -> PitchClass
+mkPitchClass t a = case (t, a) of
+  (C, Flat)    -> Bn
+  (C, Natural) -> Cn
+  (C, Sharp)   -> Cs
+  (D, Flat)    -> Cs
+  (D, Natural) -> Dn
+  (D, Sharp)   -> Ds
+  (E, Flat)    -> Ds
+  (E, Natural) -> En
+  (E, Sharp)   -> Fn
+  (F, Flat)    -> En
+  (F, Natural) -> Fn
+  (F, Sharp)   -> Fs
+  (G, Flat)    -> Fs
+  (G, Natural) -> Gn
+  (G, Sharp)   -> Gs
+  (A, Flat)    -> Gs
+  (A, Natural) -> An
+  (A, Sharp)   -> As
+  (B, Flat)    -> As
+  (B, Natural) -> Bn
+  (B, Sharp)   -> Cn
 
 instance Arbitrary PitchClass where
   arbitrary = elements [Cn, Cs, Dn, Ds, En, Fn, Fs, Gn, Gs, An, As, Bn]

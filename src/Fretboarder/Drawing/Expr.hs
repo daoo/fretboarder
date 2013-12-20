@@ -4,17 +4,19 @@ module Fretboarder.Drawing.Expr
   , semiIndex
   ) where
 
-import Fretboarder.Music.RootedScale
 import Fretboarder.Music.Note
+import Fretboarder.Music.RootedScale
 
 data Expr = FullScale RootedScale
           | OnePitch Note
+          | OneTone ScaleOffset
           -- Chords, triads, stuff?
 
 includes :: Note -> Expr -> Bool
 includes n = \case
   FullScale s -> hasNote n s
   OnePitch n' -> n == n'
+  OneTone t   -> t == scaleOffset n
 
 semiIndex :: Note -> [Expr] -> [Int]
 semiIndex n = go 0 []

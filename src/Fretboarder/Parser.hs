@@ -42,6 +42,9 @@ parseAccidental =
   (Flat <$ char 'b') <|>
   pure Natural
 
+parseToneAccident :: Parser (Tone, Accidental)
+parseToneAccident = (,) <$> parseTone <*> parseAccidental
+
 parseSPN :: Parser SPN
 parseSPN = do
   t <- parseTone
@@ -74,7 +77,10 @@ parseScale = do
   return $ RootedScale (toSemi n) s
 
 parseExpr :: Parser Expr
-parseExpr = (FullScale <$> parseScale) <|> ((OnePitch . toSemi) <$> parseSPN)
+parseExpr =
+  (FullScale <$> parseScale) <|>
+  ((OnePitch . toSemi) <$> parseSPN) <|>
+  ((OneTone . toOffset . uncurry mkPitchClass) <$> parseToneAccident)
 
 parseExprs :: Parser [Expr]
 parseExprs = sepBy1 parseExpr (skipSpace >> char ',' >> skipSpace)

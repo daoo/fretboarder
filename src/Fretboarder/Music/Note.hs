@@ -1,6 +1,7 @@
 {-# LANGUAGE LambdaCase, GeneralizedNewtypeDeriving #-}
 module Fretboarder.Music.Note
   ( Note(Note, fromNote)
+  , scaleOffset
 
   , Offset(Offset)
   , (+.)
@@ -20,6 +21,9 @@ import Test.QuickCheck
 newtype Note = Note { fromNote :: Int }
   deriving (Eq, Ord, Enum, Num, Show)
 
+-- |Calculate the scale offset relative to a scale rooted in C.
+scaleOffset :: Note -> ScaleOffset
+scaleOffset (Note n) = ScaleOffset (mod n 12)
 
 instance Arbitrary Note where
   arbitrary = Note <$> choose (-50, 200)

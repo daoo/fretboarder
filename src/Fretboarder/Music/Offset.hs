@@ -7,6 +7,7 @@ module Fretboarder.Music.Offset
   ) where
 
 import Fretboarder.Music.Semitone
+import Test.QuickCheck
 
 -- |Type for offset within a pitch class.
 --
@@ -45,6 +46,9 @@ instance Num Offset where
   abs    = id
 
   fromInteger = lift . fromInteger
+
+instance Arbitrary Offset where
+  arbitrary = Offset `fmap` choose (0, 11)
 
 addOffset :: Semitone -> Offset -> Semitone
 addOffset a (Offset b) = a + fromIntegral b

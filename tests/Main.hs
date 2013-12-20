@@ -1,5 +1,6 @@
 module Main where
 
+import Fretboarder.Music.Offset
 import Fretboarder.Music.SPN
 import Fretboarder.Music.Semitone
 import Test.Framework
@@ -16,6 +17,12 @@ prop_semiFromTo n = n == toSemi (fromSemi n)
 prop_mkSPN :: SPN -> Bool
 prop_mkSPN n@(SPN o p) = n == mkSPN o (tone p) (accidental p)
 
+prop_offsetFromTo :: Offset -> Bool
+prop_offsetFromTo o = o == toOffset (fromOffset o)
+
+prop_pitchClassFromTo :: PitchClass -> Bool
+prop_pitchClassFromTo p = p == fromOffset (toOffset p)
+
 (@=) :: Eq a => a -> a -> Assertion
 a @= b = a == b @?= True
 
@@ -28,6 +35,8 @@ tests =
     [ testProperty "Semitone conversion" prop_semiFromTo
     , testProperty "SPN conversion" prop_spnFromTo
     , testProperty "SPN creation" prop_mkSPN
+    , testProperty "Offset conversion" prop_offsetFromTo
+    , testProperty "PitchClass conversion" prop_pitchClassFromTo
     ]
   , testGroup "Semitone values"
     [ testCase "0 is C0"  (fromSemi 0 @= mkSPN 0 C Natural)

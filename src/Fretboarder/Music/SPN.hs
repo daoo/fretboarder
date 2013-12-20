@@ -46,7 +46,7 @@ instance Arbitrary Accidental where
   arbitrary = elements [Flat, Natural, Sharp]
 
 data PitchClass = Cn | Cs | Dn | Ds | En | Fn | Fs | Gn | Gs | An | As | Bn
-  deriving (Eq, Enum)
+  deriving (Eq, Enum, Show)
 
 instance Arbitrary PitchClass where
   arbitrary = elements [Cn, Cs, Dn, Ds, En, Fn, Fs, Gn, Gs, An, As, Bn]

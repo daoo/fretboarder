@@ -58,6 +58,10 @@ parseOffsets =
   (melodicMinor    <$ "melodic minor") <|>
   (pentatonicMinor <$ "minor pentatonic") <|>
   (pentatonicMajor <$ "major pentatonic") <|>
+  (triadMinor      <$ "minor triad") <|>
+  (triadMajor      <$ "major triad") <|>
+  (triadDimnished  <$ "dimnished triad") <|>
+  (triadAugmented  <$ "augmented triad") <|>
   (blues           <$ "blues") <|>
   (ionian          <$ "ionian") <|>
   (dorian          <$ "dorian") <|>

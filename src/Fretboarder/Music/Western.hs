@@ -14,6 +14,10 @@ module Fretboarder.Music.Western
   , mixolydian
   , aeolian
   , locrian
+  , triadMinor
+  , triadMajor
+  , triadDimnished
+  , triadAugmented
   ) where
 
 import Fretboarder.Music.Scale
@@ -44,3 +48,9 @@ lydian     = raise 4 major
 mixolydian = lower 7 major
 aeolian    = minor
 locrian    = lower 2 $ lower 5 minor
+
+triadMinor, triadMajor, triadDimnished, triadAugmented :: Scale
+triadMinor = fromOffsets [0,3,7]
+triadMajor = fromOffsets [0,4,7]
+triadDimnished = fromOffsets [0,3,6]
+triadAugmented = fromOffsets [0,4,8]

@@ -18,7 +18,6 @@ module Fretboarder.Music.Western
 
 import Fretboarder.Music.Scale
 
--- Some predefined scale offsets
 chromatic :: Scale
 chromatic = fromOffsets [0,1,2,3,4,5,6,7,8,9,10,11]
 

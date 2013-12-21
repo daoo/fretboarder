@@ -18,7 +18,7 @@ newtype Scale = Scale { bitField :: Word16 }
   deriving (Eq, Show)
 
 instance Arbitrary Scale where
-  arbitrary = Scale `fmap` choose (1, 2^12-1)
+  arbitrary = Scale `fmap` choose (1, 2^(12 :: Word16)-1)
 
 hasOffset :: Scale -> ScaleOffset -> Bool
 hasOffset s = testBit (bitField s) . fromScaleOffset

@@ -14,21 +14,21 @@ getChars n = map (chars !!) . semiIndex n
 
 -- TODO: Use some bytestring builder
 asciiFretboard :: Int -> Fretboard -> [Expr] -> String
-asciiFretboard c fb exprs = intercalate "\n" $ map showString $ tuning fb
+asciiFretboard c fb exprs = intercalate "\n" $ map string $ tuning fb
   where
-    showString :: Note -> String
-    showString root = showNut root ++ showNutNote root ++ "|" ++ showFrets root ++ "|"
+    string :: Note -> String
+    string root = nut root ++ nutNote root ++ "|" ++ frets root ++ "|"
 
-    showNut :: Note -> String
-    showNut n = show (fromSemi n :: SPN) ++ " |"
+    nut :: Note -> String
+    nut n = show (fromSemi n :: SPN) ++ " |"
 
-    showNutNote n = case getChars n exprs of
+    nutNote n = case getChars n exprs of
       []    -> "|"
       (x:_) -> [x]
 
-    showFrets :: Note -> String
-    showFrets root = intercalate "|" $ map showFret [root + toEnum 1 .. root + toEnum c]
+    frets :: Note -> String
+    frets root = intercalate "|" $ map fret [root + toEnum 1 .. root + toEnum c]
 
-    showFret n = case getChars n exprs of
+    fret n = case getChars n exprs of
       []    -> "---"
       (x:_) -> ['-', x, '-']

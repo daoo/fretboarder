@@ -1,15 +1,17 @@
 build:
-	@cabal build --ghc-options="-H64m -rtsopts"
+	@cabal build --ghc-options="-rtsopts"
 
 prof:
-	@cabal build --ghc-options="-rtsopts -prof -fprof-auto -H64m"
+	@cabal configure --ghc-options="-Wall" --enable-library-profiling --enable-executable-profiling
+	@cabal build --ghc-options="-rtsopts -prof -fprof-auto"
+	@cabal configure --ghc-options="-Wall" --disable-library-profiling --disable-executable-profiling
 
 release:
-	@cabal build --ghc-options="-fllvm -H64m -O2"
+	@cabal build --ghc-options="-fllvm -O2"
 
 init:
 	@cabal sandbox init
-	@cabal install --only-dependencies --enable-tests --enable-benchmarks
+	@cabal install --only-dependencies --enable-library-profiling --enable-tests --enable-benchmarks
 	@cabal configure --ghc-options="-Wall" --disable-tests --disable-benchmarks
 
 test:

@@ -11,19 +11,23 @@ import Fretboarder.Music.Note
 import Fretboarder.Music.SPN
 
 buildSPN :: SPN -> Builder
-buildSPN (SPN o p) = case p of
-  Cn -> charUtf8 'C' <> intDec (fromIntegral o)
-  Cs -> charUtf8 'C' <> intDec (fromIntegral o) <> charUtf8 '#'
-  Dn -> charUtf8 'D' <> intDec (fromIntegral o)
-  Ds -> charUtf8 'D' <> intDec (fromIntegral o) <> charUtf8 '#'
-  En -> charUtf8 'E' <> intDec (fromIntegral o)
-  Fn -> charUtf8 'F' <> intDec (fromIntegral o)
-  Fs -> charUtf8 'F' <> intDec (fromIntegral o) <> charUtf8 '#'
-  Gn -> charUtf8 'G' <> intDec (fromIntegral o)
-  Gs -> charUtf8 'G' <> intDec (fromIntegral o) <> charUtf8 '#'
-  An -> charUtf8 'A' <> intDec (fromIntegral o)
-  As -> charUtf8 'A' <> intDec (fromIntegral o) <> charUtf8 '#'
-  Bn -> charUtf8 'B' <> intDec (fromIntegral o)
+buildSPN (SPN o p) = charUtf8 c <> intDec (fromIntegral o) <> b
+  where
+    hash = charUtf8 '#'
+
+    (c, b) = case p of
+      Cn -> ('C', mempty)
+      Cs -> ('C', hash)
+      Dn -> ('D', mempty)
+      Ds -> ('D', hash)
+      En -> ('E', mempty)
+      Fn -> ('F', mempty)
+      Fs -> ('F', hash)
+      Gn -> ('G', mempty)
+      Gs -> ('G', hash)
+      An -> ('A', mempty)
+      As -> ('A', hash)
+      Bn -> ('B', mempty)
 
 chars :: [Builder]
 chars = map charUtf8 "123456789ABCDEF"

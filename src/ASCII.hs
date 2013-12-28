@@ -1,16 +1,16 @@
 module Main (main) where
 
-import Data.Attoparsec.Text
+import Data.Attoparsec.Char8
 import Fretboarder.Drawing.ASCII
 import Fretboarder.Music.Fretboard
 import Fretboarder.Parser
 import System.Environment
-import qualified Data.Text as T
+import qualified Data.ByteString.Char8 as B
 
 main :: IO ()
 main = getArgs >>= prg
 
 prg :: [String] -> IO ()
-prg args = case parseOnly parseExprs (T.pack $ unwords args) of
+prg args = case parseOnly parseExprs (B.pack $ unwords args) of
   Left err    -> print err
   Right exprs -> putStrLn $ asciiFretboard 23 ebgdae exprs

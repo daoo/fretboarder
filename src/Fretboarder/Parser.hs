@@ -12,7 +12,7 @@ module Fretboarder.Parser
   ) where
 
 import Control.Applicative
-import Data.Attoparsec.Text hiding (D)
+import Data.Attoparsec.Char8 hiding (D)
 import Fretboarder.Drawing.Expr
 import Fretboarder.Music.RootedScale
 import Fretboarder.Music.SPN

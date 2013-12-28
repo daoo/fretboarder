@@ -1,14 +1,14 @@
 module Main (main) where
 
 import Control.Monad.IO.Class
-import Data.Attoparsec.Text
+import Data.Attoparsec.Char8
 import Data.IORef
 import Fretboarder.Drawing.Cairo
 import Fretboarder.Drawing.Expr
 import Fretboarder.Music.Fretboard
 import Fretboarder.Parser
 import Graphics.UI.Gtk hiding (Scale)
-import qualified Data.Text as T
+import qualified Data.ByteString.Char8 as B
 
 main :: IO ()
 main = initGUI >> setupWindow >>= widgetShowAll >> mainGUI
@@ -44,7 +44,7 @@ setupWindow = do
   return window
 
 text :: ([Expr] -> IO ()) -> (Color -> IO ()) -> IORef State -> String -> IO ()
-text d c s t = case parseOnly parseExprs (T.pack t) of
+text d c s t = case parseOnly parseExprs (B.pack t) of
   Left _      -> writeIORef s []    >> c red   >> d []
   Right exprs -> writeIORef s exprs >> c green >> d exprs
 

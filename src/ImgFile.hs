@@ -1,6 +1,6 @@
 module Main (main) where
 
-import Data.Attoparsec.Text
+import Data.Attoparsec.Char8
 import Data.Char
 import Fretboarder.Drawing.Cairo
 import Fretboarder.Music.Fretboard
@@ -8,7 +8,7 @@ import Fretboarder.Parser
 import Graphics.Rendering.Cairo hiding (scale)
 import System.Environment
 import System.FilePath
-import qualified Data.Text as T
+import qualified Data.ByteString.Char8 as B
 
 data ImageType = SVG | PNG
 
@@ -33,6 +33,6 @@ main = do
       wd = realToFrac wi
       hd = realToFrac hi
 
-  case parseOnly parseExprs (T.pack $ concat rest) of
+  case parseOnly parseExprs (B.pack $ concat rest) of
     Left err    -> print err
     Right exprs -> withSurface ft path (wi, hi) $ flip renderWith $ drawFretboard wd hd ebgdae exprs

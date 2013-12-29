@@ -21,7 +21,7 @@ import Fretboarder.Music.Note
 import Fretboarder.Music.Western
 
 parseNote :: Parser Note
-parseNote = Note <$> decimal
+parseNote = fromIntegral <$> (decimal :: Parser Int)
 
 parseOctave :: Parser Octave
 parseOctave = decimal
@@ -78,12 +78,12 @@ parseScale = do
   n <- parseSPN
   skipSpace
   s <- parseOffsets
-  return $ RootedScale (toSemi n) s
+  return $ RootedScale (toNote n) s
 
 parseExpr :: Parser Expr
 parseExpr =
   (FullScale <$> parseScale) <|>
-  ((OnePitch . toSemi) <$> parseSPN) <|>
+  ((OnePitch . toNote) <$> parseSPN) <|>
   ((OneTone . toOffset . uncurry mkPitchClass) <$> parseToneAccident)
 
 parseExprs :: Parser [Expr]

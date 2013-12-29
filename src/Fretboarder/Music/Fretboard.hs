@@ -16,7 +16,7 @@ stringCount :: Fretboard -> Int
 stringCount = length . tuning
 
 mkFretboard :: [SPN] -> Fretboard
-mkFretboard = Fretboard . map toSemi
+mkFretboard = Fretboard . map toNote
 
 -- The fretboard for a standard EBGDAE tuning
 ebgdae :: Fretboard

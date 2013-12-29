@@ -43,7 +43,7 @@ asciiFretboard c fb exprs = foldl' (\a n -> a <> string n) mempty $ tuning fb
     string root = nut root <> nutNote root <> pipe <> frets root <> pipe <> newline
 
     nut :: Note -> Builder
-    nut n = buildSPN (fromSemi n) <> space <> pipe
+    nut n = buildSPN (fromNote n) <> space <> pipe
 
     nutNote n = case getChars n exprs of
       []    -> pipe

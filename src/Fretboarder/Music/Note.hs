@@ -1,6 +1,6 @@
 {-# LANGUAGE LambdaCase, GeneralizedNewtypeDeriving #-}
 module Fretboarder.Music.Note
-  ( Note(Note, fromNote)
+  ( Note
   , scaleOffset
 
   , Offset(Offset)
@@ -18,8 +18,8 @@ import Test.QuickCheck
 -- |Type for musical notes.
 --
 -- The value 0 is C0 and then it increments with semitone steps.
-newtype Note = Note { fromNote :: Int }
-  deriving (Eq, Ord, Enum, Num, Show)
+newtype Note = Note Int
+  deriving (Eq, Ord, Enum, Num, Real, Integral, Show)
 
 -- |Calculate the scale offset relative to a scale rooted in C.
 scaleOffset :: Note -> ScaleOffset
@@ -28,7 +28,7 @@ scaleOffset (Note n) = ScaleOffset (mod n 12)
 instance Arbitrary Note where
   arbitrary = Note <$> choose (-50, 200)
 
-  shrink = map Note . shrink . fromNote
+  shrink = map Note . shrink . fromIntegral
 
 -- |Type for the semitone distance between two notes.
 newtype Offset = Offset Int
@@ -41,7 +41,7 @@ instance Arbitrary Offset where
 Note a +. Offset b = Note (a + b)
 
 off :: Note -> Note -> Offset
-off a b = Offset (fromNote a - fromNote b)
+off a b = Offset (fromIntegral a - fromIntegral b)
 
 -- |Type for the distance between two pitches within a pitch class.
 newtype ScaleOffset = ScaleOffset { fromScaleOffset :: Int }

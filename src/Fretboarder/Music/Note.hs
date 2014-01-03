@@ -8,11 +8,12 @@ module Fretboarder.Music.Note
   , off
 
   , ScaleOffset(fromScaleOffset)
-  , mkScaleOffset
+  , unsafeScaleOffset
   , scaled
   ) where
 
 import Control.Applicative
+import Control.Exception
 import Test.QuickCheck
 
 -- |Type for musical notes.
@@ -47,21 +48,11 @@ off a b = Offset (fromIntegral a - fromIntegral b)
 newtype ScaleOffset = ScaleOffset { fromScaleOffset :: Int }
   deriving (Eq, Ord, Show)
 
-instance Num ScaleOffset where
-  (+) = undefined
-  (-) = undefined
-  (*) = undefined
-  abs = undefined
-  signum = undefined
-
-  fromInteger = ScaleOffset . fromInteger
-
-mkScaleOffset :: Int -> ScaleOffset
-mkScaleOffset i | i >= 0 && i <= 11 = ScaleOffset i
-                | otherwise         = error "Scale offset out of range"
-
 instance Arbitrary ScaleOffset where
   arbitrary = ScaleOffset `fmap` choose (0, 11)
+
+unsafeScaleOffset :: Int -> ScaleOffset
+unsafeScaleOffset i = assert (i >= 0 && i < 12) (ScaleOffset i)
 
 scaled :: Offset -> ScaleOffset
 scaled (Offset a) = ScaleOffset (mod a 12)

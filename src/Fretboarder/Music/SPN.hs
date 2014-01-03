@@ -149,7 +149,7 @@ instance Arbitrary SPN where
   arbitrary = SPN <$> arbitrary <*> arbitrary
 
 toOffset :: PitchClass -> ScaleOffset
-toOffset = mkScaleOffset . fromEnum
+toOffset = unsafeScaleOffset . fromEnum
 
 fromOffset :: ScaleOffset -> PitchClass
 fromOffset = toEnum . fromScaleOffset

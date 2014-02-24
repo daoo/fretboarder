@@ -14,11 +14,11 @@ module Fretboarder.Parser
 import Control.Applicative
 import Data.Attoparsec.Char8 hiding (D)
 import Fretboarder.Drawing.Expr
-import Fretboarder.Music.RootedScale
-import Fretboarder.Music.Scale
-import Fretboarder.Music.Western
 import Music.Theory.Note
 import Music.Theory.SPN
+import Music.Theory.Scale
+import Music.Theory.Scale.Rooted
+import Music.Theory.Scale.Western
 
 parseNote :: Parser Note
 parseNote = fromIntegral <$> (decimal :: Parser Int)
@@ -73,12 +73,12 @@ parseOffsets =
   (major           <$ "major") <|>
   (minor           <$ "minor")
 
-parseScale :: Parser RootedScale
+parseScale :: Parser Rooted
 parseScale = do
   n <- parseSPN
   skipSpace
   s <- parseOffsets
-  return $ RootedScale (toNote n) s
+  return $ Rooted (toNote n) s
 
 parseExpr :: Parser Expr
 parseExpr =

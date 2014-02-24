@@ -4,10 +4,10 @@ module Fretboarder.Drawing.Expr
   , semiIndex
   ) where
 
-import Fretboarder.Music.RootedScale
 import Music.Theory.Note
+import Music.Theory.Scale.Rooted
 
-data Expr = FullScale RootedScale
+data Expr = FullScale Rooted
           | OnePitch Note
           | OneTone ScaleOffset
           -- Chords, triads, stuff?

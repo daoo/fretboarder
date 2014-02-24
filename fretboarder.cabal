@@ -13,11 +13,7 @@ library
     Fretboarder.Drawing.ASCII
     Fretboarder.Drawing.Cairo
     Fretboarder.Drawing.Expr
-    Fretboarder.Music.Diatonic
     Fretboarder.Music.Fretboard
-    Fretboarder.Music.RootedScale
-    Fretboarder.Music.Scale
-    Fretboarder.Music.Western
     Fretboarder.Parser
     Fretboarder.Utility
   build-depends: base, cairo, attoparsec, array, bytestring, QuickCheck, musictheory

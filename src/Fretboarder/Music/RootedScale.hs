@@ -4,7 +4,7 @@ module Fretboarder.Music.RootedScale
   ) where
 
 import Fretboarder.Music.Scale
-import Fretboarder.Music.Note
+import Music.Theory.Note
 
 data RootedScale = RootedScale
   { root :: Note

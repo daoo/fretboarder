@@ -4,8 +4,8 @@ module Fretboarder.Music.Fretboard
   , ebgdae
   ) where
 
-import Fretboarder.Music.SPN
-import Fretboarder.Music.Note
+import Music.Theory.Note
+import Music.Theory.SPN
 
 -- |Represent a fretboard with a specific tuning
 newtype Fretboard = Fretboard

@@ -7,8 +7,8 @@ import Data.List
 import Data.Monoid
 import Fretboarder.Drawing.Expr
 import Fretboarder.Music.Fretboard
-import Fretboarder.Music.Note
-import Fretboarder.Music.SPN
+import Music.Theory.Note
+import Music.Theory.SPN
 
 buildSPN :: SPN -> Builder
 buildSPN (SPN o p) = charUtf8 c <> intDec (fromIntegral o) <> b

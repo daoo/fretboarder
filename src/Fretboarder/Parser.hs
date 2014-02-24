@@ -15,10 +15,10 @@ import Control.Applicative
 import Data.Attoparsec.Char8 hiding (D)
 import Fretboarder.Drawing.Expr
 import Fretboarder.Music.RootedScale
-import Fretboarder.Music.SPN
 import Fretboarder.Music.Scale
-import Fretboarder.Music.Note
 import Fretboarder.Music.Western
+import Music.Theory.Note
+import Music.Theory.SPN
 
 parseNote :: Parser Note
 parseNote = fromIntegral <$> (decimal :: Parser Int)

@@ -15,14 +15,12 @@ library
     Fretboarder.Drawing.Expr
     Fretboarder.Music.Diatonic
     Fretboarder.Music.Fretboard
-    Fretboarder.Music.Note
     Fretboarder.Music.RootedScale
-    Fretboarder.Music.SPN
     Fretboarder.Music.Scale
     Fretboarder.Music.Western
     Fretboarder.Parser
     Fretboarder.Utility
-  build-depends: base, cairo, attoparsec, array, bytestring, QuickCheck
+  build-depends: base, cairo, attoparsec, array, bytestring, QuickCheck, musictheory
   hs-source-dirs: src
   ghc-options: -Wall
   default-language: Haskell2010

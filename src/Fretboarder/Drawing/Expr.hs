@@ -4,8 +4,8 @@ module Fretboarder.Drawing.Expr
   , semiIndex
   ) where
 
-import Fretboarder.Music.Note
 import Fretboarder.Music.RootedScale
+import Music.Theory.Note
 
 data Expr = FullScale RootedScale
           | OnePitch Note

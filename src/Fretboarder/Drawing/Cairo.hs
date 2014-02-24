@@ -5,7 +5,7 @@ module Fretboarder.Drawing.Cairo
 import Data.Array.IArray
 import Fretboarder.Drawing.Expr
 import Fretboarder.Music.Fretboard
-import Fretboarder.Music.Note
+import Music.Theory.Note
 import qualified Graphics.Rendering.Cairo as C
 
 data Color = Color {-# UNPACK #-} !Double {-# UNPACK #-} !Double {-# UNPACK #-} !Double

@@ -20,8 +20,8 @@ module Fretboarder.Music.Western
   , triadAugmented
   ) where
 
-import Fretboarder.Music.Note
 import Fretboarder.Music.Scale
+import Music.Theory.Note
 
 {-# INLINE fromOffsets' #-}
 fromOffsets' :: [Int] -> Scale

@@ -11,8 +11,8 @@ module Fretboarder.Music.Scale
 import Control.Exception
 import Data.Bits
 import Data.Word
-import Fretboarder.Music.Note
 import Fretboarder.Utility
+import Music.Theory.Note
 import Test.QuickCheck (Arbitrary, arbitrary, choose)
 
 -- |Type for a octave repeating scale.

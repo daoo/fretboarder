@@ -5,7 +5,7 @@ module Fretboarder.Drawing.Rasterific
 import Codec.Picture.Types
 import Data.Array.IArray
 import Fretboarder.Drawing.Expr
-import Fretboarder.Music.Fretboard
+import Fretboarder.Fretboard
 import Graphics.Rasterific
 import Graphics.Rasterific.Texture
 import Music.Theory.Note

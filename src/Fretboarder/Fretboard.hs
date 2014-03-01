@@ -1,4 +1,4 @@
-module Fretboarder.Music.Fretboard
+module Fretboarder.Fretboard
   ( Fretboard(tuning)
   , stringCount
   , ebgdae

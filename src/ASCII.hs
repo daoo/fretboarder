@@ -3,7 +3,7 @@ module Main (main) where
 import Data.Text.Lazy.Builder
 import Data.Text.Lazy.IO
 import Fretboarder.Drawing.ASCII
-import Fretboarder.Music.Fretboard
+import Fretboarder.Fretboard
 import Fretboarder.Parser
 import System.Environment
 import System.IO (stdout)

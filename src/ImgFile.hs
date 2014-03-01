@@ -2,7 +2,7 @@ module Main (main) where
 
 import Codec.Picture
 import Fretboarder.Drawing.Rasterific
-import Fretboarder.Music.Fretboard
+import Fretboarder.Fretboard
 import Fretboarder.Parser
 import System.Environment (getArgs)
 

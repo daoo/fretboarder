@@ -13,7 +13,7 @@ library
     Fretboarder.Drawing.ASCII
     Fretboarder.Drawing.Expr
     Fretboarder.Drawing.Rasterific
-    Fretboarder.Music.Fretboard
+    Fretboarder.Fretboard
     Fretboarder.Parser
     Fretboarder.Utility
   build-depends: base, attoparsec, array, JuicyPixels, Rasterific, text, QuickCheck, musictheory

@@ -6,7 +6,7 @@ import Data.Monoid
 import Data.Text.Lazy.Builder
 import Data.Text.Lazy.Builder.Int
 import Fretboarder.Drawing.Expr
-import Fretboarder.Music.Fretboard
+import Fretboarder.Fretboard
 import Music.Theory.Note
 import Music.Theory.SPN
 

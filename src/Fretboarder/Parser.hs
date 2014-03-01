@@ -1,18 +1,9 @@
 {-# LANGUAGE OverloadedStrings, LambdaCase #-}
-module Fretboarder.Parser
-  ( parseNote
-  , parseOctave
-  , parseTone
-  , parseAccidental
-  , parseSPN
-  , parseOffsets
-  , parseScale
-  , parseExpr
-  , parseExprs
-  ) where
+module Fretboarder.Parser (parseNote, parseExpressions, parseSPN, parseExprs) where
 
 import Control.Applicative
-import Data.Attoparsec.Char8 hiding (D)
+import Data.Attoparsec.Text hiding (D)
+import Data.Text (pack)
 import Fretboarder.Drawing.Expr
 import Music.Theory.Note
 import Music.Theory.SPN
@@ -88,3 +79,6 @@ parseExpr =
 
 parseExprs :: Parser [Expr]
 parseExprs = sepBy1 parseExpr (skipSpace >> char ',' >> skipSpace)
+
+parseExpressions :: String -> Either String [Expr]
+parseExpressions = parseOnly parseExprs . pack

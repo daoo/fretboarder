@@ -1,19 +1,19 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Fretboarder.Drawing.ASCII (asciiFretboard) where
 
-import Data.ByteString.Lazy.Builder
-import Data.ByteString.Lazy.Builder.ASCII
 import Data.List
 import Data.Monoid
+import Data.Text.Lazy.Builder
+import Data.Text.Lazy.Builder.Int
 import Fretboarder.Drawing.Expr
 import Fretboarder.Music.Fretboard
 import Music.Theory.Note
 import Music.Theory.SPN
 
 buildSPN :: SPN -> Builder
-buildSPN (SPN o p) = charUtf8 c <> intDec (fromIntegral o) <> b
+buildSPN (SPN o p) = singleton c <> decimal (fromIntegral o :: Int) <> b
   where
-    hash = charUtf8 '#'
+    hash = singleton '#'
 
     (c, b) = case p of
       Cn -> ('C', mempty)
@@ -30,7 +30,7 @@ buildSPN (SPN o p) = charUtf8 c <> intDec (fromIntegral o) <> b
       Bn -> ('B', mempty)
 
 chars :: [Builder]
-chars = map charUtf8 "123456789ABCDEF"
+chars = map singleton "123456789ABCDEF"
 
 getChars :: Note -> [Expr] -> [Builder]
 getChars n = map (chars !!) . semiIndex n
@@ -56,7 +56,7 @@ asciiFretboard c fb exprs = foldl' (\a n -> a <> string n) mempty $ tuning fb
       []    -> dash <> dash <> dash
       (x:_) -> dash <> x <> dash
 
-    dash    = char8 '-'
-    newline = char8 '\n'
-    pipe    = char8 '|'
-    space   = char8 ' '
+    dash    = singleton '-'
+    newline = singleton '\n'
+    pipe    = singleton '|'
+    space   = singleton ' '

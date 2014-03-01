@@ -12,6 +12,8 @@ data Expr = FullScale Rooted
           | OneTone ScaleOffset
           -- Chords, triads, stuff?
 
+  deriving Show
+
 includes :: Note -> Expr -> Bool
 includes n = \case
   FullScale s -> hasNote n s

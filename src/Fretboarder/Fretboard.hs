@@ -15,16 +15,13 @@ newtype Fretboard = Fretboard
 stringCount :: Fretboard -> Int
 stringCount = length . tuning
 
-mkFretboard :: [SPN] -> Fretboard
-mkFretboard = Fretboard . map toNote
-
 -- The fretboard for a standard EBGDAE tuning
 ebgdae :: Fretboard
-ebgdae = mkFretboard
-  [ mkSPN 4 E Natural
-  , mkSPN 3 B Natural
-  , mkSPN 3 G Natural
-  , mkSPN 3 D Natural
-  , mkSPN 2 A Natural
-  , mkSPN 2 E Natural
+ebgdae = Fretboard
+  [ toNote $ mkSPN 4 E Natural
+  , toNote $ mkSPN 3 B Natural
+  , toNote $ mkSPN 3 G Natural
+  , toNote $ mkSPN 3 D Natural
+  , toNote $ mkSPN 2 A Natural
+  , toNote $ mkSPN 2 E Natural
   ]

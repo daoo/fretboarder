@@ -1,4 +1,4 @@
-{-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE BangPatterns, LambdaCase #-}
 module Fretboarder.Drawing.Expr
   ( Expr(..)
   , semiIndex
@@ -7,9 +7,9 @@ module Fretboarder.Drawing.Expr
 import Music.Theory.Note
 import Music.Theory.Scale.Rooted
 
-data Expr = FullScale Rooted
-          | OnePitch Note
-          | OneTone ScaleOffset
+data Expr = FullScale !Rooted
+          | OnePitch !Note
+          | OneTone !ScaleOffset
           -- Chords, triads, stuff?
 
   deriving Show
@@ -23,7 +23,7 @@ includes n = \case
 semiIndex :: Note -> [Expr] -> [Int]
 semiIndex n = go 0 []
   where
-    go _ acc []     = acc
-    go i acc (x:xs) = go (i+1) acc' xs
+    go !_ acc []     = acc
+    go !i acc (x:xs) = go (i+1) acc' xs
       where
         acc' = if includes n x then i:acc else acc

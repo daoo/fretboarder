@@ -1,7 +1,6 @@
 module Main (main) where
 
-import Data.Text.Lazy.Builder
-import Data.Text.Lazy.IO
+import Data.ByteString.Builder (hPutBuilder)
 import Fretboarder.Drawing.ASCII
 import Fretboarder.Fretboard
 import Fretboarder.Parser
@@ -14,4 +13,4 @@ main = getArgs >>= prg
 prg :: [String] -> IO ()
 prg args = case parseExpressions (unwords args) of
   Left err    -> print err
-  Right exprs -> hPutStr stdout $ toLazyText $ asciiFretboard 23 ebgdae exprs
+  Right exprs -> hPutBuilder stdout $ asciiFretboard 23 ebgdae exprs

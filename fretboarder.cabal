@@ -25,17 +25,14 @@ library
     musictheory,
     text
   hs-source-dirs: src
-  ghc-options: -Wall
   default-language: Haskell2010
 
 executable fretboarder-ascii
   main-is: src/ASCII.hs
   build-depends: base, fretboarder, bytestring
-  ghc-options: -Wall
   default-language: Haskell2010
 
 executable fretboarder-img
   main-is: src/ImgFile.hs
   build-depends: base, fretboarder, JuicyPixels
-  ghc-options: -Wall
   default-language: Haskell2010

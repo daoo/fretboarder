@@ -28,11 +28,8 @@ mkLines !count !delta = go 0
     go !i !acc | i < count = LinePrim acc : go (i+1) (transform (+delta) acc)
                | otherwise = []
 
-getColor :: Note -> [Expr] -> [PixelRGB8]
-getColor n = map (tangoColors !) . semiIndex n
-
 drawFretboard :: Int -> Int -> Fretboard -> [Expr] -> Image PixelRGB8
-drawFretboard w h fb e =
+drawFretboard w h fb exprs =
   renderDrawing w h bgColor $ withTexture (uniformTexture fgColor) $ do
     stroke 10 JoinRound cap $
       line topleft botleft
@@ -99,7 +96,7 @@ drawFretboard w h fb e =
 
     mkInlays _ = []
 
-    mkFret !x !y !n = case getColor n e of
+    mkFret !x !y !n = case getColor n of
       []    -> []
       (c:_) -> [(c, circle (V2 x y) radius)]
 
@@ -115,3 +112,5 @@ drawFretboard w h fb e =
                  | otherwise  = []
 
     fillColored (c, xs) = withTexture (uniformTexture c) $ fill xs
+
+    getColor n = map (tangoColors !) $ semiIndex n exprs

@@ -43,7 +43,7 @@ drawFretboard w h fb e =
     mapM_ (stroke 1 JoinRound cap . (:[])) $
       mkLines strings (V2 0 freth) (Line topleft topright)
 
-    mapM_ fill        $ map mkInlays inlays
+    mapM_ (fill . mkInlays) inlays
     mapM_ fillColored $ mkStrings (tuning fb)
   where
     fgColor = PixelRGB8 0 0 0

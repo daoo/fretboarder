@@ -1,16 +1,26 @@
+{-# LANGUAGE LambdaCase #-}
 module Main (main) where
 
-import Data.ByteString.Builder (hPutBuilder)
+import Data.ByteString.Builder
 import Fretboarder.Drawing.ASCII
+import Fretboarder.Drawing.Expr
 import Fretboarder.Fretboard
 import Fretboarder.Parser
 import System.Environment
-import System.IO (stdout)
+import System.Exit
+import System.IO
 
 main :: IO ()
-main = getArgs >>= prg
+main = getArgs >>= \case
+  "-h":_      -> help >>= putStrLn
+  "--help":_  -> help >>= putStrLn
+  exprs@(_:_) -> either die printBoard (parseExpressions (unwords exprs))
+  _           -> help >>= die
 
-prg :: [String] -> IO ()
-prg args = case parseExpressions (unwords args) of
-  Left err    -> print err
-  Right exprs -> hPutBuilder stdout $ asciiFretboard 23 ebgdae exprs
+printBoard :: [Expr] -> IO ()
+printBoard = hPutBuilder stdout . asciiFretboard 23 ebgdae
+
+help :: IO String
+help = do
+  name <- getProgName
+  return $ "Usage: " ++ name ++ " \"EXPR(,...)\""

@@ -1,26 +1,12 @@
 {-# LANGUAGE BangPatterns, LambdaCase #-}
-module Fretboarder.Drawing.Rasterific
-  ( drawFretboard ) where
+module Fretboarder.Drawing.Rasterific (drawFretboard) where
 
 import Codec.Picture.Types
-import Data.Array.IArray
 import Fretboarder.Drawing.Expr
 import Fretboarder.Fretboard
 import Graphics.Rasterific
 import Graphics.Rasterific.Texture
 import Music.Theory.Note
-
-tangoColors :: Array Int PixelRGB8
-tangoColors = listArray (0, 7)
-  [ PixelRGB8 239 41  41
-  , PixelRGB8 138 226 52
-  , PixelRGB8 114 159 207
-  , PixelRGB8 252 234 79
-  , PixelRGB8 252 175 62
-  , PixelRGB8 173 127 168
-  , PixelRGB8 233 185 110
-  , PixelRGB8 136 138 133
-  ]
 
 mkLines :: Int -> Vector -> Line -> [Primitive]
 mkLines !count !delta = go 0
@@ -28,24 +14,27 @@ mkLines !count !delta = go 0
     go !i !acc | i < count = LinePrim acc : go (i+1) (transform (+delta) acc)
                | otherwise = []
 
-drawFretboard :: Int -> Int -> Fretboard -> [Expr] -> Image PixelRGB8
+drawFretboard :: Int -> Int -> Fretboard -> [Expr] -> Image PixelRGBA8
 drawFretboard w h fb exprs =
   renderDrawing w h bgColor $ withTexture (uniformTexture fgColor) $ do
-    stroke 10 JoinRound cap $
-      line topleft botleft
+    strokeFat $ line topleft botleft
 
-    mapM_ (stroke 1 JoinRound cap . (:[])) $
+    mapM_ strokeThin $
       mkLines frets (V2 fretw 0) (Line (topleft + V2 fretw 0) (botleft + V2 fretw 0))
 
-    mapM_ (stroke 1 JoinRound cap . (:[])) $
+    mapM_ strokeThin $
       mkLines strings (V2 0 freth) (Line topleft topright)
 
     mapM_ (fill . mkInlays) inlays
     mapM_ fillColored $ mkStrings (tuning fb)
   where
-    fgColor = PixelRGB8 0 0 0
-    bgColor = PixelRGB8 255 255 255
+    fgColor = PixelRGBA8 0 0 0 255
+    bgColor = PixelRGBA8 255 255 255 255
     cap     = (CapStraight 0, CapStraight 0)
+
+    strokeFat = stroke 10 JoinRound cap
+    strokeThin = stroke 1 JoinRound cap . (:[])
+    fillColored (c, xs) = withTexture (uniformTexture c) $ fill xs
 
     frets, strings :: Int
     frets   = 23
@@ -96,21 +85,33 @@ drawFretboard w h fb exprs =
 
     mkInlays _ = []
 
-    mkFret !x !y !n = case getColor n of
+    mkFret !x !y !n = case getColors n of
       []    -> []
       (c:_) -> [(c, circle (V2 x y) radius)]
 
     mkStrings = go 0 frety1
       where
-        go :: Int -> Float -> [Note] -> [(PixelRGB8, [Primitive])]
+        go :: Interval -> Float -> [Note] -> [(PixelRGBA8, [Primitive])]
         go  _  _ []        = []
         go !j !y (root:ys) = mkString y root ++ go (j+1) (y+freth) ys
 
     mkString !y !root = mkFret fretx1 y root ++ go 1 fretx2
       where
-        go !i !x | i <= frets = mkFret x y (root +. Offset i) ++ go (succ i) (x+fretw)
-                 | otherwise  = []
+        go :: Interval -> Float -> [(PixelRGBA8, [Primitive])]
+        go !i !x | fromIntegral i <= frets = mkFret x y (root .+ i) ++ go (succ i) (x+fretw)
+                 | otherwise = []
 
-    fillColored (c, xs) = withTexture (uniformTexture c) $ fill xs
+    getColors :: Note -> [PixelRGBA8]
+    getColors n = map getColor $ semiIndex n exprs
 
-    getColor n = map (tangoColors !) $ semiIndex n exprs
+    getColor :: Int -> PixelRGBA8
+    getColor = \case
+      0 -> PixelRGBA8 239 41  41  255
+      1 -> PixelRGBA8 138 226 52  255
+      2 -> PixelRGBA8 114 159 207 255
+      3 -> PixelRGBA8 252 234 79  255
+      4 -> PixelRGBA8 252 175 62  255
+      5 -> PixelRGBA8 173 127 168 255
+      6 -> PixelRGBA8 233 185 110 255
+      7 -> PixelRGBA8 136 138 133 255
+      _ -> PixelRGBA8 255 0   0   255 -- error color

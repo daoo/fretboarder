@@ -18,7 +18,6 @@ library
   build-depends:
     JuicyPixels,
     Rasterific,
-    array,
     attoparsec,
     bytestring,
     base,

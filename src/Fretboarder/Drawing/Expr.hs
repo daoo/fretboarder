@@ -5,21 +5,23 @@ module Fretboarder.Drawing.Expr
   ) where
 
 import Music.Theory.Note
+import Music.Theory.SPN
 import Music.Theory.Scale.Rooted
 
-data Expr = FullScale !Rooted
-          | OnePitch !Note
-          | OneTone !ScaleOffset
-          -- Chords, triads, stuff?
-
+-- TODO: Chords, triads, stuff?
+data Expr
+  = EScale !Rooted
+  | ENote !Note
+  | EPitch !PitchClass
   deriving Show
 
 includes :: Note -> Expr -> Bool
 includes n = \case
-  FullScale s -> hasNote n s
-  OnePitch n' -> n == n'
-  OneTone t   -> t == scaleOffset n
+  EScale s -> hasNote n s
+  ENote n' -> n == n'
+  EPitch t -> t == pitchClass (fromNote n)
 
+-- |Returns the indices of the expressions that includes the given note.
 semiIndex :: Note -> [Expr] -> [Int]
 semiIndex n = go 0 []
   where

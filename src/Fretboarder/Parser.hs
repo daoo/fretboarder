@@ -12,7 +12,7 @@ import Music.Theory.Scale.Rooted
 import Music.Theory.Scale.Western
 
 parseNote :: Parser Note
-parseNote = fromIntegral <$> (decimal :: Parser Int)
+parseNote = ((c0.+) . fromIntegral) <$> (decimal :: Parser Int)
 
 parseOctave :: Parser Octave
 parseOctave = decimal
@@ -73,9 +73,9 @@ parseScale = do
 
 parseExpr :: Parser Expr
 parseExpr =
-  (FullScale <$> parseScale) <|>
-  ((OnePitch . toNote) <$> parseSPN) <|>
-  ((OneTone . toOffset . uncurry mkPitchClass) <$> parseToneAccident)
+  (EScale <$> parseScale) <|>
+  ((ENote . toNote) <$> parseSPN) <|>
+  ((EPitch . uncurry mkPitchClass) <$> parseToneAccident)
 
 parseExprs :: Parser [Expr]
 parseExprs = sepBy1 parseExpr (skipSpace >> char ',' >> skipSpace)

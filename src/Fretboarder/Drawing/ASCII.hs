@@ -48,7 +48,7 @@ buildFret = char8 . \case
   _  -> 'e'
 
 -- TODO: Use some bytestring builder
-asciiFretboard :: Int -> Fretboard -> [Expr] -> Builder
+asciiFretboard :: Interval -> Fretboard -> [Expr] -> Builder
 asciiFretboard c fb exprs = foldl' (\a n -> a <> string n) mempty $ tuning fb
   where
     indices n = semiIndex n exprs
@@ -64,11 +64,13 @@ asciiFretboard c fb exprs = foldl' (\a n -> a <> string n) mempty $ tuning fb
       (x:_) -> buildFret x
 
     frets :: Note -> Builder
-    frets root = foldl' (\a n -> a <> pipe <> fret n) mempty [root + toEnum 1 .. root + toEnum c]
+    frets root = foldl' (\a n -> a <> pipe <> fret n) mempty (notes root 1 c)
 
     fret n = case indices n of
       []    -> dash <> dash <> dash
       (x:_) -> dash <> buildFret x <> dash
+
+    notes root from to = map (root.+) [from..to]
 
     dash    = char8 '-'
     newline = char8 '\n'
